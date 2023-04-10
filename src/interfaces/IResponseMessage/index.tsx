@@ -1,0 +1,3 @@
+interface IResponseMessage {
+  message: string;
+}
