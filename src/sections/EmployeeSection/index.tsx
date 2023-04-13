@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material";
-import { ContentBox, EmployeeDataGrid } from "@/components";
+import { ContentBox, EmployeeTable } from "@/components";
 import EmployeeForm from "@/components/EmployeeAddForm";
 
 const EmployeeSection = () => {
@@ -9,13 +9,13 @@ const EmployeeSection = () => {
         padding: 2,
       }}
     >
-      <Typography variant="h5" gutterBottom>
+      <Typography variant="h5" sx={{ marginBottom: 2 }}>
         Empleados
       </Typography>
 
       <EmployeeForm />
 
-      <EmployeeDataGrid />
+      <EmployeeTable />
     </ContentBox>
   );
 };

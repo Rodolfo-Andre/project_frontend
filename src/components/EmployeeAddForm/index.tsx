@@ -9,7 +9,7 @@ import { PersonAdd } from "@mui/icons-material";
 import { useSWRConfig } from "swr";
 import { useContext } from "react";
 import { AlertContext } from "@/contexts/AlertSuccess";
-import { createObject } from "@/services/Employee";
+import { createObject } from "@/services/HttpRequests";
 
 const initialValues: IEmployeePost = {
   firstName: "",
@@ -33,9 +33,9 @@ const EmployeeAddForm = () => {
         "/api/employees",
         newEmployee
       );
+      mutate("api/employees");
       closeDialog();
       handleOpen("El empleado se ha registrado correctamente");
-      mutate("api/employees");
       formik.resetForm();
     },
     validateOnChange: false,

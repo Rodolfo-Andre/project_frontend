@@ -5,21 +5,23 @@ import { useFormik } from "formik";
 import { IRoleGet } from "@/interfaces/IRole";
 import { Person } from "@mui/icons-material";
 import { useSWRConfig } from "swr";
-import { useContext } from "react";
+import { SetStateAction, useContext } from "react";
 import { AlertContext } from "@/contexts/AlertSuccess";
 import { RoleComboBox, FormDialogUpdate } from "@/components";
-import { updateObject } from "@/services/Employee";
+import { updateObject } from "@/services/HttpRequests";
 
 interface IEmployeeFormPutProps {
   employee: IEmployeeGet;
   open: boolean;
   closeDialog: () => void;
+  setSelectedEmployee: (value: SetStateAction<IEmployeeGet | null>) => void;
 }
 
 const EmployeeUpdateForm = ({
   employee,
   open,
   closeDialog,
+  setSelectedEmployee,
 }: IEmployeeFormPutProps) => {
   const { mutate } = useSWRConfig();
   const { handleOpen } = useContext(AlertContext);
@@ -39,10 +41,11 @@ const EmployeeUpdateForm = ({
         `api/employees/${employee.id}`,
         employee
       );
+      mutate("api/employees");
       closeDialog();
       handleOpen("El empleado se ha modificado correctamente");
-      mutate("api/employees");
       formik.resetForm();
+      setSelectedEmployee(null);
     },
     validateOnChange: false,
   });

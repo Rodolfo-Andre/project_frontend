@@ -1,23 +1,21 @@
 import { IEmployeeGet } from "@/interfaces/IEmployee";
 import { Edit, Delete } from "@mui/icons-material";
-import { Box } from "@mui/material";
 import {
   GridColDef,
   GridValueGetterParams,
   GridActionsCellItem,
-  DataGrid,
   GridRowParams,
 } from "@mui/x-data-grid";
-import { FormDialogDelete, EmployeeUpdateForm } from "@/components";
+import { FormDialogDelete, EmployeeUpdateForm, DataTable } from "@/components";
 import { useOpenClose } from "@/hooks";
 import { useContext, useState } from "react";
 import { AlertContext } from "@/contexts/AlertSuccess";
-import { deleteObject, fetchAll } from "@/services/Employee";
+import { deleteObject, fetchAll } from "@/services/HttpRequests";
 import useSWR, { useSWRConfig } from "swr";
 import dayjs from "dayjs";
 
-const EmployeeDataGrid = () => {
-  const { data } = useSWR("api/employees", () =>
+const EmployeeTable = () => {
+  const { data, isLoading } = useSWR("api/employees", () =>
     fetchAll<IEmployeeGet>("api/employees")
   );
   const { mutate } = useSWRConfig();
@@ -96,23 +94,7 @@ const EmployeeDataGrid = () => {
 
   return (
     <>
-      <Box sx={{ display: "flex", marginY: 2 }}>
-        <DataGrid
-          sx={{ width: 100 }}
-          rows={data || []}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 5,
-              },
-            },
-          }}
-          autoHeight
-          disableRowSelectionOnClick
-          pageSizeOptions={[5]}
-        />
-      </Box>
+      <DataTable columns={columns} loading={isLoading} rows={data} />
 
       <FormDialogDelete
         title={`¿Estás seguro de eliminar al empleado ${selectedEmployee?.firstName} ${selectedEmployee?.lastName}?`}
@@ -122,15 +104,16 @@ const EmployeeDataGrid = () => {
         }}
         handleSuccess={async () => {
           await deleteObject(`api/employees/${selectedEmployee?.id}`);
-          setSelectedEmployee(null);
-          closeDialogDelete();
           mutate("api/employees");
+          closeDialogDelete();
           handleOpen("El empleado se ha eliminado correctamente");
+          setSelectedEmployee(null);
         }}
       />
 
       {openDialogU && (
         <EmployeeUpdateForm
+          setSelectedEmployee={setSelectedEmployee}
           open={openDialogU}
           closeDialog={() => {
             closeDialogUpdate();
@@ -142,4 +125,4 @@ const EmployeeDataGrid = () => {
   );
 };
 
-export default EmployeeDataGrid;
+export default EmployeeTable;
