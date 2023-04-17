@@ -1,5 +1,5 @@
 import { IMenuItemsProps, IMenuItemsWithSubItemsProps } from "@/interfaces";
-import { Home, Build, People, FoodBank } from "@mui/icons-material";
+import { Home, Build, People, FoodBank, Restaurant } from "@mui/icons-material";
 import { Typography, List } from "@mui/material";
 import { ListItemButtonLink, ListItemButtonWithCollapse } from "@/components";
 
@@ -18,14 +18,20 @@ const itemsWithSubItems: IMenuItemsWithSubItemsProps[] = [
     section: "settings",
     items: [
       {
-        href: "/settings/employees",
+        href: "/settings/employee",
         text: "Empleados",
         Icon: People,
       },
       {
-        href: "/settings/dishes",
-        text: "Platos",
+        href: "/settings/category-dish",
+        text: "Categorías de Platos",
         Icon: FoodBank,
+      },
+
+      {
+        href: "/settings/dish",
+        text: "Platos",
+        Icon: Restaurant,
       },
     ],
   },

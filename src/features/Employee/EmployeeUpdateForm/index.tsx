@@ -7,10 +7,10 @@ import { Person } from "@mui/icons-material";
 import { useSWRConfig } from "swr";
 import { SetStateAction, useContext } from "react";
 import { AlertContext } from "@/contexts/AlertSuccess";
-import { RoleComboBox, FormDialogUpdate } from "@/components";
 import { updateObject } from "@/services/HttpRequests";
+import { ComboBox, FormDialogUpdate } from "@/components";
 
-interface IEmployeeFormPutProps {
+interface IEmployeeFormUpdateProps {
   employee: IEmployeeGet;
   open: boolean;
   closeDialog: () => void;
@@ -22,10 +22,9 @@ const EmployeeUpdateForm = ({
   open,
   closeDialog,
   setSelectedEmployee,
-}: IEmployeeFormPutProps) => {
+}: IEmployeeFormUpdateProps) => {
   const { mutate } = useSWRConfig();
   const { handleOpen } = useContext(AlertContext);
-
   const formik = useFormik<IEmployeePut>({
     initialValues: {
       firstName: employee.firstName,
@@ -36,10 +35,10 @@ const EmployeeUpdateForm = ({
       user: employee.user,
     },
     validationSchema: employeePostSchema,
-    onSubmit: async (employee) => {
+    onSubmit: async (employeeUpdate) => {
       await updateObject<IEmployeeGet, IEmployeePut>(
         `api/employees/${employee.id}`,
-        employee
+        employeeUpdate
       );
       mutate("api/employees");
       closeDialog();
@@ -125,16 +124,19 @@ const EmployeeUpdateForm = ({
             </Grid>
 
             <Grid item xs={12}>
-              <RoleComboBox
-                value={employee.role}
-                handleChange={(role: IRoleGet | null) => {
-                  formik.setFieldValue("roleId", role?.id);
-                }}
+              <ComboBox
+                value={formik.values.roleId}
+                id="id"
+                label="roleName"
+                url="api/roles"
                 textFieldProps={{
                   label: "Rol",
                   error: Boolean(formik.errors.roleId),
                   helperText: formik.errors.roleId,
                   disabled: formik.isSubmitting,
+                }}
+                handleChange={(role: IRoleGet | null) => {
+                  formik.setFieldValue("roleId", role?.id);
                 }}
               />
             </Grid>

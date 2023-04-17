@@ -1,5 +1,11 @@
+import { IEmployeeGet } from "../IEmployee";
+
 interface IUserPrincipal {
   email: string;
 }
 
-export type { IUserPrincipal };
+interface ICurrentUser extends IEmployeeGet {
+  img?: string;
+}
+
+export type { IUserPrincipal, ICurrentUser };

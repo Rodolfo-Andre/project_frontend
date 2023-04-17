@@ -17,7 +17,7 @@ const showWelcomeMessage = () => {
     target: "body",
     allowOutsideClick: false,
     willClose: () => {
-      Router.push("/");
+      Router.replace("/");
     },
   });
 };

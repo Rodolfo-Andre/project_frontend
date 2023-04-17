@@ -1,7 +1,7 @@
 import { ProtectedRouteForAuthenticated, Layout } from "@/components";
 import { EmployeeSection } from "@/sections";
 
-const EmployeesPage = () => {
+const EmployeePage = () => {
   return (
     <Layout>
       <EmployeeSection />
@@ -9,4 +9,4 @@ const EmployeesPage = () => {
   );
 };
 
-export default ProtectedRouteForAuthenticated({ Component: EmployeesPage });
+export default ProtectedRouteForAuthenticated({ Component: EmployeePage });

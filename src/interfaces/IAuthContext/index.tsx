@@ -1,7 +1,7 @@
-import { IEmployeeGet } from "@/interfaces/IEmployee";
+import { ICurrentUser } from "../IUser";
 
 interface IAuthContext {
-  user?: IEmployeeGet;
+  user?: ICurrentUser;
   login: (accessToken: string) => Promise<void>;
   logout: () => void;
 }

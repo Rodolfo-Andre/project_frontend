@@ -18,6 +18,7 @@ const FormDialogUpdate = ({
   open,
   handleCancel,
   handleSuccess,
+  isSubmitting,
   Icon,
   children,
   title,
@@ -39,6 +40,7 @@ const FormDialogUpdate = ({
           color="error"
           size="large"
           onClick={handleCancel}
+          disabled={isSubmitting}
         >
           Cancelar
         </Button>
@@ -48,6 +50,7 @@ const FormDialogUpdate = ({
           color="warning"
           size="large"
           onClick={handleSuccess}
+          disabled={isSubmitting}
         >
           Actualizar
         </Button>

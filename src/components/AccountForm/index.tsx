@@ -3,12 +3,10 @@ import { Typography, Grid, TextField, Avatar } from "@mui/material";
 import { useContext } from "react";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import { ContentBox } from "@/components";
-import { url } from "gravatar";
 import dayjs from "dayjs";
 
 const AccountForm = () => {
   const { user } = useContext(AuthContext);
-  const avatar_url = url(user!.user.email, { d: "identicon" }, true);
   const date_created_at = dayjs(user!.createdAt);
 
   return (
@@ -30,7 +28,7 @@ const AccountForm = () => {
           <Avatar
             sx={{ width: "80px", height: "auto", margin: "auto" }}
             alt="avatar"
-            src={avatar_url}
+            src={user?.img}
           />
         </Grid>
         <Grid item sx={{ flexGrow: "7 !important" }} xs={12} sm>

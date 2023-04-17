@@ -1,19 +1,16 @@
 import { Button, Typography, Avatar } from "@mui/material";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
-import { IEmployeeGet } from "@/interfaces/IEmployee";
 import { MouseEvent } from "react";
 import { ContentBox } from "@/components";
-import { url } from "gravatar";
+import { ICurrentUser } from "@/interfaces";
 
 interface IProfileButtonProps {
-  user: IEmployeeGet;
+  user: ICurrentUser;
   handleOpen: (event: MouseEvent<HTMLButtonElement>) => void;
   anchorEl: HTMLElement | null;
 }
 
 const ProfileButton = ({ user, handleOpen, anchorEl }: IProfileButtonProps) => {
-  const avatar_url = url(user.user.email, { d: "identicon" }, true);
-
   return (
     <ContentBox>
       <Button
@@ -26,7 +23,7 @@ const ProfileButton = ({ user, handleOpen, anchorEl }: IProfileButtonProps) => {
         endIcon={anchorEl ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
         onClick={handleOpen}
       >
-        <Avatar alt="avatar" src={avatar_url} />
+        <Avatar alt="avatar" src={user.img} />
         <Typography variant="subtitle2">
           {user?.firstName} {user?.lastName}
         </Typography>

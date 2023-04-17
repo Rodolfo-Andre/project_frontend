@@ -8,10 +8,10 @@ import {
   ReactNode,
 } from "react";
 import { getUser } from "@/lib/User";
-import { IEmployeeGet } from "@/interfaces/IEmployee";
-import { IAuthContext } from "@/interfaces";
-import { LoadingBackdrop } from "@/components";
 import { showWelcomeMessage } from "@/lib/Messages";
+import { url } from "gravatar";
+import { ICurrentUser, IAuthContext } from "@/interfaces";
+import { LoadingBackdrop } from "@/components";
 
 const AuthContext = createContext<IAuthContext>({
   login: async () => {},
@@ -19,25 +19,32 @@ const AuthContext = createContext<IAuthContext>({
 });
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<IEmployeeGet | undefined>();
+  const [user, setUser] = useState<ICurrentUser | undefined>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const checkUser = useCallback(async () => {
+    await authenticateUser();
+    setIsLoading(false);
+  }, []);
 
   useEffect(() => {
     checkUser();
-  }, []);
+  }, [checkUser]);
 
-  const checkUser = async () => {
-    const userR = await getUser();
-    setUser(userR);
-    setIsLoading(false);
+  const authenticateUser = async () => {
+    const currenUser = (await getUser()) as ICurrentUser;
+
+    if (currenUser) {
+      const avatar_url = url(currenUser.user.email, { d: "identicon" }, true);
+      currenUser.img = avatar_url;
+    }
+
+    setUser(currenUser);
   };
 
   const login = useCallback(async (accessToken: string) => {
     localStorage.setItem("access_token", accessToken);
-
-    const currentUser = await getUser();
-    setUser(currentUser);
-
+    await authenticateUser();
     showWelcomeMessage();
   }, []);
 
@@ -45,7 +52,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem("access_token");
     setUser(undefined);
 
-    Router.push("login");
+    Router.replace("/");
   }, []);
 
   const contextValue = useMemo(() => {

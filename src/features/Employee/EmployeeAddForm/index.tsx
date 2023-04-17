@@ -1,4 +1,4 @@
-import { ButtonAdd, RoleComboBox, FormDialogPost } from "@/components";
+import { ButtonAdd, FormDialogPost, ComboBox } from "@/components";
 import { useOpenClose } from "@/hooks";
 import { IEmployeeGet, IEmployeePost } from "@/interfaces/IEmployee";
 import { employeePostSchema } from "@/schemas/Employee";
@@ -30,7 +30,7 @@ const EmployeeAddForm = () => {
     validationSchema: employeePostSchema,
     onSubmit: async (newEmployee) => {
       await createObject<IEmployeeGet, IEmployeePost>(
-        "/api/employees",
+        "api/employees",
         newEmployee
       );
       mutate("api/employees");
@@ -118,16 +118,18 @@ const EmployeeAddForm = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <RoleComboBox
-                value={null}
-                handleChange={(role: IRoleGet | null) => {
-                  formik.setFieldValue("roleId", role?.id);
-                }}
+              <ComboBox
+                id="id"
+                label="roleName"
+                url="api/roles"
                 textFieldProps={{
                   label: "Rol",
                   error: Boolean(formik.errors.roleId),
                   helperText: formik.errors.roleId,
                   disabled: formik.isSubmitting,
+                }}
+                handleChange={(role: IRoleGet | null) => {
+                  formik.setFieldValue("roleId", role?.id);
                 }}
               />
             </Grid>

@@ -5,12 +5,15 @@ import {
   GridValueGetterParams,
   GridActionsCellItem,
   GridRowParams,
+  useGridApiRef,
 } from "@mui/x-data-grid";
-import { FormDialogDelete, EmployeeUpdateForm, DataTable } from "@/components";
+import { FormDialogDelete, DataTable } from "@/components";
 import { useOpenClose } from "@/hooks";
 import { useContext, useState } from "react";
 import { AlertContext } from "@/contexts/AlertSuccess";
 import { deleteObject, fetchAll } from "@/services/HttpRequests";
+import { handleLastPageDeletion } from "@/utils";
+import { EmployeeUpdateForm } from "@/features";
 import useSWR, { useSWRConfig } from "swr";
 import dayjs from "dayjs";
 
@@ -27,6 +30,7 @@ const EmployeeTable = () => {
     useOpenClose(false);
   const [openDialogU, openDialogUpdate, closeDialogUpdate] =
     useOpenClose(false);
+  const gridApiRef = useGridApiRef();
 
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", width: 100 },
@@ -94,16 +98,22 @@ const EmployeeTable = () => {
 
   return (
     <>
-      <DataTable columns={columns} loading={isLoading} rows={data} />
+      <DataTable
+        columns={columns}
+        loading={isLoading}
+        rows={data}
+        apiRef={gridApiRef}
+      />
 
       <FormDialogDelete
-        title={`¿Estás seguro de eliminar al empleado ${selectedEmployee?.firstName} ${selectedEmployee?.lastName}?`}
+        title={`¿Estás seguro de eliminar al empleado "${selectedEmployee?.firstName} ${selectedEmployee?.lastName}"?`}
         open={openDialogD}
         handleCancel={() => {
           closeDialogDelete();
         }}
         handleSuccess={async () => {
           await deleteObject(`api/employees/${selectedEmployee?.id}`);
+          handleLastPageDeletion(gridApiRef, data!.length);
           mutate("api/employees");
           closeDialogDelete();
           handleOpen("El empleado se ha eliminado correctamente");

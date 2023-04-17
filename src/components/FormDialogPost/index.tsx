@@ -18,6 +18,7 @@ const FormDialogPost = ({
   open,
   handleCancel,
   handleSuccess,
+  isSubmitting,
   Icon,
   children,
   title,
@@ -39,6 +40,7 @@ const FormDialogPost = ({
           color="error"
           size="large"
           onClick={handleCancel}
+          disabled={isSubmitting}
         >
           Cancelar
         </Button>
@@ -47,6 +49,7 @@ const FormDialogPost = ({
           variant="contained"
           size="large"
           onClick={handleSuccess}
+          disabled={isSubmitting}
         >
           Añadir
         </Button>

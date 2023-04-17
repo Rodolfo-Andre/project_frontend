@@ -1,8 +1,8 @@
 import { Typography } from "@mui/material";
 import { ContentBox } from "@/components";
-import { EmployeeTable, EmployeeAddForm } from "@/features";
+import { DishTable, DishAddForm } from "@/features";
 
-const EmployeeSection = () => {
+const DishSection = () => {
   return (
     <ContentBox
       sxProps={{
@@ -10,14 +10,14 @@ const EmployeeSection = () => {
       }}
     >
       <Typography variant="h5" sx={{ marginBottom: 2 }}>
-        Empleados
+        Platos
       </Typography>
 
-      <EmployeeAddForm />
+      <DishAddForm />
 
-      <EmployeeTable />
+      <DishTable />
     </ContentBox>
   );
 };
 
-export default EmployeeSection;
+export default DishSection;

@@ -7,4 +7,5 @@ export type { default as IMenuItemsProps } from "./IMenuItemsProps";
 export type { default as IMenuItemsWithSubItemsProps } from "./IMenuItemsWithSubItemsProps";
 export type { default as ISignInResponse } from "./ISignInResponse";
 export type { default as ISignIn } from "./ISignIn";
+export * from "./IUser";
 export type { default as UserRoles } from "./UserRoles";
