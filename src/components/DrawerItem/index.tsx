@@ -1,5 +1,12 @@
 import { IMenuItemsProps, IMenuItemsWithSubItemsProps } from "@/interfaces";
-import { Home, Build, People, FoodBank, Restaurant } from "@mui/icons-material";
+import {
+  Home,
+  Build,
+  People,
+  FoodBank,
+  Restaurant,
+  Payments,
+} from "@mui/icons-material";
 import { Typography, List } from "@mui/material";
 import { ListItemButtonLink, ListItemButtonWithCollapse } from "@/components";
 
@@ -27,11 +34,15 @@ const itemsWithSubItems: IMenuItemsWithSubItemsProps[] = [
         text: "Categorías de Platos",
         Icon: FoodBank,
       },
-
       {
         href: "/settings/dish",
         text: "Platos",
         Icon: Restaurant,
+      },
+      {
+        href: "/settings/pay-method",
+        text: "Métodos de Pagos",
+        Icon: Payments,
       },
     ],
   },
