@@ -47,6 +47,7 @@ const PayMethodAddForm = () => {
           closeDialog();
           formik.resetForm();
         }}
+        isSubmitting={formik.isSubmitting}
         handleSuccess={() => {
           formik.handleSubmit();
         }}

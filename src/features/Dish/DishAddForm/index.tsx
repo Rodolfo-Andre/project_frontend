@@ -52,7 +52,6 @@ const DishAddForm = () => {
       <ButtonAdd text="Añadir Plato" openDialog={openDialog} />
 
       <FormDialogPost
-        isSubmitting={formik.isSubmitting}
         Icon={Fastfood}
         open={open}
         title="Añadir Plato"
@@ -60,6 +59,7 @@ const DishAddForm = () => {
           closeDialog();
           formik.resetForm();
         }}
+        isSubmitting={formik.isSubmitting}
         handleSuccess={() => {
           formik.handleSubmit();
         }}

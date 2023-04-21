@@ -50,6 +50,7 @@ const CategoryDishAddForm = () => {
           closeDialog();
           formik.resetForm();
         }}
+        isSubmitting={formik.isSubmitting}
         handleSuccess={() => {
           formik.handleSubmit();
         }}

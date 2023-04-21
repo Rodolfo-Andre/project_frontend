@@ -1,5 +1,5 @@
-import { IEmployeeGet, IEmployeePut } from "@/interfaces/IEmployee";
-import { employeePostSchema } from "@/schemas/Employee";
+import { IEmployeeGet, IEmployeeCreateOrUpdate } from "@/interfaces/IEmployee";
+import { employeeCreateOrUpdateSchema } from "@/schemas/Employee";
 import { Grid, TextField } from "@mui/material";
 import { useFormik } from "formik";
 import { IRoleGet } from "@/interfaces/IRole";
@@ -25,7 +25,7 @@ const EmployeeUpdateForm = ({
 }: IEmployeeFormUpdateProps) => {
   const { mutate } = useSWRConfig();
   const { handleOpen } = useContext(AlertContext);
-  const formik = useFormik<IEmployeePut>({
+  const formik = useFormik<IEmployeeCreateOrUpdate>({
     initialValues: {
       firstName: employee.firstName,
       lastName: employee.lastName,
@@ -33,9 +33,9 @@ const EmployeeUpdateForm = ({
       roleId: employee.role.id,
       user: employee.user,
     },
-    validationSchema: employeePostSchema,
+    validationSchema: employeeCreateOrUpdateSchema,
     onSubmit: async (employeeUpdate) => {
-      await updateObject<IEmployeeGet, IEmployeePut>(
+      await updateObject<IEmployeeGet, IEmployeeCreateOrUpdate>(
         `api/employee/${employee.id}`,
         employeeUpdate
       );
@@ -58,6 +58,7 @@ const EmployeeUpdateForm = ({
           closeDialog();
           formik.resetForm();
         }}
+        isSubmitting={formik.isSubmitting}
         handleSuccess={() => {
           formik.handleSubmit();
         }}

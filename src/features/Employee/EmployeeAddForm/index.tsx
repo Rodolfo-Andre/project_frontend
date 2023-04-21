@@ -1,7 +1,7 @@
 import { ButtonAdd, FormDialogPost, ComboBox } from "@/components";
 import { useOpenClose } from "@/hooks";
-import { IEmployeeGet, IEmployeePost } from "@/interfaces/IEmployee";
-import { employeePostSchema } from "@/schemas/Employee";
+import { IEmployeeGet, IEmployeeCreateOrUpdate } from "@/interfaces/IEmployee";
+import { employeeCreateOrUpdateSchema } from "@/schemas/Employee";
 import { Grid, TextField } from "@mui/material";
 import { useFormik } from "formik";
 import { IRoleGet } from "@/interfaces/IRole";
@@ -11,7 +11,7 @@ import { useContext } from "react";
 import { AlertContext } from "@/contexts/AlertSuccess";
 import { createObject } from "@/services/HttpRequests";
 
-const initialValues: IEmployeePost = {
+const initialValues: IEmployeeCreateOrUpdate = {
   firstName: "",
   lastName: "",
   phone: "",
@@ -25,11 +25,11 @@ const EmployeeAddForm = () => {
   const { handleOpen } = useContext(AlertContext);
   const [open, openDialog, closeDialog] = useOpenClose(false);
 
-  const formik = useFormik<IEmployeePost>({
+  const formik = useFormik<IEmployeeCreateOrUpdate>({
     initialValues,
-    validationSchema: employeePostSchema,
+    validationSchema: employeeCreateOrUpdateSchema,
     onSubmit: async (newEmployee) => {
-      await createObject<IEmployeeGet, IEmployeePost>(
+      await createObject<IEmployeeGet, IEmployeeCreateOrUpdate>(
         "api/employee",
         newEmployee
       );
@@ -53,6 +53,7 @@ const EmployeeAddForm = () => {
           closeDialog();
           formik.resetForm();
         }}
+        isSubmitting={formik.isSubmitting}
         handleSuccess={() => {
           formik.handleSubmit();
         }}

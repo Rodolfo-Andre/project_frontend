@@ -7,6 +7,7 @@ import {
   Restaurant,
   Payments,
   TableRestaurant,
+  Storefront,
 } from "@mui/icons-material";
 import { Typography, List } from "@mui/material";
 import { ListItemButtonLink, ListItemButtonWithCollapse } from "@/components";
@@ -49,6 +50,11 @@ const itemsWithSubItems: IMenuItemsWithSubItemsProps[] = [
         href: "/settings/table",
         text: "Mesas",
         Icon: TableRestaurant,
+      },
+      {
+        href: "/settings/establishment",
+        text: "Establecimiento",
+        Icon: Storefront,
       },
     ],
   },

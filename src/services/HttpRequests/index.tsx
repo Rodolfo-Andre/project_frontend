@@ -16,6 +16,10 @@ const fetchAll = async <T,>(url: string): Promise<T[]> => {
   return handleResponse<T[]>(AxiosServices.get<T[]>(url));
 };
 
+const getObject = async <T,>(url: string): Promise<T> => {
+  return handleResponse<T>(AxiosServices.get<T>(url));
+};
+
 const createObject = async <TGet, TCreate>(
   url: string,
   object: TCreate
@@ -38,4 +42,4 @@ const deleteObject = async (url: string): Promise<void> => {
   }
 };
 
-export { fetchAll, createObject, updateObject, deleteObject };
+export { fetchAll, createObject, updateObject, deleteObject, getObject };

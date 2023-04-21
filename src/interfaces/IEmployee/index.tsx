@@ -14,14 +14,9 @@ interface IEmployeeGet extends IEmployeePrincipal {
   createdAt: string;
 }
 
-interface IEmployeePost extends IEmployeePrincipal {
+interface IEmployeeCreateOrUpdate extends IEmployeePrincipal {
   user: IUserPrincipal;
   roleId?: number;
 }
 
-interface IEmployeePut extends IEmployeePrincipal {
-  user: IUserPrincipal;
-  roleId: number;
-}
-
-export type { IEmployeePrincipal, IEmployeeGet, IEmployeePost, IEmployeePut };
+export type { IEmployeePrincipal, IEmployeeGet, IEmployeeCreateOrUpdate };

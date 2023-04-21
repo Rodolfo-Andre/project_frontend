@@ -59,6 +59,7 @@ const CategoryDishUpdateForm = ({
           closeDialog();
           formik.resetForm();
         }}
+        isSubmitting={formik.isSubmitting}
         handleSuccess={() => {
           formik.handleSubmit();
         }}

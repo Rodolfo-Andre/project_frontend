@@ -40,11 +40,11 @@ const TableAddForm = () => {
         Icon={TableBar}
         open={open}
         title="Añadir Mesa"
-        isSubmitting={formik.isSubmitting}
         handleCancel={() => {
           closeDialog();
           formik.resetForm();
         }}
+        isSubmitting={formik.isSubmitting}
         handleSuccess={() => {
           formik.handleSubmit();
         }}

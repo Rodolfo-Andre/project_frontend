@@ -60,11 +60,11 @@ const DishUpdateForm = ({
         Icon={Fastfood}
         open={open}
         title="Actualizar Plato"
-        isSubmitting={formik.isSubmitting}
         handleCancel={() => {
           closeDialog();
           formik.resetForm();
         }}
+        isSubmitting={formik.isSubmitting}
         handleSuccess={() => {
           formik.handleSubmit();
         }}
