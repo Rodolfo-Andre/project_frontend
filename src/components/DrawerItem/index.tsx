@@ -8,6 +8,7 @@ import {
   Payments,
   TableRestaurant,
   Storefront,
+  PointOfSale,
 } from "@mui/icons-material";
 import { Typography, List } from "@mui/material";
 import { ListItemButtonLink, ListItemButtonWithCollapse } from "@/components";
@@ -55,6 +56,11 @@ const itemsWithSubItems: IMenuItemsWithSubItemsProps[] = [
         href: "/settings/establishment",
         text: "Establecimiento",
         Icon: Storefront,
+      },
+      {
+        href: "/settings/cash",
+        text: "Cajas",
+        Icon: PointOfSale,
       },
     ],
   },

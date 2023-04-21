@@ -1,4 +1,5 @@
 export { default as Yup } from "./Config";
+export * from "./Cash";
 export * from "./CategoryDish";
 export * from "./Dish";
 export * from "./Employee";

@@ -9,6 +9,7 @@ interface IComboBoxProps<T> {
   label: keyof T;
   url: string;
   textFieldProps: TextFieldProps;
+  disabled?: boolean;
   handleChange: (value: T | null) => void;
 }
 
@@ -18,6 +19,7 @@ const ComboBox = <T,>({
   id,
   label,
   textFieldProps,
+  disabled,
   handleChange,
 }: IComboBoxProps<T>) => {
   const { data, isLoading } = useSWR(url, () => fetchAll<T>(url));
@@ -27,6 +29,7 @@ const ComboBox = <T,>({
     if (!isLoading && value && data) {
       setObject(data.find((object) => object[id] === value) || null);
     }
+    console.log(value);
   }, [isLoading, data, id, value]);
 
   return (
@@ -41,6 +44,7 @@ const ComboBox = <T,>({
         setObject(newValue);
         handleChange(newValue);
       }}
+      disabled={disabled}
       getOptionLabel={(options: T) => options[label] as string}
       renderInput={(params) => <TextField {...params} {...textFieldProps} />}
     />

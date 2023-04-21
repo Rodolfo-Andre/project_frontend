@@ -1,3 +1,4 @@
+export * from "./Cash";
 export * from "./CategoryDish";
 export * from "./Employee";
 export * from "./Establishment";

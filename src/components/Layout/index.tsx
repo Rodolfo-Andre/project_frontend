@@ -11,7 +11,7 @@ function Layout({ children }: ILayoutProps) {
   return (
     <>
       <Head>
-        <title>Mi Aplicación</title>
+        <title>Sistema de Comandas</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <Box sx={{ display: "flex" }}>

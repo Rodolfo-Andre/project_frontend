@@ -119,6 +119,7 @@ const DishUpdateForm = ({
                 handleChange={(category: ICategoryDishGet | null) => {
                   formik.setFieldValue("categoryDishId", category?.id);
                 }}
+                disabled={formik.isSubmitting}
                 textFieldProps={{
                   label: "Categoría",
                   error: Boolean(formik.errors.categoryDishId),

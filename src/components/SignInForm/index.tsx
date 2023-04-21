@@ -1,6 +1,33 @@
-import { Alert, Box, Button, Grid, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Grid,
+  OutlinedInputProps,
+  TextField,
+  TextFieldProps,
+  Typography,
+} from "@mui/material";
 import type { ISignIn } from "@/interfaces";
 import { useSignIn } from "@/hooks";
+import { styled } from "@mui/material/styles";
+
+const CustomTextField = styled((props: TextFieldProps) => (
+  <TextField
+    InputProps={{ disableUnderline: true } as Partial<OutlinedInputProps>}
+    {...props}
+  />
+))<TextFieldProps>(({ theme, error }) => ({
+  "& .MuiFilledInput-root": {
+    border: `1px solid ${error ? theme.palette.error.main : "#5197FF"}`,
+    overflow: "hidden",
+    borderRadius: 4,
+    backgroundColor: "#FFF !important",
+  },
+  "& .MuiFormLabel-root.Mui-focused": {
+    color: `${error ? theme.palette.error.main : "#5197FF"}`,
+  },
+}));
 
 const initialValues: ISignIn = {
   email: "",
@@ -11,8 +38,17 @@ const SignInForm = () => {
   const [formik, error] = useSignIn(initialValues);
 
   return (
-    <Box overflow={"auto"} sx={{ maxWidth: 350, marginX: 2 }}>
-      <Typography variant="h3" gutterBottom>
+    <Box
+      overflow={"auto"}
+      sx={{
+        maxWidth: 350,
+        marginX: 2,
+        padding: 4,
+        borderRadius: 4,
+        backgroundColor: "rgba(255, 255, 255, 0.75)",
+      }}
+    >
+      <Typography sx={{ textAlign: "center" }} variant="h4" gutterBottom>
         Iniciar Sesión
       </Typography>
 
@@ -21,9 +57,10 @@ const SignInForm = () => {
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={1.5} marginY={2}>
           <Grid item xs={12}>
-            <TextField
+            <CustomTextField
               id="email"
               type="email"
+              variant="filled"
               label="Correo Electrónico"
               error={Boolean(formik.errors.email)}
               value={formik.values.email}
@@ -35,9 +72,10 @@ const SignInForm = () => {
           </Grid>
 
           <Grid item xs={12}>
-            <TextField
+            <CustomTextField
               id="password"
               type="password"
+              variant="filled"
               label="Contraseña"
               error={Boolean(formik.errors.password)}
               value={formik.values.password}
@@ -50,14 +88,15 @@ const SignInForm = () => {
         </Grid>
 
         <Button
+          sx={{ height: 56, borderRadius: 3 }}
           type="submit"
           variant="contained"
           size="large"
-          color="success"
+          color="primary"
           disabled={formik.isSubmitting}
           fullWidth={true}
         >
-          Enviar
+          Ingresar al Sistema
         </Button>
       </form>
     </Box>

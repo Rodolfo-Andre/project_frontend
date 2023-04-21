@@ -135,6 +135,7 @@ const EmployeeUpdateForm = ({
                   helperText: formik.errors.roleId,
                   disabled: formik.isSubmitting,
                 }}
+                disabled={formik.isSubmitting}
                 handleChange={(role: IRoleGet | null) => {
                   formik.setFieldValue("roleId", role?.id);
                 }}
