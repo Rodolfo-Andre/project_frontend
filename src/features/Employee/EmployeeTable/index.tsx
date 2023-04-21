@@ -18,8 +18,8 @@ import useSWR, { useSWRConfig } from "swr";
 import dayjs from "dayjs";
 
 const EmployeeTable = () => {
-  const { data, isLoading } = useSWR("api/employees", () =>
-    fetchAll<IEmployeeGet>("api/employees")
+  const { data, isLoading } = useSWR("api/employee", () =>
+    fetchAll<IEmployeeGet>("api/employee")
   );
   const { mutate } = useSWRConfig();
   const { handleOpen } = useContext(AlertContext);
@@ -112,9 +112,9 @@ const EmployeeTable = () => {
           closeDialogDelete();
         }}
         handleSuccess={async () => {
-          await deleteObject(`api/employees/${selectedEmployee?.id}`);
+          await deleteObject(`api/employee/${selectedEmployee?.id}`);
           handleLastPageDeletion(gridApiRef, data!.length);
-          mutate("api/employees");
+          mutate("api/employee");
           closeDialogDelete();
           handleOpen("El empleado se ha eliminado correctamente");
           setSelectedEmployee(null);

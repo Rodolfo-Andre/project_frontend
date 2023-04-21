@@ -6,6 +6,7 @@ import {
   FoodBank,
   Restaurant,
   Payments,
+  TableRestaurant,
 } from "@mui/icons-material";
 import { Typography, List } from "@mui/material";
 import { ListItemButtonLink, ListItemButtonWithCollapse } from "@/components";
@@ -43,6 +44,11 @@ const itemsWithSubItems: IMenuItemsWithSubItemsProps[] = [
         href: "/settings/pay-method",
         text: "Métodos de Pagos",
         Icon: Payments,
+      },
+      {
+        href: "/settings/table",
+        text: "Mesas",
+        Icon: TableRestaurant,
       },
     ],
   },

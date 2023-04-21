@@ -20,7 +20,6 @@ interface IEmployeePost extends IEmployeePrincipal {
 }
 
 interface IEmployeePut extends IEmployeePrincipal {
-  id: number;
   user: IUserPrincipal;
   roleId: number;
 }

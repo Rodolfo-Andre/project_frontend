@@ -4,6 +4,7 @@ Yup.setLocale({
   mixed: {
     default: "No es válido",
     required: "Este campo es requerido",
+    oneOf: "El valor proporcionado no es válido",
   },
   string: {
     email: "Correo electrónico inválido",
@@ -12,6 +13,7 @@ Yup.setLocale({
     max: "Debe tener como máximo ${max} caracteres",
   },
   number: {
+    positive: "Debe ser un número positivo",
     min: "Debe ser como mínimo ${min}",
     max: "Debe ser como máximo ${max}",
     moreThan: "Debe ser mayor a ${more}",

@@ -8,5 +8,6 @@ export type { default as IMenuItemsWithSubItemsProps } from "./IMenuItemsWithSub
 export * from "./IPayMethod";
 export type { default as ISignInResponse } from "./ISignInResponse";
 export type { default as ISignIn } from "./ISignIn";
+export * from "./ITable";
 export * from "./IUser";
 export type { default as UserRoles } from "./UserRoles";

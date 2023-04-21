@@ -12,11 +12,10 @@ const employeePostSchema: Yup.ObjectSchema<IEmployeePost> = Yup.object({
 });
 
 const employeePutSchema: Yup.ObjectSchema<IEmployeePut> = Yup.object({
-  id: Yup.number().required(),
   firstName: Yup.string().min(3).max(50).required(),
   lastName: Yup.string().required(),
   phone: Yup.string().required(),
-  roleId: Yup.number().integer().required(),
+  roleId: Yup.number().typeError("Debe ser un número").integer().required(),
   user: Yup.object({
     email: Yup.string().email().required(),
   }),

@@ -30,10 +30,10 @@ const EmployeeAddForm = () => {
     validationSchema: employeePostSchema,
     onSubmit: async (newEmployee) => {
       await createObject<IEmployeeGet, IEmployeePost>(
-        "api/employees",
+        "api/employee",
         newEmployee
       );
-      mutate("api/employees");
+      mutate("api/employee");
       closeDialog();
       handleOpen("El empleado se ha registrado correctamente");
       formik.resetForm();
@@ -121,7 +121,7 @@ const EmployeeAddForm = () => {
               <ComboBox
                 id="id"
                 label="roleName"
-                url="api/roles"
+                url="api/role"
                 textFieldProps={{
                   label: "Rol",
                   error: Boolean(formik.errors.roleId),

@@ -4,3 +4,4 @@ export * from "./Dish";
 export * from "./Employee";
 export * from "./PayMethod";
 export { default as signInSchema } from "./SignIn";
+export * from "./Table";

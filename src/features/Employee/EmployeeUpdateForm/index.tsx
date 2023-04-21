@@ -28,7 +28,6 @@ const EmployeeUpdateForm = ({
   const formik = useFormik<IEmployeePut>({
     initialValues: {
       firstName: employee.firstName,
-      id: employee.id,
       lastName: employee.lastName,
       phone: employee.phone,
       roleId: employee.role.id,
@@ -37,10 +36,10 @@ const EmployeeUpdateForm = ({
     validationSchema: employeePostSchema,
     onSubmit: async (employeeUpdate) => {
       await updateObject<IEmployeeGet, IEmployeePut>(
-        `api/employees/${employee.id}`,
+        `api/employee/${employee.id}`,
         employeeUpdate
       );
-      mutate("api/employees");
+      mutate("api/employee");
       closeDialog();
       handleOpen("El empleado se ha modificado correctamente");
       formik.resetForm();
@@ -128,7 +127,7 @@ const EmployeeUpdateForm = ({
                 value={formik.values.roleId}
                 id="id"
                 label="roleName"
-                url="api/roles"
+                url="api/role"
                 textFieldProps={{
                   label: "Rol",
                   error: Boolean(formik.errors.roleId),

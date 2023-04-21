@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridRowIdGetter } from "@mui/x-data-grid";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
 import { MutableRefObject } from "react";
 
@@ -7,6 +7,7 @@ interface IDataTableProps<T> {
   rows: T[] | undefined;
   columns: GridColDef[];
   loading: boolean;
+  getRowId?: GridRowIdGetter<any>;
   rowHeight?: number;
   apiRef?: MutableRefObject<GridApiCommunity>;
 }
@@ -15,6 +16,7 @@ const DataTable = <T,>({
   rows,
   columns,
   loading,
+  getRowId,
   rowHeight,
   apiRef,
 }: IDataTableProps<T>) => {
@@ -33,6 +35,7 @@ const DataTable = <T,>({
             },
           },
         }}
+        getRowId={getRowId}
         loading={loading}
         disableRowSelectionOnClick
         pageSizeOptions={[5]}
