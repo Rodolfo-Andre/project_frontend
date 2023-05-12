@@ -1,19 +1,19 @@
-import { Edit, Delete } from "@mui/icons-material";
+import Delete from "@mui/icons-material/Delete";
+import FormDialogDelete from "@/components/FormDialogDelete";
+import DataTable from "@/components/DataTable";
+import useSWR, { useSWRConfig } from "swr";
 import {
-  GridColDef,
+  useGridApiRef,
   GridActionsCellItem,
   GridRowParams,
-  useGridApiRef,
+  GridColDef,
 } from "@mui/x-data-grid";
-import { FormDialogDelete, DataTable } from "@/components";
 import { useOpenClose } from "@/hooks";
 import { useContext, useState } from "react";
 import { AlertContext } from "@/contexts/AlertSuccess";
 import { deleteObject, fetchAll } from "@/services/HttpRequests";
 import { ICashGet } from "@/interfaces";
 import { handleLastPageDeletion } from "@/utils";
-import useSWR, { useSWRConfig } from "swr";
-import CashUpdateForm from "../CashUpdateForm";
 
 const CashTable = () => {
   const { data, isLoading } = useSWR("api/cash", () =>
@@ -24,8 +24,6 @@ const CashTable = () => {
   const [selectedCash, setSelectedCash] = useState<ICashGet | null>(null);
   const [openDialogD, openDialogDelete, closeDialogDelete] =
     useOpenClose(false);
-  /*  const [openDialogU, openDialogUpdate, closeDialogUpdate] =
-    useOpenClose(false); */
   const gridApiRef = useGridApiRef();
 
   const columns: GridColDef[] = [
@@ -76,17 +74,6 @@ const CashTable = () => {
           setSelectedCash(null);
         }}
       />
-
-      {/*  {openDialogU && (
-        <CashUpdateForm
-          setSelectedCash={setSelectedCash}
-          open={openDialogU}
-          closeDialog={() => {
-            closeDialogUpdate();
-          }}
-          cash={selectedCash!}
-        />
-      )} */}
     </>
   );
 };

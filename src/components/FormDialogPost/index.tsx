@@ -1,13 +1,11 @@
-import { IFormDialogProps } from "@/interfaces";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  SvgIconProps,
-} from "@mui/material";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Button from "@mui/material/Button";
+import { SvgIconProps } from "@mui/material/SvgIcon";
 import { ComponentType, ReactNode } from "react";
+import { IFormDialogProps } from "@/interfaces";
 
 interface IFormDialgoPostProps extends IFormDialogProps {
   Icon: ComponentType<SvgIconProps>;

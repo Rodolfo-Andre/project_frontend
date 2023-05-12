@@ -1,12 +1,13 @@
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import Payment from "@mui/icons-material/Payment";
+import FormDialogUpdate from "@/components/FormDialogUpdate";
 import { IPayMethodGet, IPayMethodPrincipal } from "@/interfaces";
 import { payMethodSchema } from "@/schemas";
-import { Grid, TextField } from "@mui/material";
 import { useFormik } from "formik";
-import { Payment } from "@mui/icons-material";
 import { useSWRConfig } from "swr";
 import { SetStateAction, useContext } from "react";
 import { AlertContext } from "@/contexts/AlertSuccess";
-import { FormDialogUpdate } from "@/components";
 import { updateObject } from "@/services/HttpRequests";
 
 interface ICategoryDishFormUpdateProps {

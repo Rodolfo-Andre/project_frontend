@@ -1,3 +1,0 @@
-interface IResponseMessage {
-  message: string;
-}

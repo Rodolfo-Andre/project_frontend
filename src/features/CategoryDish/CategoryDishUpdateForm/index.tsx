@@ -1,15 +1,13 @@
-import {
-  ICategoryDishGet,
-  ICategoryDishPrincipal,
-} from "@/interfaces/ICategoryDish";
-import { categoryDishSchema } from "@/schemas/CategoryDish";
-import { Grid, TextField } from "@mui/material";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import FoodBank from "@mui/icons-material/FoodBank";
+import FormDialogUpdate from "@/components/FormDialogUpdate";
+import { ICategoryDishGet, ICategoryDishPrincipal } from "@/interfaces";
+import { categoryDishSchema } from "@/schemas";
 import { useFormik } from "formik";
-import { FoodBank } from "@mui/icons-material";
 import { useSWRConfig } from "swr";
 import { SetStateAction, useContext } from "react";
 import { AlertContext } from "@/contexts/AlertSuccess";
-import { FormDialogUpdate } from "@/components";
 import { updateObject } from "@/services/HttpRequests";
 
 interface ICategoryDishFormUpdateProps {

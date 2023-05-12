@@ -8,4 +8,4 @@ const cashSchema: Yup.ObjectSchema<ICashPrincipal> = Yup.object({
     .required(),
 });
 
-export { cashSchema };
+export default cashSchema;

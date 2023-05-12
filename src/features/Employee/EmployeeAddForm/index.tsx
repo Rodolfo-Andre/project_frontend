@@ -1,11 +1,13 @@
-import { ButtonAdd, FormDialogPost, ComboBox } from "@/components";
+import ButtonAdd from "@/components/ButtonAdd";
+import FormDialogPost from "@/components/FormDialogPost";
+import ComboBox from "@/components/ComboBox";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import PersonAdd from "@mui/icons-material/PersonAdd";
 import { useOpenClose } from "@/hooks";
-import { IEmployeeGet, IEmployeeCreateOrUpdate } from "@/interfaces/IEmployee";
-import { employeeCreateOrUpdateSchema } from "@/schemas/Employee";
-import { Grid, TextField } from "@mui/material";
+import { IEmployeeGet, IEmployeeCreateOrUpdate, IRoleGet } from "@/interfaces";
+import { employeeSchema } from "@/schemas";
 import { useFormik } from "formik";
-import { IRoleGet } from "@/interfaces/IRole";
-import { PersonAdd } from "@mui/icons-material";
 import { useSWRConfig } from "swr";
 import { useContext } from "react";
 import { AlertContext } from "@/contexts/AlertSuccess";
@@ -27,7 +29,7 @@ const EmployeeAddForm = () => {
 
   const formik = useFormik<IEmployeeCreateOrUpdate>({
     initialValues,
-    validationSchema: employeeCreateOrUpdateSchema,
+    validationSchema: employeeSchema,
     onSubmit: async (newEmployee) => {
       await createObject<IEmployeeGet, IEmployeeCreateOrUpdate>(
         "api/employee",

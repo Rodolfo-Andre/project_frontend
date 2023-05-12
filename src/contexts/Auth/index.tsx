@@ -1,4 +1,4 @@
-import Router from "next/router";
+import LoadingBackdrop from "@/components/LoadingBackdrop";
 import {
   createContext,
   useState,
@@ -11,7 +11,6 @@ import { getUser } from "@/lib/User";
 import { showWelcomeMessage } from "@/lib/Messages";
 import { url } from "gravatar";
 import { ICurrentUser, IAuthContext } from "@/interfaces";
-import { LoadingBackdrop } from "@/components";
 
 const AuthContext = createContext<IAuthContext>({
   login: async () => {},
@@ -51,8 +50,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = useCallback(() => {
     localStorage.removeItem("access_token");
     setUser(undefined);
-
-    Router.replace("/");
   }, []);
 
   const contextValue = useMemo(() => {

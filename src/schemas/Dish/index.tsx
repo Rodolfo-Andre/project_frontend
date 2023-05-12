@@ -11,4 +11,4 @@ const dishSchema: Yup.ObjectSchema<IDishCreateOrUpdate> = Yup.object({
   imgDish: Yup.string().required(),
 });
 
-export { dishSchema };
+export default dishSchema;

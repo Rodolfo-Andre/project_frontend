@@ -12,4 +12,4 @@ const employeeCreateOrUpdateSchema: Yup.ObjectSchema<IEmployeeCreateOrUpdate> =
     }),
   });
 
-export { employeeCreateOrUpdateSchema };
+export default employeeCreateOrUpdateSchema;

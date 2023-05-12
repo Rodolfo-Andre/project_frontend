@@ -1,12 +1,10 @@
+import DeleteForever from "@mui/icons-material/DeleteForever";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Button from "@mui/material/Button";
 import { IFormDialogProps } from "@/interfaces";
-import { DeleteForever } from "@mui/icons-material";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-} from "@mui/material";
 
 interface IFormDialogDeleteProps extends IFormDialogProps {
   description?: string;

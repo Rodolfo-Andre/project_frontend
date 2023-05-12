@@ -1,7 +1,8 @@
+import CssBaseline from "@mui/material/CssBaseline";
+import { ThemeProvider, createTheme } from "@mui/material";
+import { esES } from "@mui/material/locale";
 import { AlertProvider } from "@/contexts/AlertSuccess";
 import { AuthProvider } from "@/contexts/Auth";
-import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
-import { esES } from "@mui/material/locale";
 import {
   LocalizationProvider,
   esES as datePickersEsES,

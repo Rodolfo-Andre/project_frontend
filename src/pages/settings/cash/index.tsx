@@ -1,5 +1,6 @@
-import { ProtectedRouteForAuthenticated, Layout } from "@/components";
-import { CashSection } from "@/sections";
+import ProtectedRouteForAuthenticated from "@/components/ProtectedRouteForAuthenticated";
+import Layout from "@/components/Layout";
+import CashSection from "@/sections/CashSection";
 
 const CashPage = () => {
   return (
@@ -9,4 +10,7 @@ const CashPage = () => {
   );
 };
 
-export default ProtectedRouteForAuthenticated({ Component: CashPage });
+export default ProtectedRouteForAuthenticated({
+  Component: CashPage,
+  roles: ["Administrador"],
+});

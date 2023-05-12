@@ -1,14 +1,15 @@
-import { IEmployeeGet, IEmployeeCreateOrUpdate } from "@/interfaces/IEmployee";
-import { employeeCreateOrUpdateSchema } from "@/schemas/Employee";
-import { Grid, TextField } from "@mui/material";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import ComboBox from "@/components/ComboBox";
+import FormDialogUpdate from "@/components/FormDialogUpdate";
+import Person from "@mui/icons-material/Person";
+import { IEmployeeGet, IEmployeeCreateOrUpdate, IRoleGet } from "@/interfaces";
+import { employeeSchema } from "@/schemas";
 import { useFormik } from "formik";
-import { IRoleGet } from "@/interfaces/IRole";
-import { Person } from "@mui/icons-material";
 import { useSWRConfig } from "swr";
 import { SetStateAction, useContext } from "react";
 import { AlertContext } from "@/contexts/AlertSuccess";
 import { updateObject } from "@/services/HttpRequests";
-import { ComboBox, FormDialogUpdate } from "@/components";
 
 interface IEmployeeFormUpdateProps {
   employee: IEmployeeGet;
@@ -33,7 +34,7 @@ const EmployeeUpdateForm = ({
       roleId: employee.role.id,
       user: employee.user,
     },
-    validationSchema: employeeCreateOrUpdateSchema,
+    validationSchema: employeeSchema,
     onSubmit: async (employeeUpdate) => {
       await updateObject<IEmployeeGet, IEmployeeCreateOrUpdate>(
         `api/employee/${employee.id}`,

@@ -1,7 +1,8 @@
-import { Menu, Main } from "@/components";
-import { ReactNode } from "react";
-import { Box } from "@mui/material";
+import Main from "@/components/Main";
+import Menu from "@/components/Menu";
+import Box from "@mui/material/Box";
 import Head from "next/head";
+import { ReactNode } from "react";
 
 interface ILayoutProps {
   children: ReactNode;

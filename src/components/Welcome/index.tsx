@@ -1,6 +1,7 @@
-import { Typography, Box } from "@mui/material";
-import { RestaurantMenu } from "@mui/icons-material";
-import { ContentCenter } from "@/components";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import RestaurantMenu from "@mui/icons-material/RestaurantMenu";
+import ContentCenter from "@/components/ContentCenter";
 
 const Welcome = () => {
   return (

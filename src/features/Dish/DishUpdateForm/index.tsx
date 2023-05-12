@@ -1,14 +1,16 @@
-import { IDishGet, IDishCreateOrUpdate } from "@/interfaces/IDish";
-import { dishSchema } from "@/schemas/Dish";
-import { Grid, TextField } from "@mui/material";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import ComboBox from "@/components/ComboBox";
+import FormDialogUpdate from "@/components/FormDialogUpdate";
+import ImageDropzone from "@/components/ImageDropzone";
+import Fastfood from "@mui/icons-material/Fastfood";
+import { IDishGet, IDishCreateOrUpdate, ICategoryDishGet } from "@/interfaces";
+import { dishSchema } from "@/schemas";
 import { useFormik } from "formik";
-import { Fastfood } from "@mui/icons-material";
 import { useSWRConfig } from "swr";
 import { SetStateAction, useContext, useState } from "react";
 import { AlertContext } from "@/contexts/AlertSuccess";
-import { ComboBox, FormDialogUpdate, ImageDropzone } from "@/components";
 import { updateObject } from "@/services/HttpRequests";
-import { ICategoryDishGet } from "@/interfaces/ICategoryDish";
 import { uploadToCloudinary } from "@/utils";
 
 interface IDishFormUpdateProps {

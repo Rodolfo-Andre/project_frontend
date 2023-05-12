@@ -5,7 +5,7 @@ export { default as ContentBox } from "./ContentBox";
 export { default as ContentCenter } from "./ContentCenter";
 export { default as DataTable } from "./DataTable";
 export { default as DrawerItem } from "./DrawerItem";
-export { default as Error } from "./Error";
+export { default as ErrorContent } from "./ErrorContent";
 export { default as FormDialogDelete } from "./FormDialogDelete";
 export { default as FormDialogPost } from "./FormDialogPost";
 export { default as FormDialogUpdate } from "./FormDialogUpdate";

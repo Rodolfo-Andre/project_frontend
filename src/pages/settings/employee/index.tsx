@@ -1,5 +1,6 @@
-import { ProtectedRouteForAuthenticated, Layout } from "@/components";
-import { EmployeeSection } from "@/sections";
+import ProtectedRouteForAuthenticated from "@/components/ProtectedRouteForAuthenticated";
+import Layout from "@/components/Layout";
+import EmployeeSection from "@/sections/EmployeeSection";
 
 const EmployeePage = () => {
   return (
@@ -9,4 +10,7 @@ const EmployeePage = () => {
   );
 };
 
-export default ProtectedRouteForAuthenticated({ Component: EmployeePage });
+export default ProtectedRouteForAuthenticated({
+  Component: EmployeePage,
+  roles: ["Administrador"],
+});

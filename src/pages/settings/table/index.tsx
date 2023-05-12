@@ -1,5 +1,6 @@
-import { ProtectedRouteForAuthenticated, Layout } from "@/components";
-import { TableSection } from "@/sections";
+import ProtectedRouteForAuthenticated from "@/components/ProtectedRouteForAuthenticated";
+import Layout from "@/components/Layout";
+import TableSection from "@/sections/TableSection";
 
 const TablePage = () => {
   return (
@@ -9,4 +10,7 @@ const TablePage = () => {
   );
 };
 
-export default ProtectedRouteForAuthenticated({ Component: TablePage });
+export default ProtectedRouteForAuthenticated({
+  Component: TablePage,
+  roles: ["Administrador"],
+});

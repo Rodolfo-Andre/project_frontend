@@ -1,12 +1,10 @@
-import { Typography } from "@mui/material";
-import { ContentBox } from "@/components";
-import {
-  EstablishmentUpdateForm,
-  EstablishmentUpdateSkeleton,
-} from "@/features";
+import Typography from "@mui/material/Typography";
+import ContentBox from "@/components/ContentBox";
+import EstablishmentUpdateForm from "@/features/Establishment/EstablishmentUpdateForm";
+import EstablishmentUpdateSkeleton from "@/features/Establishment/EstablishmentUpdateSkeleton";
+import useSWR from "swr";
 import { IEstablishmentGet } from "@/interfaces";
 import { getObject } from "@/services/HttpRequests";
-import useSWR from "swr";
 
 const EstablishmentSection = () => {
   const { data } = useSWR("api/establishment/first", () =>

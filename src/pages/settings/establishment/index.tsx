@@ -1,5 +1,6 @@
-import { ProtectedRouteForAuthenticated, Layout } from "@/components";
-import { EstablishmentSection } from "@/sections";
+import ProtectedRouteForAuthenticated from "@/components/ProtectedRouteForAuthenticated";
+import Layout from "@/components/Layout";
+import EstablishmentSection from "@/sections/EstablishmentSection";
 
 const EstablishmentPage = () => {
   return (
@@ -9,4 +10,7 @@ const EstablishmentPage = () => {
   );
 };
 
-export default ProtectedRouteForAuthenticated({ Component: EstablishmentPage });
+export default ProtectedRouteForAuthenticated({
+  Component: EstablishmentPage,
+  roles: ["Administrador"],
+});

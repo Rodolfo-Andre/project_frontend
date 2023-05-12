@@ -1,17 +1,16 @@
-import { ButtonAdd, FormDialogPost } from "@/components";
+import ButtonAdd from "@/components/ButtonAdd";
+import FormDialogPost from "@/components/FormDialogPost";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import FoodBank from "@mui/icons-material/FoodBank";
 import { useOpenClose } from "@/hooks";
-import { Grid, TextField } from "@mui/material";
 import { useFormik } from "formik";
-import { FoodBank } from "@mui/icons-material";
 import { useSWRConfig } from "swr";
 import { useContext } from "react";
 import { AlertContext } from "@/contexts/AlertSuccess";
 import { createObject } from "@/services/HttpRequests";
-import { categoryDishSchema } from "@/schemas/CategoryDish";
-import {
-  ICategoryDishGet,
-  ICategoryDishPrincipal,
-} from "@/interfaces/ICategoryDish";
+import { categoryDishSchema } from "@/schemas";
+import { ICategoryDishGet, ICategoryDishPrincipal } from "@/interfaces";
 
 const initialValues: ICategoryDishPrincipal = {
   nameCatDish: "",

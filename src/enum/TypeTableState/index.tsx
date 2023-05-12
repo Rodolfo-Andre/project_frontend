@@ -3,4 +3,4 @@ enum TypeTableState {
   Free = "Libre",
 }
 
-export { TypeTableState };
+export default TypeTableState;

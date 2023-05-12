@@ -1,4 +1,6 @@
-import { Layout, Welcome, ProtectedRouteForAuthenticated } from "@/components";
+import Layout from "@/components/Layout";
+import Welcome from "@/components/Welcome";
+import ProtectedRouteForAuthenticated from "@/components/ProtectedRouteForAuthenticated";
 
 const Home = () => {
   return (

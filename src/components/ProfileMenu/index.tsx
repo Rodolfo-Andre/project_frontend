@@ -1,5 +1,9 @@
-import { ListItemIcon, Menu, MenuItem, ListItemText } from "@mui/material";
-import { Logout, AssignmentInd } from "@mui/icons-material";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import ListItemText from "@mui/material/ListItemText";
+import Logout from "@mui/icons-material/Logout";
+import AssignmentInd from "@mui/icons-material/AssignmentInd";
 import Link from "next/link";
 
 interface IProfileMenuProps {

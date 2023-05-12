@@ -1,18 +1,20 @@
-import { Edit, Delete } from "@mui/icons-material";
+import Delete from "@mui/icons-material/Delete";
+import Edit from "@mui/icons-material/Edit";
+import FormDialogDelete from "@/components/FormDialogDelete";
+import DataTable from "@/components/DataTable";
+import PayMethodUpdateForm from "@/features/PayMethod/PayMethodUpdateForm";
 import {
-  GridColDef,
+  useGridApiRef,
   GridActionsCellItem,
   GridRowParams,
-  useGridApiRef,
+  GridColDef,
 } from "@mui/x-data-grid";
-import { FormDialogDelete, DataTable } from "@/components";
 import { useOpenClose } from "@/hooks";
 import { useContext, useState } from "react";
 import { AlertContext } from "@/contexts/AlertSuccess";
 import { deleteObject, fetchAll } from "@/services/HttpRequests";
 import { IPayMethodGet } from "@/interfaces";
 import { handleLastPageDeletion } from "@/utils";
-import { PayMethodUpdateForm } from "@/features";
 import useSWR, { useSWRConfig } from "swr";
 
 const PayMethodTable = () => {

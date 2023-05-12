@@ -1,6 +1,7 @@
-import { Typography } from "@mui/material";
-import { ContentBox } from "@/components";
-import { CategoryDishTable, CategoryDishAddForm } from "@/features";
+import Typography from "@mui/material/Typography";
+import ContentBox from "@/components/ContentBox";
+import CategoryDishAddForm from "@/features/CategoryDish/CategoryDishAddForm";
+import CategoryDishTable from "@/features/CategoryDish/CategoryDishTable";
 
 const CategoryDishSection = () => {
   return (

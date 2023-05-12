@@ -1,6 +1,7 @@
-import { Typography } from "@mui/material";
-import { ContentBox } from "@/components";
-import { EmployeeTable, EmployeeAddForm } from "@/features";
+import Typography from "@mui/material/Typography";
+import ContentBox from "@/components/ContentBox";
+import EmployeeTable from "@/features/Employee/EmployeeTable";
+import EmployeeAddForm from "@/features/Employee/EmployeeAddForm";
 
 const EmployeeSection = () => {
   return (

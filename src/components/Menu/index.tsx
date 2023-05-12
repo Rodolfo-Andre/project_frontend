@@ -1,5 +1,6 @@
-import { Drawer, DrawerProps, SxProps } from "@mui/material";
-import { DrawerItem } from "@/components";
+import DrawerItem from "@/components/DrawerItem";
+import Drawer, { DrawerProps } from "@mui/material/Drawer";
+import { SxProps } from "@mui/material/styles";
 
 interface IMenuProps {
   drawerProps?: DrawerProps;

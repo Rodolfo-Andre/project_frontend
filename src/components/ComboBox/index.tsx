@@ -1,7 +1,8 @@
-import { fetchAll } from "@/services/HttpRequests";
-import { Autocomplete, TextField, TextFieldProps } from "@mui/material";
-import { useEffect, useState } from "react";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField, { TextFieldProps } from "@mui/material/TextField";
 import useSWR from "swr";
+import { fetchAll } from "@/services/HttpRequests";
+import { useEffect, useState } from "react";
 
 interface IComboBoxProps<T> {
   value?: string | number;
@@ -29,7 +30,6 @@ const ComboBox = <T,>({
     if (!isLoading && value && data) {
       setObject(data.find((object) => object[id] === value) || null);
     }
-    console.log(value);
   }, [isLoading, data, id, value]);
 
   return (

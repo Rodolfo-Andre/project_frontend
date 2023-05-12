@@ -1,20 +1,20 @@
-import {
-  ButtonAdd,
-  ComboBox,
-  FormDialogPost,
-  ImageDropzone,
-} from "@/components";
+import ButtonAdd from "@/components/ButtonAdd";
+import FormDialogPost from "@/components/FormDialogPost";
+import ComboBox from "@/components/ComboBox";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import ImageDropzone from "@/components/ImageDropzone";
+import Fastfood from "@mui/icons-material/Fastfood";
+import { useTheme } from "@mui/material/styles";
 import { useOpenClose } from "@/hooks";
-import { Grid, TextField, Typography, useTheme } from "@mui/material";
 import { useFormik } from "formik";
-import { Fastfood } from "@mui/icons-material";
 import { useSWRConfig } from "swr";
 import { useContext, useState } from "react";
 import { AlertContext } from "@/contexts/AlertSuccess";
 import { createObject } from "@/services/HttpRequests";
-import { ICategoryDishGet } from "@/interfaces/ICategoryDish";
-import { IDishCreateOrUpdate, IDishGet } from "@/interfaces/IDish";
-import { dishSchema } from "@/schemas/Dish";
+import { ICategoryDishGet, IDishCreateOrUpdate, IDishGet } from "@/interfaces";
+import { dishSchema } from "@/schemas";
 import { uploadToCloudinary } from "@/utils";
 
 const initialValues: IDishCreateOrUpdate = {

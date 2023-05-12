@@ -1,1 +1,1 @@
-export * from "./TypeTableState";
+export { default as TypeTableState } from "./TypeTableState";

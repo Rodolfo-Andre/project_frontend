@@ -1,22 +1,24 @@
-import { Edit, Delete } from "@mui/icons-material";
+import Delete from "@mui/icons-material/Delete";
+import Edit from "@mui/icons-material/Edit";
+import FormDialogDelete from "@/components/FormDialogDelete";
+import DataTable from "@/components/DataTable";
+import DishUpdateForm from "@/features/Dish/DishUpdateForm";
+import Image from "next/image";
+import useSWR, { useSWRConfig } from "swr";
 import {
-  GridColDef,
-  GridActionsCellItem,
-  GridRowParams,
-  GridValueGetterParams,
-  GridCellParams,
   useGridApiRef,
+  GridActionsCellItem,
+  GridValueGetterParams,
+  GridRowParams,
+  GridColDef,
+  GridCellParams,
 } from "@mui/x-data-grid";
-import { FormDialogDelete, DataTable } from "@/components";
 import { useOpenClose } from "@/hooks";
 import { useContext, useState } from "react";
 import { AlertContext } from "@/contexts/AlertSuccess";
 import { deleteObject, fetchAll } from "@/services/HttpRequests";
-import { IDishGet } from "@/interfaces/IDish";
+import { IDishGet } from "@/interfaces";
 import { handleLastPageDeletion } from "@/utils";
-import { DishUpdateForm } from "@/features";
-import useSWR, { useSWRConfig } from "swr";
-import Image from "next/image";
 
 const DishTable = () => {
   const { data, isLoading } = useSWR("api/dish", () =>

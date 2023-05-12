@@ -1,21 +1,23 @@
-import { IEmployeeGet } from "@/interfaces/IEmployee";
-import { Edit, Delete } from "@mui/icons-material";
+import Delete from "@mui/icons-material/Delete";
+import Edit from "@mui/icons-material/Edit";
+import FormDialogDelete from "@/components/FormDialogDelete";
+import DataTable from "@/components/DataTable";
+import EmployeeUpdateForm from "@/features/Employee/EmployeeUpdateForm";
+import dayjs from "dayjs";
 import {
-  GridColDef,
-  GridValueGetterParams,
-  GridActionsCellItem,
-  GridRowParams,
   useGridApiRef,
+  GridActionsCellItem,
+  GridValueGetterParams,
+  GridRowParams,
+  GridColDef,
 } from "@mui/x-data-grid";
-import { FormDialogDelete, DataTable } from "@/components";
+import { IEmployeeGet } from "@/interfaces";
 import { useOpenClose } from "@/hooks";
 import { useContext, useState } from "react";
 import { AlertContext } from "@/contexts/AlertSuccess";
 import { deleteObject, fetchAll } from "@/services/HttpRequests";
 import { handleLastPageDeletion } from "@/utils";
-import { EmployeeUpdateForm } from "@/features";
 import useSWR, { useSWRConfig } from "swr";
-import dayjs from "dayjs";
 
 const EmployeeTable = () => {
   const { data, isLoading } = useSWR("api/employee", () =>

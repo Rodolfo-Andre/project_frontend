@@ -1,6 +1,7 @@
-import { Typography } from "@mui/material";
-import { ContentBox } from "@/components";
-import { CashTable, CashAddForm } from "@/features";
+import Typography from "@mui/material/Typography";
+import ContentBox from "@/components/ContentBox";
+import CashTable from "@/features/Cash/CashTable";
+import CashAddForm from "@/features/Cash/CashAddForm";
 
 const CashSection = () => {
   return (

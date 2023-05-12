@@ -1,6 +1,7 @@
-import { Box } from "@mui/material";
+import Box from "@mui/material/Box";
+import Profile from "@/components/Profile";
+import MobileMenuButton from "@/components/MobileMenuButton";
 import { ReactNode } from "react";
-import { Profile, MobileMenuButton } from "@/components";
 
 interface IMainProps {
   children: ReactNode;
@@ -17,7 +18,7 @@ const Main = ({ children }: IMainProps) => {
         gap: 2,
         backgroundColor: "#F2F5F8",
         padding: "1rem 2rem",
-        minHeight: "100vh",
+        minHeight: "100svh",
       }}
     >
       <Box

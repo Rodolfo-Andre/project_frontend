@@ -7,4 +7,4 @@ const categoryDishSchema: Yup.ObjectSchema<ICategoryDishPrincipal> = Yup.object(
   }
 );
 
-export { categoryDishSchema };
+export default categoryDishSchema;

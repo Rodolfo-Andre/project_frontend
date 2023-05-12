@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import Typography from "@mui/material/Typography";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import Router from "next/router";

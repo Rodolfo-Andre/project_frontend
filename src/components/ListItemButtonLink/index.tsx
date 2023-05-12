@@ -1,12 +1,10 @@
-import { IMenuItemsProps } from "@/interfaces";
-import {
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-} from "@mui/material";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 import Link from "next/link";
 import Router from "next/router";
+import { IMenuItemsProps } from "@/interfaces";
 
 const ListItemButtonLink = ({ text, href, Icon }: IMenuItemsProps) => {
   return (

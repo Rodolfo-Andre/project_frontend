@@ -9,4 +9,4 @@ const establishmentSchema: Yup.ObjectSchema<IEstablishmentPrincipal> =
     ruc: Yup.string().required(),
   });
 
-export { establishmentSchema };
+export default establishmentSchema;

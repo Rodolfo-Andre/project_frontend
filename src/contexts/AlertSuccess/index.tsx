@@ -1,6 +1,6 @@
-import { createContext, useState, ReactNode } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import { createContext, useState, ReactNode } from "react";
 import { useOpenClose } from "@/hooks";
 
 interface IAlertContext {

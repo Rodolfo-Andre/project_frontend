@@ -1,8 +1,6 @@
-import {
-  Layout,
-  AccountForm,
-  ProtectedRouteForAuthenticated,
-} from "@/components";
+import Layout from "@/components/Layout";
+import AccountForm from "@/components/AccountForm";
+import ProtectedRouteForAuthenticated from "@/components/ProtectedRouteForAuthenticated";
 
 const AccountPage = () => {
   return (

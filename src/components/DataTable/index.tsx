@@ -1,7 +1,7 @@
-import { Box } from "@mui/material";
+import Box from "@mui/material/Box";
+import { MutableRefObject } from "react";
 import { DataGrid, GridColDef, GridRowIdGetter } from "@mui/x-data-grid";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
-import { MutableRefObject } from "react";
 
 interface IDataTableProps<T> {
   rows: T[] | undefined;
