@@ -15,6 +15,16 @@ const axiosObject = axios.create({
   httpsAgent: agent,
 });
 
+axiosObject.interceptors.request.use((config) => {
+  const token = localStorage.getItem("access_token"); // Obtener el token JWT del almacenamiento local
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`; // Agregar el token JWT al encabezado de autorización
+  }
+
+  return config;
+});
+
 axiosObject.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {

@@ -100,6 +100,7 @@ const AccountForm = () => {
               <Grid item xs={12} sm={6}>
                 <DateTimePicker
                   label="Fecha de creción"
+                  format="DD/MM/YYYY hh:mm"
                   defaultValue={date_created_at}
                   readOnly
                   slotProps={{

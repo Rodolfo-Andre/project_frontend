@@ -11,6 +11,7 @@ export type { default as IFormDialogProps } from "./IFormDialogProps";
 export type { default as IMenuItemsProps } from "./IMenuItemsProps";
 export type { default as IMenuItemsWithSubItemsProps } from "./IMenuItemsWithSubItemsProps";
 export * from "./IPayMethod";
+export type { default as IResponseMessage } from "./IResponseMessage";
 export * from "./IRole";
 export type { default as ISignInResponse } from "./ISignInResponse";
 export type { default as ISignIn } from "./ISignIn";

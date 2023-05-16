@@ -1,5 +1,5 @@
-interface ErrorMessages {
+interface IErrorMessages {
   [key: string]: string[];
 }
 
-export default ErrorMessages;
+export default IErrorMessages;
