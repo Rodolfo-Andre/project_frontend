@@ -18,8 +18,10 @@ import { AlertContext } from "@/contexts/AlertSuccess";
 import { deleteObject, fetchAll } from "@/services/HttpRequests";
 import { handleLastPageDeletion } from "@/utils";
 import useSWR, { useSWRConfig } from "swr";
+import { AuthContext } from "@/contexts/Auth";
 
 const EmployeeTable = () => {
+  const { user } = useContext(AuthContext);
   const { data, isLoading } = useSWR("api/employee", () =>
     fetchAll<IEmployeeGet>("api/employee")
   );
@@ -71,7 +73,7 @@ const EmployeeTable = () => {
       headerName: "Acciones",
       width: 100,
       getActions: (employee: GridRowParams<IEmployeeGet>) => {
-        return [
+        const gridCells = [
           <GridActionsCellItem
             key={employee.row.id}
             icon={<Edit />}
@@ -83,17 +85,24 @@ const EmployeeTable = () => {
               openDialogUpdate();
             }}
           />,
-          <GridActionsCellItem
-            key={employee.row.id}
-            icon={<Delete />}
-            label="Delete"
-            color="error"
-            onClick={() => {
-              setSelectedEmployee(employee.row);
-              openDialogDelete();
-            }}
-          />,
         ];
+
+        if (user?.id !== employee.row.id) {
+          gridCells.push(
+            <GridActionsCellItem
+              key={employee.row.id}
+              icon={<Delete />}
+              label="Delete"
+              color="error"
+              onClick={() => {
+                setSelectedEmployee(employee.row);
+                openDialogDelete();
+              }}
+            />
+          );
+        }
+
+        return gridCells;
       },
     },
   ];
@@ -108,7 +117,7 @@ const EmployeeTable = () => {
       />
 
       <FormDialogDelete
-        title={`¿Estás seguro de eliminar al empleado "${selectedEmployee?.firstName} ${selectedEmployee?.lastName}"?`}
+        title={`¿Estás seguro de eliminar el empleado "${selectedEmployee?.firstName} ${selectedEmployee?.lastName}"?`}
         open={openDialogD}
         handleCancel={() => {
           closeDialogDelete();

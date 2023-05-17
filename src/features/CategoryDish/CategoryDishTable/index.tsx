@@ -11,11 +11,12 @@ import {
 import { useOpenClose } from "@/hooks";
 import { useContext, useState } from "react";
 import { AlertContext } from "@/contexts/AlertSuccess";
-import { deleteObject, fetchAll } from "@/services/HttpRequests";
+import { deleteObject, fetchAll, getObject } from "@/services/HttpRequests";
 import { ICategoryDishGet } from "@/interfaces";
 import { handleLastPageDeletion } from "@/utils";
 import { CategoryDishUpdateForm } from "@/features";
 import useSWR, { useSWRConfig } from "swr";
+import { DialogError } from "@/components";
 
 const CategoryDishTable = () => {
   const { data, isLoading } = useSWR("api/categorydish", () =>
@@ -23,12 +24,14 @@ const CategoryDishTable = () => {
   );
   const { mutate } = useSWRConfig();
   const { handleOpen } = useContext(AlertContext);
+  const [messageError, setMessageError] = useState<string>("");
   const [selectedCategoryDish, setSelectedCategoryDish] =
     useState<ICategoryDishGet | null>(null);
   const [openDialogD, openDialogDelete, closeDialogDelete] =
     useOpenClose(false);
   const [openDialogU, openDialogUpdate, closeDialogUpdate] =
     useOpenClose(false);
+  const [openDialogE, openDialogError, closeDialogError] = useOpenClose(false);
   const gridApiRef = useGridApiRef();
 
   const columns: GridColDef[] = [
@@ -57,8 +60,22 @@ const CategoryDishTable = () => {
             icon={<Delete />}
             label="Delete"
             color="error"
-            onClick={() => {
+            onClick={async () => {
               setSelectedCategoryDish(categoryDish.row);
+              const count = await getObject<number>(
+                `api/CategoryDish/${categoryDish.id}/number-dish`
+              );
+
+              if (count > 0) {
+                setMessageError(
+                  `No es posible eliminar la categoría debido a que se encontró ${count} plato${
+                    count !== 1 ? "s" : ""
+                  } asignado a dicha categoría.`
+                );
+                openDialogError();
+                return;
+              }
+
               openDialogDelete();
             }}
           />,
@@ -77,7 +94,7 @@ const CategoryDishTable = () => {
       />
 
       <FormDialogDelete
-        title={`¿Estás seguro de eliminar la categoria "${selectedCategoryDish?.nameCatDish}"?`}
+        title={`¿Estás seguro de eliminar la categoría "${selectedCategoryDish?.nameCatDish}"?`}
         open={openDialogD}
         handleCancel={() => {
           closeDialogDelete();
@@ -102,6 +119,15 @@ const CategoryDishTable = () => {
           categoryDish={selectedCategoryDish!}
         />
       )}
+
+      <DialogError
+        title={`NO SE PUEDE ELIMINAR LA CATEGORÍA - ${selectedCategoryDish?.id}`}
+        description={messageError}
+        open={openDialogE}
+        closeDialog={() => {
+          closeDialogError();
+        }}
+      />
     </>
   );
 };

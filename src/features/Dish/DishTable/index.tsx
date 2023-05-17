@@ -38,7 +38,7 @@ const DishTable = () => {
     {
       field: "imageDish",
       headerName: "Imagen",
-      width: 200,
+      width: 150,
       sortable: false,
       filterable: false,
       renderCell: (params: GridCellParams<IDishGet>) => (
@@ -51,8 +51,8 @@ const DishTable = () => {
           style={{
             width: "auto",
             maxWidth: "100%",
-            objectFit: "cover",
-            height: "auto",
+            objectFit: "contain",
+            height: "150px",
           }}
         />
       ),
@@ -63,7 +63,7 @@ const DishTable = () => {
       field: "category",
       headerName: "Categoría",
       type: "singleSelect",
-      width: 100,
+      width: 150,
       valueGetter: (params: GridValueGetterParams<IDishGet>) =>
         params.row.categoryDish.nameCatDish,
       valueOptions: [

@@ -2,6 +2,7 @@ import ButtonAdd from "@/components/ButtonAdd";
 import ComboBox from "@/components/ComboBox";
 import FormDialogPost from "@/components/FormDialogPost";
 import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 import PointOfSale from "@mui/icons-material/PointOfSale";
 import useSWR, { useSWRConfig } from "swr";
 import { useOpenClose } from "@/hooks";
@@ -35,7 +36,7 @@ const CashAddForm = () => {
 
   useEffect(() => {
     if (establishment) {
-      formik.setFieldValue("establishmentId", establishment?.id);
+      formik.values.establishmentId = establishment.id;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [establishment]);
@@ -57,7 +58,9 @@ const CashAddForm = () => {
           formik.handleSubmit();
         }}
       >
-        <form onSubmit={formik.handleSubmit}>
+        <Typography>¿Estás seguro de agregar una caja?</Typography>
+
+        <form style={{ display: "none" }} onSubmit={formik.handleSubmit}>
           <Grid container spacing={1.5} marginY={2}>
             <Grid item xs={12}>
               <ComboBox

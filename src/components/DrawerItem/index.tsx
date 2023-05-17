@@ -10,14 +10,17 @@ import PointOfSale from "@mui/icons-material/PointOfSale";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import ListItemButtonLink from "@/components/ListItemButtonLink";
+import useSWR from "swr";
 import ListItemButtonWithCollapse from "@/components/ListItemButtonWithCollapse";
 import {
+  IEstablishmentGet,
   IMenuItemsProps,
   IMenuItemsWithSubItemsProps,
   UserRoles,
 } from "@/interfaces";
 import { useContext } from "react";
 import { AuthContext } from "@/contexts";
+import { getObject } from "@/services";
 
 const items: IMenuItemsProps[] = [
   {
@@ -74,11 +77,14 @@ const itemsWithSubItems: IMenuItemsWithSubItemsProps[] = [
 
 const DrawerItem = () => {
   const { user } = useContext(AuthContext);
+  const { data } = useSWR("api/establishment/first", () =>
+    getObject<IEstablishmentGet>("api/establishment/first")
+  );
 
   return (
     <>
       <Typography variant="h5" sx={{ my: 2, textAlign: "center" }}>
-        Makako Burguer
+        {data?.name}
       </Typography>
 
       <List>
