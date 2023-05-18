@@ -31,14 +31,25 @@ const Table = () => {
   const gridApiRef = useGridApiRef();
 
   const columns: GridColDef[] = [
-    { field: "numTable", headerName: "Número de Mesa", width: 200 },
-    { field: "numSeats", headerName: "Cantidad de Asientos", width: 200 },
-    { field: "stateTable", headerName: "Estado de Mesa", width: 200 },
+    { field: "numTable", headerName: "Número de Mesa", minWidth: 140, flex: 1 },
+    {
+      field: "numSeats",
+      headerName: "Cantidad de Asientos",
+      minWidth: 160,
+      flex: 5,
+    },
+    {
+      field: "stateTable",
+      headerName: "Estado de Mesa",
+      minWidth: 140,
+      flex: 5,
+    },
     {
       field: "actions",
       type: "actions",
       headerName: "Acciones",
-      width: 100,
+      minWidth: 100,
+      flex: 1,
       getActions: (table: GridRowParams<ITableGet>) => {
         if (table.row.stateTable === "Ocupado") return [];
 

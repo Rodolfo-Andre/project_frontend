@@ -32,13 +32,19 @@ const PayMethodTable = () => {
   const gridApiRef = useGridApiRef();
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 100 },
-    { field: "paymethod", headerName: "Método de Pago", width: 250 },
+    { field: "id", headerName: "ID", minWidth: 100, flex: 1 },
+    {
+      field: "paymethod",
+      headerName: "Método de Pago",
+      minWidth: 250,
+      flex: 11,
+    },
     {
       field: "actions",
       type: "actions",
       headerName: "Acciones",
-      width: 100,
+      minWidth: 100,
+      flex: 1,
       getActions: (payMethod: GridRowParams<IPayMethodGet>) => {
         return [
           <GridActionsCellItem

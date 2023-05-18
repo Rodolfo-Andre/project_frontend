@@ -35,13 +35,14 @@ const CategoryDishTable = () => {
   const gridApiRef = useGridApiRef();
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 100 },
-    { field: "nameCatDish", headerName: "Categoría", width: 200 },
+    { field: "id", headerName: "ID", minWidth: 100, flex: 1 },
+    { field: "nameCatDish", headerName: "Categoría", minWidth: 200, flex: 11 },
     {
       field: "actions",
       type: "actions",
       headerName: "Acciones",
-      width: 100,
+      minWidth: 100,
+      flex: 1,
       getActions: (categoryDish: GridRowParams<ICategoryDishGet>) => {
         return [
           <GridActionsCellItem

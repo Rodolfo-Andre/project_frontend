@@ -14,6 +14,26 @@ import type { AppProps } from "next/app";
 export default function App({ Component, pageProps }: AppProps) {
   const theme = createTheme(
     {
+      components: {
+        MuiCssBaseline: {
+          styleOverrides: (themeParam) => ({
+            "&::-webkit-scrollbar": {
+              width: "7px",
+              height: "7px",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "#888",
+              borderRadius: "5px",
+              "&:hover": {
+                backgroundColor: "#555",
+              },
+            },
+            "&::-webkit-scrollbar-track": {
+              backgroundColor: "#f1f1f1",
+            },
+          }),
+        },
+      },
       palette: {
         primary: {
           dark: "#063FB6",

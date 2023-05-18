@@ -19,6 +19,7 @@ import { AlertContext } from "@/contexts/AlertSuccess";
 import { deleteObject, fetchAll } from "@/services/HttpRequests";
 import { IDishGet } from "@/interfaces";
 import { handleLastPageDeletion } from "@/utils";
+import { Box } from "@mui/material";
 
 const DishTable = () => {
   const { data, isLoading } = useSWR("api/dish", () =>
@@ -34,36 +35,48 @@ const DishTable = () => {
   const gridApiRef = useGridApiRef();
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 100 },
+    { field: "id", headerName: "ID", minWidth: 100, flex: 1 },
     {
       field: "imageDish",
       headerName: "Imagen",
-      width: 150,
+      minWidth: 150,
       sortable: false,
       filterable: false,
+      flex: 3,
       renderCell: (params: GridCellParams<IDishGet>) => (
-        <Image
-          src={params.row.imgDish}
-          alt="Image"
-          width={800}
-          height={600}
-          priority={true}
-          style={{
-            width: "auto",
-            maxWidth: "100%",
-            objectFit: "contain",
-            height: "150px",
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100px",
+            height: "100px",
+            backgroundColor: "rgb(248, 249, 250)",
           }}
-        />
+        >
+          <Image
+            src={params.row.imgDish}
+            alt="Image"
+            width={800}
+            height={600}
+            priority={true}
+            style={{
+              width: "100%",
+              objectFit: "contain",
+              height: "100%",
+            }}
+          />
+        </Box>
       ),
     },
-    { field: "nameDish", headerName: "Plato", width: 200 },
-    { field: "priceDish", headerName: "Precio", width: 200 },
+    { field: "nameDish", headerName: "Plato", minWidth: 200, flex: 3 },
+    { field: "priceDish", headerName: "Precio", minWidth: 200, flex: 2 },
     {
       field: "category",
       headerName: "Categoría",
       type: "singleSelect",
-      width: 150,
+      minWidth: 150,
+      flex: 3,
       valueGetter: (params: GridValueGetterParams<IDishGet>) =>
         params.row.categoryDish.nameCatDish,
       valueOptions: [
@@ -75,7 +88,8 @@ const DishTable = () => {
       field: "actions",
       type: "actions",
       headerName: "Acciones",
-      width: 100,
+      minWidth: 100,
+      flex: 1,
       getActions: (categoryDish: GridRowParams<IDishGet>) => {
         return [
           <GridActionsCellItem
@@ -107,7 +121,7 @@ const DishTable = () => {
   return (
     <>
       <DataTable
-        rowHeight={200}
+        rowHeight={130}
         columns={columns}
         loading={isLoading}
         rows={data}

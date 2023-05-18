@@ -1,6 +1,8 @@
 import DrawerItem from "@/components/DrawerItem";
 import Drawer, { DrawerProps } from "@mui/material/Drawer";
 import { SxProps } from "@mui/material/styles";
+import SimpleBar from "simplebar-react";
+import "simplebar-react/dist/simplebar.min.css";
 
 interface IMenuProps {
   drawerProps?: DrawerProps;
@@ -18,7 +20,7 @@ const Menu = ({ drawerProps, sxProps }: IMenuProps) => {
           width: 260,
           boxSizing: "border-box",
         },
-        "& .MuiDrawer-paper > .MuiList-root": {
+        "& .MuiList-root": {
           padding: "0 1rem",
         },
         "& .MuiListItem-root": {
@@ -31,7 +33,9 @@ const Menu = ({ drawerProps, sxProps }: IMenuProps) => {
       }}
       {...drawerProps}
     >
-      <DrawerItem />
+      <SimpleBar style={{ height: "100%" }}>
+        <DrawerItem />
+      </SimpleBar>
     </Drawer>
   );
 };

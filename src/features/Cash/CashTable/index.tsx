@@ -27,12 +27,13 @@ const CashTable = () => {
   const gridApiRef = useGridApiRef();
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 100 },
+    { field: "id", headerName: "ID", minWidth: 100, flex: 12 },
     {
       field: "actions",
       type: "actions",
       headerName: "Acciones",
-      width: 100,
+      minWidth: 100,
+      flex: 1,
       getActions: (cash: GridRowParams<ICashGet>) => {
         return [
           <GridActionsCellItem

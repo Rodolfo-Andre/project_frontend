@@ -37,25 +37,27 @@ const EmployeeTable = () => {
   const gridApiRef = useGridApiRef();
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 100 },
-    { field: "firstName", headerName: "Nombres", width: 200 },
-    { field: "lastName", headerName: "Apellidos", width: 200 },
+    { field: "id", headerName: "ID", minWidth: 100, flex: 1 },
+    { field: "firstName", headerName: "Nombres", minWidth: 200, flex: 2 },
+    { field: "lastName", headerName: "Apellidos", minWidth: 200, flex: 2 },
     {
       field: "role",
       headerName: "Rol",
       type: "singleSelect",
-      width: 100,
+      minWidth: 120,
+      flex: 2,
       valueGetter: (params: GridValueGetterParams<IEmployeeGet>) =>
         params.row.role.roleName,
       valueOptions: [
         ...new Set(data?.map((employee) => employee.role.roleName)),
       ],
     },
-    { field: "phone", headerName: "Teléfono", width: 100 },
+    { field: "phone", headerName: "Teléfono", minWidth: 100, flex: 2 },
     {
       field: "email",
       headerName: "Correo Electrónico",
-      width: 200,
+      minWidth: 200,
+      flex: 2,
       valueGetter: (params: GridValueGetterParams<IEmployeeGet>) =>
         params.row.user.email,
     },
@@ -63,7 +65,8 @@ const EmployeeTable = () => {
       field: "createdAt",
       headerName: "Creado en",
       type: "dateTime",
-      width: 200,
+      minWidth: 160,
+      flex: 2,
       valueGetter: (params: GridValueGetterParams<IEmployeeGet>) =>
         dayjs(params.row.createdAt).toDate(),
     },
@@ -71,7 +74,8 @@ const EmployeeTable = () => {
       field: "actions",
       type: "actions",
       headerName: "Acciones",
-      width: 100,
+      minWidth: 100,
+      flex: 1,
       getActions: (employee: GridRowParams<IEmployeeGet>) => {
         const gridCells = [
           <GridActionsCellItem

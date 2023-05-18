@@ -13,7 +13,7 @@ function Layout({ children }: ILayoutProps) {
     <>
       <Head>
         <title>Sistema de Comandas</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />s
       </Head>
       <Box sx={{ display: "flex" }}>
         <Menu
