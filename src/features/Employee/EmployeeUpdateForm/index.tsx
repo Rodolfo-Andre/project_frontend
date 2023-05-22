@@ -1,151 +1,136 @@
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import ComboBox from "@/components/ComboBox";
-import FormDialogUpdate from "@/components/FormDialogUpdate";
-import Person from "@mui/icons-material/Person";
-import { IEmployeeGet, IEmployeeCreateOrUpdate, IRoleGet } from "@/interfaces";
-import { employeeSchema } from "@/schemas";
-import { useFormik } from "formik";
+import employeeSchema from "@/schemas/Employee";
+import { IEmployeeGet, IEmployeeCreateOrUpdate } from "@/interfaces/IEmployee";
+import { IRoleGet } from "@/interfaces/IRole";
+import { IUpdateFormProps } from "@/interfaces/IFormProps";
+import { Formik } from "formik";
 import { useSWRConfig } from "swr";
-import { SetStateAction, useContext } from "react";
-import { AlertContext } from "@/contexts/AlertSuccess";
 import { updateObject } from "@/services/HttpRequests";
+import { theme } from "@/utils";
+import { ThemeProvider } from "@mui/material/styles";
+import { showSuccessToastMessage } from "@/lib/Messages";
 
-interface IEmployeeFormUpdateProps {
-  employee: IEmployeeGet;
-  open: boolean;
-  closeDialog: () => void;
-  setSelectedEmployee: (value: SetStateAction<IEmployeeGet | null>) => void;
+interface IEmployeeUpdateFormProps
+  extends IUpdateFormProps<IEmployeeCreateOrUpdate, IEmployeeGet> {
+  data: IRoleGet[];
 }
 
 const EmployeeUpdateForm = ({
-  employee,
-  open,
-  closeDialog,
-  setSelectedEmployee,
-}: IEmployeeFormUpdateProps) => {
+  values: employee,
+  setFormikRef,
+  data,
+}: IEmployeeUpdateFormProps) => {
   const { mutate } = useSWRConfig();
-  const { handleOpen } = useContext(AlertContext);
-  const formik = useFormik<IEmployeeCreateOrUpdate>({
-    initialValues: {
-      firstName: employee.firstName,
-      lastName: employee.lastName,
-      phone: employee.phone,
-      roleId: employee.role.id,
-      user: employee.user,
-    },
-    validationSchema: employeeSchema,
-    onSubmit: async (employeeUpdate) => {
-      await updateObject<IEmployeeGet, IEmployeeCreateOrUpdate>(
-        `api/employee/${employee.id}`,
-        employeeUpdate
-      );
-      mutate("api/employee");
-      closeDialog();
-      handleOpen("El empleado se ha modificado correctamente");
-      formik.resetForm();
-      setSelectedEmployee(null);
-    },
-    validateOnChange: false,
-  });
 
   return (
-    <>
-      <FormDialogUpdate
-        Icon={Person}
-        open={open}
-        title="Actualizar Empleado"
-        handleCancel={() => {
-          closeDialog();
-          formik.resetForm();
+    <ThemeProvider theme={theme}>
+      <Formik<IEmployeeCreateOrUpdate>
+        initialValues={{
+          firstName: employee.firstName,
+          lastName: employee.lastName,
+          phone: employee.phone,
+          roleId: employee.role.id,
+          user: employee.user,
         }}
-        isSubmitting={formik.isSubmitting}
-        handleSuccess={() => {
-          formik.handleSubmit();
+        innerRef={(ref) => setFormikRef(ref!)}
+        validateOnChange={false}
+        validationSchema={employeeSchema}
+        onSubmit={async (employeeUpdate) => {
+          await updateObject<IEmployeeGet, IEmployeeCreateOrUpdate>(
+            `api/employee/${employee.id}`,
+            employeeUpdate
+          );
+          mutate("api/employee");
+
+          showSuccessToastMessage("El empleado se ha modificado correctamente");
         }}
       >
-        <form onSubmit={formik.handleSubmit}>
-          <Grid container spacing={1.5} marginY={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                id="firstName"
-                type="text"
-                label="Nombres"
-                error={Boolean(formik.errors.firstName)}
-                value={formik.values.firstName}
-                onChange={formik.handleChange}
-                helperText={formik.errors.firstName}
-                disabled={formik.isSubmitting}
-                fullWidth
-              />
-            </Grid>
+        {({ values, errors, handleChange, setFieldValue, isSubmitting }) => (
+          <form>
+            <Grid container spacing={1.5} marginY={2}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id="firstName"
+                  type="text"
+                  label="Nombres"
+                  error={Boolean(errors.firstName)}
+                  value={values.firstName}
+                  onChange={handleChange}
+                  helperText={errors.firstName}
+                  disabled={isSubmitting}
+                  fullWidth
+                />
+              </Grid>
 
-            <Grid item xs={12} sm={6}>
-              <TextField
-                id="lastName"
-                type="text"
-                label="Apellidos"
-                error={Boolean(formik.errors.lastName)}
-                value={formik.values.lastName}
-                onChange={formik.handleChange}
-                helperText={formik.errors.lastName}
-                disabled={formik.isSubmitting}
-                fullWidth
-              />
-            </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id="lastName"
+                  type="text"
+                  label="Apellidos"
+                  error={Boolean(errors.lastName)}
+                  value={values.lastName}
+                  onChange={handleChange}
+                  helperText={errors.lastName}
+                  disabled={isSubmitting}
+                  fullWidth
+                />
+              </Grid>
 
-            <Grid item xs={12} sm={6}>
-              <TextField
-                id="phone"
-                type="text"
-                label="Teléfono"
-                error={Boolean(formik.errors.phone)}
-                value={formik.values.phone}
-                onChange={formik.handleChange}
-                helperText={formik.errors.phone}
-                disabled={formik.isSubmitting}
-                fullWidth
-              />
-            </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id="phone"
+                  type="text"
+                  label="Teléfono"
+                  error={Boolean(errors.phone)}
+                  value={values.phone}
+                  onChange={handleChange}
+                  helperText={errors.phone}
+                  disabled={isSubmitting}
+                  fullWidth
+                />
+              </Grid>
 
-            <Grid item xs={12} sm={6}>
-              <TextField
-                id="email"
-                type="email"
-                label="Correo Electrónico"
-                error={Boolean(formik.errors.user?.email)}
-                value={formik.values.user?.email}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  formik.setFieldValue("user.email", e.target.value);
-                }}
-                helperText={formik.errors.user?.email}
-                disabled={formik.isSubmitting}
-                fullWidth
-              />
-            </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id="email"
+                  type="email"
+                  label="Correo Electrónico"
+                  error={Boolean(errors.user?.email)}
+                  value={values.user?.email}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setFieldValue("user.email", e.target.value);
+                  }}
+                  helperText={errors.user?.email}
+                  disabled={isSubmitting}
+                  fullWidth
+                />
+              </Grid>
 
-            <Grid item xs={12}>
-              <ComboBox
-                value={formik.values.roleId}
-                id="id"
-                label="roleName"
-                url="api/role"
-                textFieldProps={{
-                  label: "Rol",
-                  error: Boolean(formik.errors.roleId),
-                  helperText: formik.errors.roleId,
-                  disabled: formik.isSubmitting,
-                }}
-                disabled={formik.isSubmitting}
-                handleChange={(role: IRoleGet | null) => {
-                  formik.setFieldValue("roleId", role?.id);
-                }}
-              />
+              <Grid item xs={12}>
+                <ComboBox
+                  value={employee.role}
+                  id="id"
+                  label="roleName"
+                  values={data}
+                  textFieldProps={{
+                    label: "Rol",
+                    error: Boolean(errors.roleId),
+                    helperText: errors.roleId,
+                    disabled: isSubmitting,
+                  }}
+                  disabled={isSubmitting}
+                  handleChange={(role: IRoleGet | null) => {
+                    setFieldValue("roleId", role?.id);
+                  }}
+                />
+              </Grid>
             </Grid>
-          </Grid>
-        </form>
-      </FormDialogUpdate>
-    </>
+          </form>
+        )}
+      </Formik>
+    </ThemeProvider>
   );
 };
 

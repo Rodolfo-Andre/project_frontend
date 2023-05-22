@@ -1,4 +1,4 @@
-import { IEmployeeGet } from "../IEmployee";
+import { IEmployeeGet } from "@/interfaces/IEmployee";
 
 interface IUserPrincipal {
   email: string;

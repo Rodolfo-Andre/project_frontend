@@ -1,4 +1,4 @@
-import { IEstablishmentGet } from "../IEstablishment";
+import { IEstablishmentGet } from "@/interfaces/IEstablishment";
 
 interface ICashPrincipal {
   establishmentId?: number;

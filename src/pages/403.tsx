@@ -1,7 +1,7 @@
 import ContentCenter from "@/components/ContentCenter";
 import ErrorContent from "@/components/ErrorContent";
 import image403 from "public/403.png";
-import { IErrorProps } from "@/interfaces";
+import IErrorProps from "@/interfaces/IErrorProps";
 
 const Custom403 = () => {
   const error403: IErrorProps = {

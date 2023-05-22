@@ -1,5 +1,5 @@
 import { IEmployeeGet } from "@/interfaces/IEmployee";
-import { AxiosServices } from "@/services";
+import AxiosServices from "@/services/Axios";
 
 const getUser = async () => {
   try {

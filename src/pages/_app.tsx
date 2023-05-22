@@ -1,63 +1,43 @@
 import CssBaseline from "@mui/material/CssBaseline";
-import { ThemeProvider, createTheme } from "@mui/material";
-import { esES } from "@mui/material/locale";
-import { AlertProvider } from "@/contexts/AlertSuccess";
+import ProgressBar from "@/components/ProgressBar";
+import { ThemeProvider } from "@mui/material/styles";
+import { theme } from "@/utils";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AuthProvider } from "@/contexts/Auth";
-import {
-  LocalizationProvider,
-  esES as datePickersEsES,
-} from "@mui/x-date-pickers";
-import { esES as dataGridEsES } from "@mui/x-data-grid";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import type { AppProps } from "next/app";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import "../css/styles.css";
 
 export default function App({ Component, pageProps }: AppProps) {
-  const theme = createTheme(
-    {
-      components: {
-        MuiCssBaseline: {
-          styleOverrides: (themeParam) => ({
-            "&::-webkit-scrollbar": {
-              width: "7px",
-              height: "7px",
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "#888",
-              borderRadius: "5px",
-              "&:hover": {
-                backgroundColor: "#555",
-              },
-            },
-            "&::-webkit-scrollbar-track": {
-              backgroundColor: "#f1f1f1",
-            },
-          }),
-        },
-      },
-      palette: {
-        primary: {
-          dark: "#063FB6",
-          main: "#0D6EFD",
-          light: "#6DB4FE",
-          contrastText: "#FFFFFF",
-        },
-      },
-    },
-    esES,
-    datePickersEsES,
-    dataGridEsES
-  );
+  const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleStart = () => setLoading(true);
+    const handleComplete = () => setLoading(false);
+
+    router.events.on("routeChangeStart", handleStart);
+    router.events.on("routeChangeComplete", handleComplete);
+    router.events.on("routeChangeError", handleComplete);
+
+    return () => {
+      router.events.off("routeChangeStart", handleStart);
+      router.events.off("routeChangeComplete", handleComplete);
+      router.events.off("routeChangeError", handleComplete);
+    };
+  }, [router]);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <AlertProvider>
-        <ThemeProvider theme={theme}>
-          <AuthProvider>
-            <CssBaseline />
-            <Component {...pageProps} />
-          </AuthProvider>
-        </ThemeProvider>
-      </AlertProvider>
+      <ThemeProvider theme={theme}>
+        <AuthProvider>
+          <CssBaseline />
+          {loading && <ProgressBar />}
+          <Component {...pageProps} />
+        </AuthProvider>
+      </ThemeProvider>
     </LocalizationProvider>
   );
 }

@@ -2,7 +2,7 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import ContentBox from "@/components/ContentBox";
 import Menu from "@/components/Menu";
-import { useOpenClose } from "@/hooks";
+import useOpenClose from "@/hooks/useOpenClose";
 
 const MobileMenuButton = () => {
   const [open, handleOpen, handleClose] = useOpenClose(false);

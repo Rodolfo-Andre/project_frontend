@@ -1,0 +1,29 @@
+.custom-icon {
+  border: none !important;
+}
+
+.custom-actions {
+  padding: 0 1.5rem !important;
+  width: -webkit-fill-available !important;
+}
+
+.custom-confirm {
+  flex-grow: 1;
+}
+
+.custom-confirm-create {
+  background-color: #0d6efd !important;
+}
+
+.custom-confirm-update {
+  background-color: #ed6c02 !important;
+}
+
+.custom-confirm-delete {
+  background-color: #0d6efd !important;
+}
+
+.custom-cancel {
+  background-color: #d32f2f !important;
+  flex-grow: 1;
+}

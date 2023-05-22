@@ -13,7 +13,6 @@ import { styled } from "@mui/material/styles";
 interface IDataTableProps<T> {
   rows: T[] | undefined;
   columns: GridColDef[];
-  loading: boolean;
   getRowId?: GridRowIdGetter<any>;
   rowHeight?: number;
   apiRef?: MutableRefObject<GridApiCommunity>;
@@ -46,7 +45,6 @@ const DataGridStyleCustom = styled(DataGrid)(({ theme }) => ({
 const DataTable = <T,>({
   rows,
   columns,
-  loading,
   getRowId,
   rowHeight,
   apiRef,
@@ -77,7 +75,6 @@ const DataTable = <T,>({
             },
           }}
           getRowId={getRowId}
-          loading={loading}
           disableRowSelectionOnClick
           pageSizeOptions={[5]}
         />

@@ -1,84 +1,63 @@
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import Payment from "@mui/icons-material/Payment";
-import FormDialogUpdate from "@/components/FormDialogUpdate";
-import { IPayMethodGet, IPayMethodPrincipal } from "@/interfaces";
-import { payMethodSchema } from "@/schemas";
-import { useFormik } from "formik";
+import payMethodSchema from "@/schemas/PayMethod";
+import { IPayMethodGet, IPayMethodPrincipal } from "@/interfaces/IPayMethod";
+import { IUpdateFormProps } from "@/interfaces/IFormProps";
 import { useSWRConfig } from "swr";
-import { SetStateAction, useContext } from "react";
-import { AlertContext } from "@/contexts/AlertSuccess";
 import { updateObject } from "@/services/HttpRequests";
-
-interface ICategoryDishFormUpdateProps {
-  payMethod: IPayMethodGet;
-  open: boolean;
-  closeDialog: () => void;
-  setSelectedPayMethod: (value: SetStateAction<IPayMethodGet | null>) => void;
-}
+import { Formik } from "formik";
+import { theme } from "@/utils";
+import { ThemeProvider } from "@mui/material/styles";
+import { showSuccessToastMessage } from "@/lib/Messages";
 
 const PayMethodUpdateForm = ({
-  payMethod,
-  open,
-  closeDialog,
-  setSelectedPayMethod,
-}: ICategoryDishFormUpdateProps) => {
+  setFormikRef,
+  values,
+}: IUpdateFormProps<IPayMethodPrincipal, IPayMethodGet>) => {
   const { mutate } = useSWRConfig();
-  const { handleOpen } = useContext(AlertContext);
-
-  const formik = useFormik<IPayMethodPrincipal>({
-    initialValues: {
-      ...payMethod,
-    },
-    validationSchema: payMethodSchema,
-    onSubmit: async (payMethodUpdate) => {
-      await updateObject<IPayMethodGet, IPayMethodPrincipal>(
-        `api/paymethod/${payMethod.id}`,
-        payMethodUpdate
-      );
-      mutate("api/paymethod");
-      closeDialog();
-      handleOpen("La categoría se ha modificado correctamente");
-      formik.resetForm();
-      setSelectedPayMethod(null);
-    },
-    validateOnChange: false,
-  });
 
   return (
-    <>
-      <FormDialogUpdate
-        Icon={Payment}
-        open={open}
-        title="Actualizar Método de Pago"
-        handleCancel={() => {
-          closeDialog();
-          formik.resetForm();
+    <ThemeProvider theme={theme}>
+      <Formik<IPayMethodPrincipal>
+        initialValues={{
+          ...values,
         }}
-        isSubmitting={formik.isSubmitting}
-        handleSuccess={() => {
-          formik.handleSubmit();
+        innerRef={(ref) => setFormikRef(ref!)}
+        validateOnChange={false}
+        validationSchema={payMethodSchema}
+        onSubmit={async (payMethodUpdate) => {
+          await updateObject<IPayMethodGet, IPayMethodPrincipal>(
+            `api/paymethod/${values.id}`,
+            payMethodUpdate
+          );
+          mutate("api/paymethod");
+
+          showSuccessToastMessage(
+            "El método de pago se ha modificado correctamente"
+          );
         }}
       >
-        <form onSubmit={formik.handleSubmit}>
-          <Grid container spacing={1.5} marginY={2}>
-            <Grid item xs={12}>
-              <TextField
-                id="paymethod"
-                type="text"
-                label="Método de Pago"
-                error={Boolean(formik.errors.paymethod)}
-                value={formik.values.paymethod}
-                onChange={formik.handleChange}
-                helperText={formik.errors.paymethod}
-                disabled={formik.isSubmitting}
-                fullWidth
-              />
+        {({ values, errors, handleChange, isSubmitting }) => (
+          <form>
+            <Grid container spacing={1.5} marginY={2}>
+              <Grid item xs={12}>
+                <TextField
+                  id="paymethod"
+                  type="text"
+                  label="Método de Pago"
+                  error={Boolean(errors.paymethod)}
+                  value={values.paymethod}
+                  onChange={handleChange}
+                  helperText={errors.paymethod}
+                  disabled={isSubmitting}
+                  fullWidth
+                />
+              </Grid>
             </Grid>
-          </Grid>
-        </form>
-      </FormDialogUpdate>
-    </>
+          </form>
+        )}
+      </Formik>
+    </ThemeProvider>
   );
 };
 

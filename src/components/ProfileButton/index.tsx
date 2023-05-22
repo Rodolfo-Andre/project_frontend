@@ -5,7 +5,7 @@ import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUp from "@mui/icons-material/KeyboardArrowUp";
 import ContentBox from "@/components/ContentBox";
 import { MouseEvent } from "react";
-import { ICurrentUser } from "@/interfaces";
+import { ICurrentUser } from "@/interfaces/IUser";
 
 interface IProfileButtonProps {
   user: ICurrentUser;

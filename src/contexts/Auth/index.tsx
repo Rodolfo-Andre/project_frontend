@@ -7,10 +7,11 @@ import {
   useEffect,
   ReactNode,
 } from "react";
+import IAuthContext from "@/interfaces/IAuthContext";
 import { getUser } from "@/lib/User";
 import { showWelcomeMessage } from "@/lib/Messages";
 import { url } from "gravatar";
-import { ICurrentUser, IAuthContext } from "@/interfaces";
+import { ICurrentUser } from "@/interfaces/IUser";
 
 const AuthContext = createContext<IAuthContext>({
   login: async () => {},

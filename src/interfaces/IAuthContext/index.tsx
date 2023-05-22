@@ -1,4 +1,4 @@
-import { ICurrentUser } from "../IUser";
+import { ICurrentUser } from "@/interfaces/IUser";
 
 interface IAuthContext {
   user?: ICurrentUser;

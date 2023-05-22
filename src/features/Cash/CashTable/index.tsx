@@ -1,29 +1,27 @@
 import Delete from "@mui/icons-material/Delete";
-import FormDialogDelete from "@/components/FormDialogDelete";
 import DataTable from "@/components/DataTable";
-import useSWR, { useSWRConfig } from "swr";
+import DeleteForever from "@mui/icons-material/DeleteForever";
+import Typography from "@mui/material/Typography";
+import { useSWRConfig } from "swr";
 import {
   useGridApiRef,
   GridActionsCellItem,
   GridRowParams,
   GridColDef,
 } from "@mui/x-data-grid";
-import { useOpenClose } from "@/hooks";
-import { useContext, useState } from "react";
-import { AlertContext } from "@/contexts/AlertSuccess";
-import { deleteObject, fetchAll } from "@/services/HttpRequests";
-import { ICashGet } from "@/interfaces";
+import { deleteObject } from "@/services/HttpRequests";
+import { ICashGet } from "@/interfaces/ICash";
+import { showForm } from "@/lib/Forms";
+import { showSuccessToastMessage } from "@/lib/Messages";
 import { handleLastPageDeletion } from "@/utils";
 
-const CashTable = () => {
-  const { data, isLoading } = useSWR("api/cash", () =>
-    fetchAll<ICashGet>("api/cash")
-  );
+interface ICashTableProps {
+  data: ICashGet[];
+}
+
+const CashTable = ({ data }: ICashTableProps) => {
   const { mutate } = useSWRConfig();
-  const { handleOpen } = useContext(AlertContext);
-  const [selectedCash, setSelectedCash] = useState<ICashGet | null>(null);
-  const [openDialogD, openDialogDelete, closeDialogDelete] =
-    useOpenClose(false);
+
   const gridApiRef = useGridApiRef();
 
   const columns: GridColDef[] = [
@@ -41,9 +39,39 @@ const CashTable = () => {
             icon={<Delete />}
             label="Delete"
             color="error"
-            onClick={() => {
-              setSelectedCash(cash.row);
-              openDialogDelete();
+            onClick={async () => {
+              showForm({
+                title: "Eliminar Caja",
+                cancelButtonText: "CANCELAR",
+                confirmButtonText: "ELIMINAR",
+                customClass: {
+                  confirmButton: "custom-confirm custom-confirm-create",
+                },
+                icon: (
+                  <DeleteForever
+                    sx={{
+                      display: "block",
+                      margin: "auto",
+                      fontSize: "5rem",
+                    }}
+                    color="error"
+                  />
+                ),
+                contentHtml: (
+                  <Typography>
+                    ¿Estás seguro de eliminar la caja {`"${cash.row.id}"`}?
+                  </Typography>
+                ),
+                preConfirm: async () => {
+                  await deleteObject(`api/cash/${cash.row.id}`);
+                  handleLastPageDeletion(gridApiRef, data.length);
+                  mutate("api/cash");
+
+                  showSuccessToastMessage(
+                    "La caja se ha eliminado correctamente"
+                  );
+                },
+              });
             }}
           />,
         ];
@@ -53,28 +81,7 @@ const CashTable = () => {
 
   return (
     <>
-      <DataTable
-        apiRef={gridApiRef}
-        columns={columns}
-        loading={isLoading}
-        rows={data}
-      />
-
-      <FormDialogDelete
-        title={`¿Estás seguro de eliminar la caja número "${selectedCash?.id}"?`}
-        open={openDialogD}
-        handleCancel={() => {
-          closeDialogDelete();
-        }}
-        handleSuccess={async () => {
-          await deleteObject(`api/cash/${selectedCash?.id}`);
-          handleLastPageDeletion(gridApiRef, data!.length);
-          mutate("api/cash");
-          closeDialogDelete();
-          handleOpen("La caja se ha eliminado correctamente");
-          setSelectedCash(null);
-        }}
-      />
+      <DataTable apiRef={gridApiRef} columns={columns} rows={data} />
     </>
   );
 };

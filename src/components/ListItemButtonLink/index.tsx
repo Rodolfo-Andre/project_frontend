@@ -4,7 +4,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Link from "next/link";
 import Router from "next/router";
-import { IMenuItemsProps } from "@/interfaces";
+import IMenuItemsProps from "@/interfaces/IMenuItemsProps";
 
 const ListItemButtonLink = ({ text, href, Icon }: IMenuItemsProps) => {
   return (

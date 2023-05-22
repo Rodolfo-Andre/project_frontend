@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import LinkNext from "next/link";
 import Image from "next/image";
-import { IErrorProps } from "@/interfaces";
+import IErrorProps from "@/interfaces/IErrorProps";
 
 const ErrorContent = ({ title, code, description, img, home }: IErrorProps) => {
   return (

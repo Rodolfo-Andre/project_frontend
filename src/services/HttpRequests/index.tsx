@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { AxiosServices } from "..";
+import AxiosServices from "@/services/Axios";
 
 const handleResponse = async <T,>(
   promise: Promise<AxiosResponse<T>>

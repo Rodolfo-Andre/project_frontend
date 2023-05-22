@@ -1,78 +1,67 @@
-import ButtonAdd from "@/components/ButtonAdd";
-import FormDialogPost from "@/components/FormDialogPost";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import FoodBank from "@mui/icons-material/FoodBank";
-import { useOpenClose } from "@/hooks";
-import { useFormik } from "formik";
+import categoryDishSchema from "@/schemas/CategoryDish";
 import { useSWRConfig } from "swr";
-import { useContext } from "react";
-import { AlertContext } from "@/contexts/AlertSuccess";
 import { createObject } from "@/services/HttpRequests";
-import { categoryDishSchema } from "@/schemas";
-import { ICategoryDishGet, ICategoryDishPrincipal } from "@/interfaces";
+import {
+  ICategoryDishGet,
+  ICategoryDishPrincipal,
+} from "@/interfaces/ICategoryDish";
+import { IFormProps } from "@/interfaces/IFormProps";
+import { Formik } from "formik";
+import { theme } from "@/utils";
+import { ThemeProvider } from "@mui/material/styles";
+import { showSuccessToastMessage } from "@/lib/Messages";
 
 const initialValues: ICategoryDishPrincipal = {
   nameCatDish: "",
 };
 
-const CategoryDishAddForm = () => {
+const CategoryDishAddForm = ({
+  setFormikRef,
+}: IFormProps<ICategoryDishPrincipal>) => {
   const { mutate } = useSWRConfig();
-  const { handleOpen } = useContext(AlertContext);
-  const [open, openDialog, closeDialog] = useOpenClose(false);
-
-  const formik = useFormik<ICategoryDishPrincipal>({
-    initialValues,
-    validationSchema: categoryDishSchema,
-    onSubmit: async (newCategoryDish) => {
-      await createObject<ICategoryDishGet, ICategoryDishPrincipal>(
-        "api/categorydish",
-        newCategoryDish
-      );
-      mutate("api/categorydish");
-      closeDialog();
-      handleOpen("La categoría se ha registrado correctamente");
-      formik.resetForm();
-    },
-    validateOnChange: false,
-  });
 
   return (
-    <>
-      <ButtonAdd text="Añadir Categoría" openDialog={openDialog} />
+    <ThemeProvider theme={theme}>
+      <Formik<ICategoryDishPrincipal>
+        initialValues={initialValues}
+        innerRef={(ref) => setFormikRef(ref!)}
+        validateOnChange={false}
+        validationSchema={categoryDishSchema}
+        onSubmit={async (newCategoryDish) => {
+          await createObject<ICategoryDishGet, ICategoryDishPrincipal>(
+            "api/categorydish",
+            newCategoryDish
+          );
+          mutate("api/categorydish");
 
-      <FormDialogPost
-        Icon={FoodBank}
-        open={open}
-        title="Añadir Categoría"
-        handleCancel={() => {
-          closeDialog();
-          formik.resetForm();
-        }}
-        isSubmitting={formik.isSubmitting}
-        handleSuccess={() => {
-          formik.handleSubmit();
+          showSuccessToastMessage(
+            "La categoría se ha registrado correctamente"
+          );
         }}
       >
-        <form onSubmit={formik.handleSubmit}>
-          <Grid container spacing={1.5} marginY={2}>
-            <Grid item xs={12}>
-              <TextField
-                id="nameCatDish"
-                type="text"
-                label="Categoría"
-                error={Boolean(formik.errors.nameCatDish)}
-                value={formik.values.nameCatDish}
-                onChange={formik.handleChange}
-                helperText={formik.errors.nameCatDish}
-                disabled={formik.isSubmitting}
-                fullWidth
-              />
+        {({ values, errors, handleChange, isSubmitting }) => (
+          <form>
+            <Grid container spacing={1.5} marginY={2}>
+              <Grid item xs={12}>
+                <TextField
+                  id="nameCatDish"
+                  type="text"
+                  label="Categoría"
+                  error={Boolean(errors.nameCatDish)}
+                  value={values.nameCatDish}
+                  onChange={handleChange}
+                  helperText={errors.nameCatDish}
+                  disabled={isSubmitting}
+                  fullWidth
+                />
+              </Grid>
             </Grid>
-          </Grid>
-        </form>
-      </FormDialogPost>
-    </>
+          </form>
+        )}
+      </Formik>
+    </ThemeProvider>
   );
 };
 

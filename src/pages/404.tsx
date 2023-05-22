@@ -2,7 +2,7 @@ import ContentCenter from "@/components/ContentCenter";
 import ErrorContent from "@/components/ErrorContent";
 import Route from "next/router";
 import image404 from "public/404.png";
-import { IErrorProps } from "@/interfaces";
+import IErrorProps from "@/interfaces/IErrorProps";
 
 const Custom404 = () => {
   const error404: IErrorProps = {

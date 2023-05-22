@@ -4,9 +4,9 @@ import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import TextField, { TextFieldProps } from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import useSignIn from "@/hooks/useSingIn";
+import ISignIn from "@/interfaces/ISignIn";
 import { OutlinedInputProps } from "@mui/material/OutlinedInput";
-import { ISignIn } from "@/interfaces";
-import { useSignIn } from "@/hooks";
 import { styled } from "@mui/material/styles";
 
 const CustomTextField = styled((props: TextFieldProps) => (

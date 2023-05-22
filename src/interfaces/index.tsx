@@ -7,7 +7,7 @@ export type { default as IError400 } from "./IError400";
 export type { default as IErrorMessages } from "./IErrorMessages";
 export type { default as IErrorProps } from "./IErrorProps";
 export * from "./IEstablishment";
-export type { default as IFormDialogProps } from "./IFormDialogProps";
+export * from "./IFormProps";
 export type { default as IMenuItemsProps } from "./IMenuItemsProps";
 export type { default as IMenuItemsWithSubItemsProps } from "./IMenuItemsWithSubItemsProps";
 export * from "./IPayMethod";

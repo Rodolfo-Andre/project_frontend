@@ -1,86 +1,66 @@
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import FoodBank from "@mui/icons-material/FoodBank";
-import FormDialogUpdate from "@/components/FormDialogUpdate";
-import { ICategoryDishGet, ICategoryDishPrincipal } from "@/interfaces";
-import { categoryDishSchema } from "@/schemas";
-import { useFormik } from "formik";
+import categoryDishSchema from "@/schemas/CategoryDish";
+import {
+  ICategoryDishGet,
+  ICategoryDishPrincipal,
+} from "@/interfaces/ICategoryDish";
+import { IUpdateFormProps } from "@/interfaces/IFormProps";
 import { useSWRConfig } from "swr";
-import { SetStateAction, useContext } from "react";
-import { AlertContext } from "@/contexts/AlertSuccess";
 import { updateObject } from "@/services/HttpRequests";
-
-interface ICategoryDishFormUpdateProps {
-  categoryDish: ICategoryDishGet;
-  open: boolean;
-  closeDialog: () => void;
-  setSelectedCategoryDish: (
-    value: SetStateAction<ICategoryDishGet | null>
-  ) => void;
-}
+import { Formik } from "formik";
+import { theme } from "@/utils";
+import { ThemeProvider } from "@mui/material/styles";
+import { showSuccessToastMessage } from "@/lib/Messages";
 
 const CategoryDishUpdateForm = ({
-  categoryDish,
-  open,
-  closeDialog,
-  setSelectedCategoryDish,
-}: ICategoryDishFormUpdateProps) => {
+  setFormikRef,
+  values,
+}: IUpdateFormProps<ICategoryDishPrincipal, ICategoryDishGet>) => {
   const { mutate } = useSWRConfig();
-  const { handleOpen } = useContext(AlertContext);
-
-  const formik = useFormik<ICategoryDishPrincipal>({
-    initialValues: {
-      ...categoryDish,
-    },
-    validationSchema: categoryDishSchema,
-    onSubmit: async (categoryDishUpdate) => {
-      await updateObject<ICategoryDishGet, ICategoryDishPrincipal>(
-        `api/categorydish/${categoryDish.id}`,
-        categoryDishUpdate
-      );
-      mutate("api/categorydish");
-      closeDialog();
-      handleOpen("La categoría se ha modificado correctamente");
-      formik.resetForm();
-      setSelectedCategoryDish(null);
-    },
-    validateOnChange: false,
-  });
 
   return (
-    <>
-      <FormDialogUpdate
-        Icon={FoodBank}
-        open={open}
-        title="Actualizar Categoría"
-        handleCancel={() => {
-          closeDialog();
-          formik.resetForm();
+    <ThemeProvider theme={theme}>
+      <Formik<ICategoryDishPrincipal>
+        initialValues={{
+          ...values,
         }}
-        isSubmitting={formik.isSubmitting}
-        handleSuccess={() => {
-          formik.handleSubmit();
+        innerRef={(ref) => setFormikRef(ref!)}
+        validateOnChange={false}
+        validationSchema={categoryDishSchema}
+        onSubmit={async (categoryDishUpdate) => {
+          await updateObject<ICategoryDishGet, ICategoryDishPrincipal>(
+            `api/categorydish/${values.id}`,
+            categoryDishUpdate
+          );
+          mutate("api/categorydish");
+
+          showSuccessToastMessage(
+            "La categoría se ha modificado correctamente"
+          );
         }}
       >
-        <form onSubmit={formik.handleSubmit}>
-          <Grid container spacing={1.5} marginY={2}>
-            <Grid item xs={12}>
-              <TextField
-                id="nameCatDish"
-                type="text"
-                label="Categoría"
-                error={Boolean(formik.errors.nameCatDish)}
-                value={formik.values.nameCatDish}
-                onChange={formik.handleChange}
-                helperText={formik.errors.nameCatDish}
-                disabled={formik.isSubmitting}
-                fullWidth
-              />
+        {({ values, errors, handleChange, isSubmitting }) => (
+          <form>
+            <Grid container spacing={1.5} marginY={2}>
+              <Grid item xs={12}>
+                <TextField
+                  id="nameCatDish"
+                  type="text"
+                  label="Categoría"
+                  error={Boolean(errors.nameCatDish)}
+                  value={values.nameCatDish}
+                  onChange={handleChange}
+                  helperText={errors.nameCatDish}
+                  disabled={isSubmitting}
+                  fullWidth
+                />
+              </Grid>
             </Grid>
-          </Grid>
-        </form>
-      </FormDialogUpdate>
-    </>
+          </form>
+        )}
+      </Formik>
+    </ThemeProvider>
   );
 };
 

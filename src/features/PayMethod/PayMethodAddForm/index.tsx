@@ -1,78 +1,64 @@
-import ButtonAdd from "@/components/ButtonAdd";
-import FormDialogPost from "@/components/FormDialogPost";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import AddCard from "@mui/icons-material/AddCard";
-import { useOpenClose } from "@/hooks";
-import { useFormik } from "formik";
+import payMethodSchema from "@/schemas/PayMethod";
 import { useSWRConfig } from "swr";
-import { useContext } from "react";
-import { AlertContext } from "@/contexts/AlertSuccess";
 import { createObject } from "@/services/HttpRequests";
-import { payMethodSchema } from "@/schemas";
-import { IPayMethodGet, IPayMethodPrincipal } from "@/interfaces";
+import { IPayMethodGet, IPayMethodPrincipal } from "@/interfaces/IPayMethod";
+import { IFormProps } from "@/interfaces/IFormProps";
+import { Formik } from "formik";
+import { theme } from "@/utils";
+import { ThemeProvider } from "@mui/material/styles";
+import { showSuccessToastMessage } from "@/lib/Messages";
 
 const initialValues: IPayMethodPrincipal = {
   paymethod: "",
 };
 
-const PayMethodAddForm = () => {
+const PayMethodAddForm = ({
+  setFormikRef,
+}: IFormProps<IPayMethodPrincipal>) => {
   const { mutate } = useSWRConfig();
-  const { handleOpen } = useContext(AlertContext);
-  const [open, openDialog, closeDialog] = useOpenClose(false);
-
-  const formik = useFormik<IPayMethodPrincipal>({
-    initialValues,
-    validationSchema: payMethodSchema,
-    onSubmit: async (newPayMethod) => {
-      await createObject<IPayMethodGet, IPayMethodPrincipal>(
-        "api/paymethod",
-        newPayMethod
-      );
-      mutate("api/paymethod");
-      closeDialog();
-      handleOpen("El método de pago se ha registrado correctamente");
-      formik.resetForm();
-    },
-    validateOnChange: false,
-  });
 
   return (
-    <>
-      <ButtonAdd text="Añadir Método de Pago" openDialog={openDialog} />
+    <ThemeProvider theme={theme}>
+      <Formik<IPayMethodPrincipal>
+        initialValues={initialValues}
+        innerRef={(ref) => setFormikRef(ref!)}
+        validateOnChange={false}
+        validationSchema={payMethodSchema}
+        onSubmit={async (newPayMethod) => {
+          await createObject<IPayMethodGet, IPayMethodPrincipal>(
+            "api/paymethod",
+            newPayMethod
+          );
+          mutate("api/paymethod");
 
-      <FormDialogPost
-        Icon={AddCard}
-        open={open}
-        title="Añadir Método de Pago"
-        handleCancel={() => {
-          closeDialog();
-          formik.resetForm();
-        }}
-        isSubmitting={formik.isSubmitting}
-        handleSuccess={() => {
-          formik.handleSubmit();
+          showSuccessToastMessage(
+            "El método de pago se ha registrado correctamente"
+          );
         }}
       >
-        <form onSubmit={formik.handleSubmit}>
-          <Grid container spacing={1.5} marginY={2}>
-            <Grid item xs={12}>
-              <TextField
-                id="paymethod"
-                type="text"
-                label="Método de Pago"
-                error={Boolean(formik.errors.paymethod)}
-                value={formik.values.paymethod}
-                onChange={formik.handleChange}
-                helperText={formik.errors.paymethod}
-                disabled={formik.isSubmitting}
-                fullWidth
-              />
+        {({ values, errors, handleChange, isSubmitting }) => (
+          <form>
+            <Grid container spacing={1.5} marginY={2}>
+              <Grid item xs={12}>
+                <TextField
+                  id="paymethod"
+                  type="text"
+                  label="Método de Pago"
+                  error={Boolean(errors.paymethod)}
+                  value={values.paymethod}
+                  onChange={handleChange}
+                  helperText={errors.paymethod}
+                  disabled={isSubmitting}
+                  fullWidth
+                />
+              </Grid>
             </Grid>
-          </Grid>
-        </form>
-      </FormDialogPost>
-    </>
+          </form>
+        )}
+      </Formik>
+    </ThemeProvider>
   );
 };
 

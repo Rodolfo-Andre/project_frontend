@@ -1,5 +1,5 @@
+import Yup from "@/schemas/Config";
 import { IEmployeeCreateOrUpdate } from "@/interfaces/IEmployee";
-import { Yup } from "@/schemas";
 
 const employeeCreateOrUpdateSchema: Yup.ObjectSchema<IEmployeeCreateOrUpdate> =
   Yup.object({

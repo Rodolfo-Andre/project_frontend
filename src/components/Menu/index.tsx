@@ -15,6 +15,7 @@ const Menu = ({ drawerProps, sxProps }: IMenuProps) => {
       sx={{
         ...sxProps,
         width: 260,
+        zIndex: 11,
         flexShrink: 0,
         "& .MuiDrawer-paper": {
           width: 260,

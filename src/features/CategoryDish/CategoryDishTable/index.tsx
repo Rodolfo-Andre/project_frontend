@@ -1,37 +1,36 @@
 import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/Edit";
-import FormDialogDelete from "@/components/FormDialogDelete";
+import FoodBank from "@mui/icons-material/FoodBank";
 import DataTable from "@/components/DataTable";
+import DeleteForever from "@mui/icons-material/DeleteForever";
+import Typography from "@mui/material/Typography";
 import {
   useGridApiRef,
   GridActionsCellItem,
   GridRowParams,
   GridColDef,
 } from "@mui/x-data-grid";
-import { useOpenClose } from "@/hooks";
-import { useContext, useState } from "react";
-import { AlertContext } from "@/contexts/AlertSuccess";
-import { deleteObject, fetchAll, getObject } from "@/services/HttpRequests";
-import { ICategoryDishGet } from "@/interfaces";
+import { deleteObject, getObject } from "@/services/HttpRequests";
+import {
+  ICategoryDishGet,
+  ICategoryDishPrincipal,
+} from "@/interfaces/ICategoryDish";
 import { handleLastPageDeletion } from "@/utils";
-import { CategoryDishUpdateForm } from "@/features";
-import useSWR, { useSWRConfig } from "swr";
-import { DialogError } from "@/components";
+import { CategoryDishUpdateForm } from "@/features/CategoryDish";
+import { showForm } from "@/lib/Forms";
+import { showErrorMessage, showSuccessToastMessage } from "@/lib/Messages";
+import { FormikProps } from "formik/dist/types";
+import { useSWRConfig } from "swr";
 
-const CategoryDishTable = () => {
-  const { data, isLoading } = useSWR("api/categorydish", () =>
-    fetchAll<ICategoryDishGet>("api/categorydish")
-  );
+interface ICategoryDishTableProps {
+  data: ICategoryDishGet[];
+}
+
+const CategoryDishTable = ({ data }: ICategoryDishTableProps) => {
+  let formikRef: FormikProps<ICategoryDishPrincipal>;
+
   const { mutate } = useSWRConfig();
-  const { handleOpen } = useContext(AlertContext);
-  const [messageError, setMessageError] = useState<string>("");
-  const [selectedCategoryDish, setSelectedCategoryDish] =
-    useState<ICategoryDishGet | null>(null);
-  const [openDialogD, openDialogDelete, closeDialogDelete] =
-    useOpenClose(false);
-  const [openDialogU, openDialogUpdate, closeDialogUpdate] =
-    useOpenClose(false);
-  const [openDialogE, openDialogError, closeDialogError] = useOpenClose(false);
+
   const gridApiRef = useGridApiRef();
 
   const columns: GridColDef[] = [
@@ -52,8 +51,37 @@ const CategoryDishTable = () => {
             className="textPrimary"
             color="warning"
             onClick={() => {
-              setSelectedCategoryDish(categoryDish.row);
-              openDialogUpdate();
+              showForm({
+                title: "Actualizar Plato",
+                cancelButtonText: "CANCELAR",
+                confirmButtonText: "ACTUALIZAR",
+                customClass: {
+                  confirmButton: "custom-confirm custom-confirm-update",
+                },
+                icon: (
+                  <FoodBank
+                    sx={{
+                      display: "block",
+                      margin: "auto",
+                      fontSize: "5rem",
+                      color: "#ED6C02",
+                    }}
+                    color="primary"
+                  />
+                ),
+                contentHtml: (
+                  <CategoryDishUpdateForm
+                    setFormikRef={(ref) => (formikRef = ref)}
+                    values={categoryDish.row}
+                  />
+                ),
+                preConfirm: async () => {
+                  await formikRef.submitForm();
+                  if (formikRef && !formikRef.isValid) {
+                    return false;
+                  }
+                },
+              });
             }}
           />,
           <GridActionsCellItem
@@ -62,22 +90,54 @@ const CategoryDishTable = () => {
             label="Delete"
             color="error"
             onClick={async () => {
-              setSelectedCategoryDish(categoryDish.row);
               const count = await getObject<number>(
                 `api/CategoryDish/${categoryDish.id}/number-dish`
               );
 
               if (count > 0) {
-                setMessageError(
-                  `No es posible eliminar la categoría debido a que se encontró ${count} plato${
+                showErrorMessage({
+                  title: `NO SE PUEDE ELIMINAR LA CATEGORÍA - ${categoryDish.id}`,
+                  contentHtml: `No es posible eliminar la categoría debido a que se encontró ${count} plato${
                     count !== 1 ? "s" : ""
-                  } asignado a dicha categoría.`
-                );
-                openDialogError();
+                  } asignado a dicha categoría.`,
+                });
+
                 return;
               }
 
-              openDialogDelete();
+              showForm({
+                title: "Eliminar Categoría de Plato",
+                cancelButtonText: "CANCELAR",
+                confirmButtonText: "ELIMINAR",
+                customClass: {
+                  confirmButton: "custom-confirm custom-confirm-create",
+                },
+                icon: (
+                  <DeleteForever
+                    sx={{
+                      display: "block",
+                      margin: "auto",
+                      fontSize: "5rem",
+                    }}
+                    color="error"
+                  />
+                ),
+                contentHtml: (
+                  <Typography>
+                    ¿Estás seguro de eliminar la categoría{" "}
+                    {`"${categoryDish.row.nameCatDish}"`}?
+                  </Typography>
+                ),
+                preConfirm: async () => {
+                  await deleteObject(`api/categorydish/${categoryDish.row.id}`);
+                  handleLastPageDeletion(gridApiRef, data.length);
+                  mutate("api/categorydish");
+
+                  showSuccessToastMessage(
+                    "La categoría se ha eliminado correctamente"
+                  );
+                },
+              });
             }}
           />,
         ];
@@ -87,48 +147,7 @@ const CategoryDishTable = () => {
 
   return (
     <>
-      <DataTable
-        apiRef={gridApiRef}
-        columns={columns}
-        loading={isLoading}
-        rows={data}
-      />
-
-      <FormDialogDelete
-        title={`¿Estás seguro de eliminar la categoría "${selectedCategoryDish?.nameCatDish}"?`}
-        open={openDialogD}
-        handleCancel={() => {
-          closeDialogDelete();
-        }}
-        handleSuccess={async () => {
-          await deleteObject(`api/categorydish/${selectedCategoryDish?.id}`);
-          handleLastPageDeletion(gridApiRef, data!.length);
-          mutate("api/categorydish");
-          closeDialogDelete();
-          handleOpen("La categoría se ha eliminado correctamente");
-          setSelectedCategoryDish(null);
-        }}
-      />
-
-      {openDialogU && (
-        <CategoryDishUpdateForm
-          setSelectedCategoryDish={setSelectedCategoryDish}
-          open={openDialogU}
-          closeDialog={() => {
-            closeDialogUpdate();
-          }}
-          categoryDish={selectedCategoryDish!}
-        />
-      )}
-
-      <DialogError
-        title={`NO SE PUEDE ELIMINAR LA CATEGORÍA - ${selectedCategoryDish?.id}`}
-        description={messageError}
-        open={openDialogE}
-        closeDialog={() => {
-          closeDialogError();
-        }}
-      />
+      <DataTable apiRef={gridApiRef} columns={columns} rows={data} />
     </>
   );
 };

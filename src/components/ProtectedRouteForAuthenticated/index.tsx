@@ -1,6 +1,6 @@
 import Router from "next/router";
 import LoadingBackdrop from "@/components/LoadingBackdrop";
-import { UserRoles } from "@/interfaces";
+import UserRoles from "@/interfaces/UserRoles";
 import { AuthContext } from "@/contexts/Auth";
 import { useContext, useEffect, ComponentType } from "react";
 

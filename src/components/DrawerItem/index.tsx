@@ -12,15 +12,13 @@ import Typography from "@mui/material/Typography";
 import ListItemButtonLink from "@/components/ListItemButtonLink";
 import useSWR from "swr";
 import ListItemButtonWithCollapse from "@/components/ListItemButtonWithCollapse";
-import {
-  IEstablishmentGet,
-  IMenuItemsProps,
-  IMenuItemsWithSubItemsProps,
-  UserRoles,
-} from "@/interfaces";
+import UserRoles from "@/interfaces/UserRoles";
+import IMenuItemsProps from "@/interfaces/IMenuItemsProps";
+import IMenuItemsWithSubItemsProps from "@/interfaces/IMenuItemsWithSubItemsProps";
+import { IEstablishmentGet } from "@/interfaces/IEstablishment";
 import { useContext } from "react";
-import { AuthContext } from "@/contexts";
-import { getObject } from "@/services";
+import { AuthContext } from "@/contexts/Auth";
+import { getObject } from "@/services/HttpRequests";
 
 const items: IMenuItemsProps[] = [
   {

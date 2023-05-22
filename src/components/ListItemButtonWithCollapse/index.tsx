@@ -7,7 +7,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Router from "next/router";
 import ListItemButtonLink from "@/components/ListItemButtonLink";
-import { IMenuItemsWithSubItemsProps } from "@/interfaces";
+import IMenuItemsWithSubItemsProps from "@/interfaces/IMenuItemsWithSubItemsProps";
 import { useToggle } from "@/hooks";
 
 const ListItemButtonWithCollapse = ({

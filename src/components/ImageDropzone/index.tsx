@@ -3,8 +3,8 @@ import Box from "@mui/material/Box";
 import AddAPhoto from "@mui/icons-material/AddAPhoto";
 import Image from "next/image";
 import ContentCenter from "@/components/ContentCenter";
-import { useDropzone } from "react-dropzone";
 import { useEffect, useState } from "react";
+import { useDropzone } from "react-dropzone";
 
 interface IImageDropzoneProps {
   onDrop: (file: File) => void;
