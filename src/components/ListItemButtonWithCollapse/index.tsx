@@ -1,15 +1,14 @@
-import { IMenuItemsWithSubItemsProps } from "@/interfaces";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import {
-  Collapse,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-} from "@mui/material";
-import { useToggle } from "@/hooks";
-import { ListItemButtonLink } from "@/components";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import Collapse from "@mui/material/Collapse";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 import Router from "next/router";
+import ListItemButtonLink from "@/components/ListItemButtonLink";
+import IMenuItemsWithSubItemsProps from "@/interfaces/IMenuItemsWithSubItemsProps";
+import { useToggle } from "@/hooks";
 
 const ListItemButtonWithCollapse = ({
   text,

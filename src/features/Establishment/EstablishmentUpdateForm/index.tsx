@@ -1,11 +1,15 @@
-import { AlertContext } from "@/contexts/AlertSuccess";
-import { IEstablishmentPrincipal, IEstablishmentGet } from "@/interfaces";
-import { establishmentSchema } from "@/schemas";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import establishmentSchema from "@/schemas/Establishment";
+import {
+  IEstablishmentPrincipal,
+  IEstablishmentGet,
+} from "@/interfaces/IEstablishment";
 import { updateObject } from "@/services/HttpRequests";
-import { Button, Grid, TextField } from "@mui/material";
 import { useFormik } from "formik";
-import { useContext, useEffect } from "react";
 import { useSWRConfig } from "swr";
+import { showSuccessToastMessage } from "@/lib/Messages";
 
 interface IEstablishmentUpdateFormProps {
   establishment: IEstablishmentGet;
@@ -14,7 +18,6 @@ interface IEstablishmentUpdateFormProps {
 const EstablishmentUpdateForm = ({
   establishment,
 }: IEstablishmentUpdateFormProps) => {
-  const { handleOpen } = useContext(AlertContext);
   const { mutate } = useSWRConfig();
 
   const formik = useFormik<IEstablishmentPrincipal>({
@@ -31,7 +34,10 @@ const EstablishmentUpdateForm = ({
         establishmentUpdate
       );
       mutate("api/establishment/first");
-      handleOpen("El establecimiento se ha modificado correctamente");
+
+      showSuccessToastMessage(
+        "El establecimiento se ha actualizado correctamente"
+      );
     },
     validateOnChange: false,
   });

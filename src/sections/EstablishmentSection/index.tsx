@@ -1,17 +1,17 @@
-import { Typography } from "@mui/material";
-import { ContentBox } from "@/components";
-import {
-  EstablishmentUpdateForm,
-  EstablishmentUpdateSkeleton,
-} from "@/features";
-import { IEstablishmentGet } from "@/interfaces";
-import { getObject } from "@/services/HttpRequests";
+import Typography from "@mui/material/Typography";
+import ContentBox from "@/components/ContentBox";
+import EstablishmentUpdateForm from "@/features/Establishment/EstablishmentUpdateForm";
 import useSWR from "swr";
+import LoaderComponent from "@/components/LoaderComponent";
+import { IEstablishmentGet } from "@/interfaces/IEstablishment";
+import { getObject } from "@/services/HttpRequests";
 
 const EstablishmentSection = () => {
-  const { data } = useSWR("api/establishment/first", () =>
+  const { data, isLoading } = useSWR("api/establishment/first", () =>
     getObject<IEstablishmentGet>("api/establishment/first")
   );
+
+  if (isLoading) return <LoaderComponent />;
 
   return (
     <ContentBox
@@ -23,11 +23,7 @@ const EstablishmentSection = () => {
         Actualizar Establecimiento
       </Typography>
 
-      {data ? (
-        <EstablishmentUpdateForm establishment={data} />
-      ) : (
-        <EstablishmentUpdateSkeleton />
-      )}
+      <EstablishmentUpdateForm establishment={data!} />
     </ContentBox>
   );
 };

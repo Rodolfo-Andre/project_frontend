@@ -1,5 +1,6 @@
-import { ProtectedRouteForAuthenticated, Layout } from "@/components";
-import { CategoryDishSection } from "@/sections";
+import ProtectedRouteForAuthenticated from "@/components/ProtectedRouteForAuthenticated";
+import Layout from "@/components/Layout";
+import CategoryDishSection from "@/sections/CategoryDishSection";
 
 const CategoryDishPage = () => {
   return (
@@ -9,4 +10,7 @@ const CategoryDishPage = () => {
   );
 };
 
-export default ProtectedRouteForAuthenticated({ Component: CategoryDishPage });
+export default ProtectedRouteForAuthenticated({
+  Component: CategoryDishPage,
+  roles: ["Administrador"],
+});

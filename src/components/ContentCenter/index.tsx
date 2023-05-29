@@ -1,4 +1,5 @@
-import { Box, SxProps } from "@mui/material";
+import Box from "@mui/material/Box";
+import { SxProps } from "@mui/material/styles";
 import { ReactNode } from "react";
 
 interface IContentCenterProps {

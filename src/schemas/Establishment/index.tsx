@@ -1,5 +1,5 @@
-import { IEstablishmentPrincipal } from "@/interfaces";
-import { Yup } from "@/schemas";
+import Yup from "@/schemas/Config";
+import { IEstablishmentPrincipal } from "@/interfaces/IEstablishment";
 
 const establishmentSchema: Yup.ObjectSchema<IEstablishmentPrincipal> =
   Yup.object({
@@ -9,4 +9,4 @@ const establishmentSchema: Yup.ObjectSchema<IEstablishmentPrincipal> =
     ruc: Yup.string().required(),
   });
 
-export { establishmentSchema };
+export default establishmentSchema;

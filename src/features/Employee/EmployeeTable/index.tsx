@@ -1,57 +1,65 @@
-import { IEmployeeGet } from "@/interfaces/IEmployee";
-import { Edit, Delete } from "@mui/icons-material";
-import {
-  GridColDef,
-  GridValueGetterParams,
-  GridActionsCellItem,
-  GridRowParams,
-  useGridApiRef,
-} from "@mui/x-data-grid";
-import { FormDialogDelete, DataTable } from "@/components";
-import { useOpenClose } from "@/hooks";
-import { useContext, useState } from "react";
-import { AlertContext } from "@/contexts/AlertSuccess";
-import { deleteObject, fetchAll } from "@/services/HttpRequests";
-import { handleLastPageDeletion } from "@/utils";
-import { EmployeeUpdateForm } from "@/features";
-import useSWR, { useSWRConfig } from "swr";
+import Delete from "@mui/icons-material/Delete";
+import DeleteForever from "@mui/icons-material/DeleteForever";
+import Edit from "@mui/icons-material/Edit";
+import Person from "@mui/icons-material/Person";
+import Typography from "@mui/material/Typography";
+import DataTable from "@/components/DataTable";
+import EmployeeUpdateForm from "@/features/Employee/EmployeeUpdateForm";
 import dayjs from "dayjs";
+import {
+  useGridApiRef,
+  GridActionsCellItem,
+  GridValueGetterParams,
+  GridRowParams,
+  GridColDef,
+} from "@mui/x-data-grid";
+import { IEmployeeCreateOrUpdate, IEmployeeGet } from "@/interfaces/IEmployee";
+import { useContext } from "react";
+import { deleteObject } from "@/services/HttpRequests";
+import { handleLastPageDeletion } from "@/utils";
+import { useSWRConfig } from "swr";
+import { AuthContext } from "@/contexts/Auth";
+import { showForm } from "@/lib/Forms";
+import { showSuccessToastMessage } from "@/lib/Messages";
+import { FormikProps } from "formik";
+import { IRoleGet } from "@/interfaces/IRole";
 
-const EmployeeTable = () => {
-  const { data, isLoading } = useSWR("api/employee", () =>
-    fetchAll<IEmployeeGet>("api/employee")
-  );
+interface IEmpoyeeTableProps {
+  data: IEmployeeGet[];
+  roles: IRoleGet[];
+}
+
+const EmployeeTable = ({ data, roles }: IEmpoyeeTableProps) => {
+  let formikRef: FormikProps<IEmployeeCreateOrUpdate>;
+  const { user } = useContext(AuthContext);
+
   const { mutate } = useSWRConfig();
-  const { handleOpen } = useContext(AlertContext);
-  const [selectedEmployee, setSelectedEmployee] = useState<IEmployeeGet | null>(
-    null
-  );
-  const [openDialogD, openDialogDelete, closeDialogDelete] =
-    useOpenClose(false);
-  const [openDialogU, openDialogUpdate, closeDialogUpdate] =
-    useOpenClose(false);
+
   const gridApiRef = useGridApiRef();
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 100 },
-    { field: "firstName", headerName: "Nombres", width: 200 },
-    { field: "lastName", headerName: "Apellidos", width: 200 },
+    { field: "id", headerName: "ID", minWidth: 100, flex: 1 },
+    { field: "firstName", headerName: "Nombres", minWidth: 200, flex: 2 },
+    { field: "lastName", headerName: "Apellidos", minWidth: 200, flex: 2 },
     {
       field: "role",
       headerName: "Rol",
       type: "singleSelect",
-      width: 100,
+      minWidth: 120,
+      flex: 2,
       valueGetter: (params: GridValueGetterParams<IEmployeeGet>) =>
-        params.row.role.roleName,
-      valueOptions: [
-        ...new Set(data?.map((employee) => employee.role.roleName)),
-      ],
+        params.row.role.id,
+      valueOptions: roles.map((role) => ({
+        value: role.id,
+        label: role.roleName,
+      })),
     },
-    { field: "phone", headerName: "Teléfono", width: 100 },
+    { field: "phone", headerName: "Teléfono", minWidth: 100, flex: 2 },
     {
       field: "email",
       headerName: "Correo Electrónico",
-      width: 200,
+      minWidth: 200,
+      flex: 2,
       valueGetter: (params: GridValueGetterParams<IEmployeeGet>) =>
         params.row.user.email,
     },
@@ -59,7 +67,8 @@ const EmployeeTable = () => {
       field: "createdAt",
       headerName: "Creado en",
       type: "dateTime",
-      width: 200,
+      minWidth: 160,
+      flex: 2,
       valueGetter: (params: GridValueGetterParams<IEmployeeGet>) =>
         dayjs(params.row.createdAt).toDate(),
     },
@@ -67,9 +76,10 @@ const EmployeeTable = () => {
       field: "actions",
       type: "actions",
       headerName: "Acciones",
-      width: 100,
+      minWidth: 100,
+      flex: 1,
       getActions: (employee: GridRowParams<IEmployeeGet>) => {
-        return [
+        const gridCells = [
           <GridActionsCellItem
             key={employee.row.id}
             icon={<Edit />}
@@ -77,60 +87,96 @@ const EmployeeTable = () => {
             className="textPrimary"
             color="warning"
             onClick={() => {
-              setSelectedEmployee(employee.row);
-              openDialogUpdate();
-            }}
-          />,
-          <GridActionsCellItem
-            key={employee.row.id}
-            icon={<Delete />}
-            label="Delete"
-            color="error"
-            onClick={() => {
-              setSelectedEmployee(employee.row);
-              openDialogDelete();
+              showForm({
+                title: "Actualizar Empleado",
+                cancelButtonText: "CANCELAR",
+                confirmButtonText: "ACTUALIZAR",
+                customClass: {
+                  confirmButton: "custom-confirm custom-confirm-update",
+                },
+                icon: (
+                  <Person
+                    sx={{
+                      display: "block",
+                      margin: "auto",
+                      fontSize: "5rem",
+                      color: "#ED6C02",
+                    }}
+                    color="primary"
+                  />
+                ),
+                contentHtml: (
+                  <EmployeeUpdateForm
+                    setFormikRef={(ref) => (formikRef = ref)}
+                    values={employee.row}
+                    data={roles}
+                  />
+                ),
+                preConfirm: async () => {
+                  await formikRef.submitForm();
+                  if (formikRef && !formikRef.isValid) {
+                    return false;
+                  }
+                },
+              });
             }}
           />,
         ];
+
+        if (user?.id !== employee.row.id) {
+          gridCells.push(
+            <GridActionsCellItem
+              key={employee.row.id}
+              icon={<Delete />}
+              label="Delete"
+              color="error"
+              onClick={() => {
+                showForm({
+                  title: "Eliminar Empleado",
+                  cancelButtonText: "CANCELAR",
+                  confirmButtonText: "ELIMINAR",
+                  customClass: {
+                    confirmButton: "custom-confirm custom-confirm-create",
+                  },
+                  icon: (
+                    <DeleteForever
+                      sx={{
+                        display: "block",
+                        margin: "auto",
+                        fontSize: "5rem",
+                      }}
+                      color="error"
+                    />
+                  ),
+                  contentHtml: (
+                    <Typography>
+                      ¿Estás seguro de eliminar el empleado{" "}
+                      {`"${employee.row.firstName} ${employee.row.lastName}"`}?
+                    </Typography>
+                  ),
+                  preConfirm: async () => {
+                    await deleteObject(`api/employee/${employee.id}`);
+                    handleLastPageDeletion(gridApiRef, data.length);
+                    mutate("api/employee");
+
+                    showSuccessToastMessage(
+                      "El empleado se ha eliminado correctamente"
+                    );
+                  },
+                });
+              }}
+            />
+          );
+        }
+
+        return gridCells;
       },
     },
   ];
 
   return (
     <>
-      <DataTable
-        columns={columns}
-        loading={isLoading}
-        rows={data}
-        apiRef={gridApiRef}
-      />
-
-      <FormDialogDelete
-        title={`¿Estás seguro de eliminar al empleado "${selectedEmployee?.firstName} ${selectedEmployee?.lastName}"?`}
-        open={openDialogD}
-        handleCancel={() => {
-          closeDialogDelete();
-        }}
-        handleSuccess={async () => {
-          await deleteObject(`api/employee/${selectedEmployee?.id}`);
-          handleLastPageDeletion(gridApiRef, data!.length);
-          mutate("api/employee");
-          closeDialogDelete();
-          handleOpen("El empleado se ha eliminado correctamente");
-          setSelectedEmployee(null);
-        }}
-      />
-
-      {openDialogU && (
-        <EmployeeUpdateForm
-          setSelectedEmployee={setSelectedEmployee}
-          open={openDialogU}
-          closeDialog={() => {
-            closeDialogUpdate();
-          }}
-          employee={selectedEmployee!}
-        />
-      )}
+      <DataTable columns={columns} rows={data} apiRef={gridApiRef} />
     </>
   );
 };

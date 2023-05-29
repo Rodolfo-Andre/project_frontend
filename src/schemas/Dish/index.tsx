@@ -1,4 +1,4 @@
-import { Yup } from "@/schemas";
+import Yup from "@/schemas/Config";
 import { IDishCreateOrUpdate } from "@/interfaces/IDish";
 
 const dishSchema: Yup.ObjectSchema<IDishCreateOrUpdate> = Yup.object({
@@ -11,4 +11,4 @@ const dishSchema: Yup.ObjectSchema<IDishCreateOrUpdate> = Yup.object({
   imgDish: Yup.string().required(),
 });
 
-export { dishSchema };
+export default dishSchema;

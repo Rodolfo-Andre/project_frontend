@@ -1,5 +1,5 @@
-import { AddCircle } from "@mui/icons-material";
-import { Button } from "@mui/material";
+import AddCircle from "@mui/icons-material/AddCircle";
+import Button from "@mui/material/Button";
 
 interface IButtonAddProps {
   text: string;

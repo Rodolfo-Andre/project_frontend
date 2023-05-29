@@ -6,13 +6,23 @@ const agent = new https.Agent({
 });
 
 const axiosObject = axios.create({
-  baseURL: process.env.BASE_URL || "https://localhost:7208",
-  // timeout: 5000,
+  baseURL: process.env.NEXT_PUBLIC_BASE_URL || "https://localhost:7208",
+  timeout: 5000,
   headers: {
     "Content-Type": "application/json",
     accept: "application/json",
   },
   httpsAgent: agent,
+});
+
+axiosObject.interceptors.request.use((config) => {
+  const token = localStorage.getItem("access_token"); // Obtener el token JWT del almacenamiento local
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`; // Agregar el token JWT al encabezado de autorización
+  }
+
+  return config;
 });
 
 axiosObject.interceptors.response.use(

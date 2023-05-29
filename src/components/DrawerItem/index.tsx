@@ -1,17 +1,24 @@
-import { IMenuItemsProps, IMenuItemsWithSubItemsProps } from "@/interfaces";
-import {
-  Home,
-  Build,
-  People,
-  FoodBank,
-  Restaurant,
-  Payments,
-  TableRestaurant,
-  Storefront,
-  PointOfSale,
-} from "@mui/icons-material";
-import { Typography, List } from "@mui/material";
-import { ListItemButtonLink, ListItemButtonWithCollapse } from "@/components";
+import Home from "@mui/icons-material/Home";
+import Build from "@mui/icons-material/Build";
+import People from "@mui/icons-material/People";
+import FoodBank from "@mui/icons-material/FoodBank";
+import Restaurant from "@mui/icons-material/Restaurant";
+import Payments from "@mui/icons-material/Payments";
+import TableRestaurant from "@mui/icons-material/TableRestaurant";
+import Storefront from "@mui/icons-material/Storefront";
+import PointOfSale from "@mui/icons-material/PointOfSale";
+import List from "@mui/material/List";
+import Typography from "@mui/material/Typography";
+import ListItemButtonLink from "@/components/ListItemButtonLink";
+import useSWR from "swr";
+import ListItemButtonWithCollapse from "@/components/ListItemButtonWithCollapse";
+import UserRoles from "@/interfaces/UserRoles";
+import IMenuItemsProps from "@/interfaces/IMenuItemsProps";
+import IMenuItemsWithSubItemsProps from "@/interfaces/IMenuItemsWithSubItemsProps";
+import { IEstablishmentGet } from "@/interfaces/IEstablishment";
+import { useContext } from "react";
+import { AuthContext } from "@/contexts/Auth";
+import { getObject } from "@/services/HttpRequests";
 
 const items: IMenuItemsProps[] = [
   {
@@ -67,10 +74,15 @@ const itemsWithSubItems: IMenuItemsWithSubItemsProps[] = [
 ];
 
 const DrawerItem = () => {
+  const { user } = useContext(AuthContext);
+  const { data } = useSWR("api/establishment/first", () =>
+    getObject<IEstablishmentGet>("api/establishment/first")
+  );
+
   return (
     <>
       <Typography variant="h5" sx={{ my: 2, textAlign: "center" }}>
-        Makako Burguer
+        {data?.name}
       </Typography>
 
       <List>
@@ -79,11 +91,13 @@ const DrawerItem = () => {
         ))}
       </List>
 
-      <List>
-        {itemsWithSubItems.map((item) => (
-          <ListItemButtonWithCollapse key={item.text} {...item} />
-        ))}
-      </List>
+      {user?.role.roleName === ("Administrador" as UserRoles) && (
+        <List>
+          {itemsWithSubItems.map((item) => (
+            <ListItemButtonWithCollapse key={item.text} {...item} />
+          ))}
+        </List>
+      )}
     </>
   );
 };

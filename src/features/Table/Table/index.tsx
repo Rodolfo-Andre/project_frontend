@@ -1,42 +1,55 @@
-import { Edit, Delete } from "@mui/icons-material";
+import Delete from "@mui/icons-material/Delete";
+import DeleteForever from "@mui/icons-material/DeleteForever";
+import Typography from "@mui/material/Typography";
+import Edit from "@mui/icons-material/Edit";
+import TableBar from "@mui/icons-material/TableBar";
+import DataTable from "@/components/DataTable";
+import TableUpdateForm from "@/features/Table/TableUpdateForm";
 import {
-  GridColDef,
+  useGridApiRef,
   GridActionsCellItem,
   GridRowParams,
-  useGridApiRef,
+  GridColDef,
 } from "@mui/x-data-grid";
-import { FormDialogDelete, DataTable } from "@/components";
-import { useOpenClose } from "@/hooks";
-import { useContext, useState } from "react";
-import { AlertContext } from "@/contexts/AlertSuccess";
-import { deleteObject, fetchAll } from "@/services/HttpRequests";
-import { ITableGet } from "@/interfaces";
+import { deleteObject } from "@/services/HttpRequests";
+import { ITableGet, ITableUpdate } from "@/interfaces/ITable";
 import { handleLastPageDeletion } from "@/utils";
-import { TableUpdateForm } from "@/features";
-import useSWR, { useSWRConfig } from "swr";
+import { showForm } from "@/lib/Forms";
+import { showSuccessToastMessage } from "@/lib/Messages";
+import { FormikProps } from "formik/dist/types";
+import { useSWRConfig } from "swr";
 
-const Table = () => {
-  const { data, isLoading } = useSWR("api/table", () =>
-    fetchAll<ITableGet>("api/table")
-  );
+interface ITableProps {
+  data: ITableGet[];
+}
+
+const Table = ({ data }: ITableProps) => {
+  let formikRef: FormikProps<ITableUpdate>;
+
   const { mutate } = useSWRConfig();
-  const { handleOpen } = useContext(AlertContext);
-  const [selectedTable, setSelectedTable] = useState<ITableGet | null>(null);
-  const [openDialogD, openDialogDelete, closeDialogDelete] =
-    useOpenClose(false);
-  const [openDialogU, openDialogUpdate, closeDialogUpdate] =
-    useOpenClose(false);
+
   const gridApiRef = useGridApiRef();
 
   const columns: GridColDef[] = [
-    { field: "numTable", headerName: "Número de Mesa", width: 200 },
-    { field: "numSeats", headerName: "Cantidad de Asientos", width: 200 },
-    { field: "stateTable", headerName: "Estado de Mesa", width: 200 },
+    { field: "numTable", headerName: "Número de Mesa", minWidth: 140, flex: 1 },
+    {
+      field: "numSeats",
+      headerName: "Cantidad de Asientos",
+      minWidth: 160,
+      flex: 5,
+    },
+    {
+      field: "stateTable",
+      headerName: "Estado de Mesa",
+      minWidth: 140,
+      flex: 5,
+    },
     {
       field: "actions",
       type: "actions",
       headerName: "Acciones",
-      width: 100,
+      minWidth: 100,
+      flex: 1,
       getActions: (table: GridRowParams<ITableGet>) => {
         if (table.row.stateTable === "Ocupado") return [];
 
@@ -48,8 +61,37 @@ const Table = () => {
             className="textPrimary"
             color="warning"
             onClick={() => {
-              setSelectedTable(table.row);
-              openDialogUpdate();
+              showForm({
+                title: "Actualizar Mesa",
+                cancelButtonText: "CANCELAR",
+                confirmButtonText: "ACTUALIZAR",
+                customClass: {
+                  confirmButton: "custom-confirm custom-confirm-update",
+                },
+                icon: (
+                  <TableBar
+                    sx={{
+                      display: "block",
+                      margin: "auto",
+                      fontSize: "5rem",
+                      color: "#ED6C02",
+                    }}
+                    color="primary"
+                  />
+                ),
+                contentHtml: (
+                  <TableUpdateForm
+                    setFormikRef={(ref) => (formikRef = ref)}
+                    values={table.row}
+                  />
+                ),
+                preConfirm: async () => {
+                  await formikRef.submitForm();
+                  if (formikRef && !formikRef.isValid) {
+                    return false;
+                  }
+                },
+              });
             }}
           />,
           <GridActionsCellItem
@@ -58,8 +100,39 @@ const Table = () => {
             label="Delete"
             color="error"
             onClick={() => {
-              setSelectedTable(table.row);
-              openDialogDelete();
+              showForm({
+                title: "Eliminar Mesa",
+                cancelButtonText: "CANCELAR",
+                confirmButtonText: "ELIMINAR",
+                customClass: {
+                  confirmButton: "custom-confirm custom-confirm-create",
+                },
+                icon: (
+                  <DeleteForever
+                    sx={{
+                      display: "block",
+                      margin: "auto",
+                      fontSize: "5rem",
+                    }}
+                    color="error"
+                  />
+                ),
+                contentHtml: (
+                  <Typography>
+                    ¿Estás seguro de eliminar la mesa{" "}
+                    {`"${table.row.numTable}"`}?
+                  </Typography>
+                ),
+                preConfirm: async () => {
+                  await deleteObject(`api/table/${table.row.numTable}`);
+                  handleLastPageDeletion(gridApiRef, data.length);
+                  mutate("api/table");
+
+                  showSuccessToastMessage(
+                    "La mesa se ha eliminado correctamente"
+                  );
+                },
+              });
             }}
           />,
         ];
@@ -72,37 +145,9 @@ const Table = () => {
       <DataTable
         apiRef={gridApiRef}
         columns={columns}
-        loading={isLoading}
         rows={data}
-        getRowId={(row) => row.numSeats}
+        getRowId={(row) => row.numTable}
       />
-
-      <FormDialogDelete
-        title={`¿Estás seguro de eliminar la mesa "${selectedTable?.numTable}"?`}
-        open={openDialogD}
-        handleCancel={() => {
-          closeDialogDelete();
-        }}
-        handleSuccess={async () => {
-          await deleteObject(`api/table/${selectedTable?.numTable}`);
-          handleLastPageDeletion(gridApiRef, data!.length);
-          mutate("api/table");
-          closeDialogDelete();
-          handleOpen("La mesa se ha eliminado correctamente");
-          setSelectedTable(null);
-        }}
-      />
-
-      {openDialogU && (
-        <TableUpdateForm
-          setSelectedTable={setSelectedTable}
-          open={openDialogU}
-          closeDialog={() => {
-            closeDialogUpdate();
-          }}
-          table={selectedTable!}
-        />
-      )}
     </>
   );
 };

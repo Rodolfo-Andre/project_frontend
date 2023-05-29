@@ -1,84 +1,69 @@
-import { ButtonAdd, ComboBox, FormDialogPost } from "@/components";
-import { useOpenClose } from "@/hooks";
-import { Grid } from "@mui/material";
-import { useFormik } from "formik";
-import { PointOfSale } from "@mui/icons-material";
-import useSWR, { useSWRConfig } from "swr";
-import { useContext, useEffect } from "react";
-import { AlertContext } from "@/contexts/AlertSuccess";
-import { createObject, getObject } from "@/services/HttpRequests";
-import { IEstablishmentGet } from "@/interfaces";
-import { ICashPrincipal, ICashGet } from "@/interfaces";
-import { cashSchema } from "@/schemas";
+import ComboBox from "@/components/ComboBox";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import cashSchema from "@/schemas/Cash";
+import { useSWRConfig } from "swr";
+import { createObject } from "@/services/HttpRequests";
+import { IEstablishmentGet } from "@/interfaces/IEstablishment";
+import { IFormProps } from "@/interfaces/IFormProps";
+import { ICashPrincipal, ICashGet } from "@/interfaces/ICash";
+import { Formik } from "formik";
+import { theme } from "@/utils";
+import { ThemeProvider } from "@mui/material/styles";
+import { showSuccessToastMessage } from "@/lib/Messages";
 
-const CashAddForm = () => {
-  const { data: establishment } = useSWR("api/establishment/first", () =>
-    getObject<IEstablishmentGet>("api/establishment/first")
-  );
+interface ICashAddFormProps extends IFormProps<ICashPrincipal> {
+  establishment: IEstablishmentGet;
+}
+
+const CashAddForm = ({ setFormikRef, establishment }: ICashAddFormProps) => {
   const { mutate } = useSWRConfig();
-  const { handleOpen } = useContext(AlertContext);
-  const [open, openDialog, closeDialog] = useOpenClose(false);
-
-  const formik = useFormik<ICashPrincipal>({
-    initialValues: {},
-    validationSchema: cashSchema,
-    onSubmit: async (newCash) => {
-      await createObject<ICashGet, ICashPrincipal>("api/cash", newCash);
-      mutate("api/cash");
-      closeDialog();
-      handleOpen("La caja se ha registrado correctamente");
-      formik.resetForm();
-    },
-    validateOnChange: false,
-  });
-
-  useEffect(() => {
-    if (establishment) {
-      formik.setFieldValue("establishmentId", establishment?.id);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [establishment]);
 
   return (
-    <>
-      <ButtonAdd text="Añadir Caja" openDialog={openDialog} />
-
-      <FormDialogPost
-        Icon={PointOfSale}
-        open={open}
-        title="Añadir Caja"
-        handleCancel={() => {
-          closeDialog();
-          formik.resetForm();
+    <ThemeProvider theme={theme}>
+      <Formik<ICashPrincipal>
+        initialValues={{
+          establishmentId: establishment.id,
         }}
-        isSubmitting={formik.isSubmitting}
-        handleSuccess={() => {
-          formik.handleSubmit();
+        innerRef={(ref) => setFormikRef(ref!)}
+        validateOnChange={false}
+        validationSchema={cashSchema}
+        onSubmit={async (newCash) => {
+          await createObject<ICashGet, ICashPrincipal>("api/cash", newCash);
+          mutate("api/cash");
+
+          showSuccessToastMessage("La caja se ha registrado correctamente");
         }}
       >
-        <form onSubmit={formik.handleSubmit}>
-          <Grid container spacing={1.5} marginY={2}>
-            <Grid item xs={12}>
-              <ComboBox
-                id="id"
-                label="name"
-                url="api/establishment"
-                value={establishment?.id}
-                handleChange={(establishment: IEstablishmentGet | null) => {
-                  formik.setFieldValue("establishmentId", establishment?.id);
-                }}
-                disabled={true}
-                textFieldProps={{
-                  label: "Establecimiento",
-                  error: Boolean(formik.errors.establishmentId),
-                  helperText: formik.errors.establishmentId,
-                }}
-              />
-            </Grid>
-          </Grid>
-        </form>
-      </FormDialogPost>
-    </>
+        {({ errors, setFieldValue }) => (
+          <>
+            <Typography>¿Estás seguro de agregar una caja?</Typography>
+
+            <form style={{ display: "none" }}>
+              <Grid container spacing={1.5} marginY={2}>
+                <Grid item xs={12}>
+                  <ComboBox
+                    id="id"
+                    label="name"
+                    value={establishment}
+                    values={[establishment]}
+                    handleChange={(establishment: IEstablishmentGet | null) => {
+                      setFieldValue("establishmentId", establishment?.id);
+                    }}
+                    disabled={true}
+                    textFieldProps={{
+                      label: "Establecimiento",
+                      error: Boolean(errors.establishmentId),
+                      helperText: errors.establishmentId,
+                    }}
+                  />
+                </Grid>
+              </Grid>
+            </form>
+          </>
+        )}
+      </Formik>
+    </ThemeProvider>
   );
 };
 

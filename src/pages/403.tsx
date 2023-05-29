@@ -1,6 +1,7 @@
-import { ContentCenter, Error } from "@/components";
-import { IErrorProps } from "@/interfaces";
+import ContentCenter from "@/components/ContentCenter";
+import ErrorContent from "@/components/ErrorContent";
 import image403 from "public/403.png";
+import IErrorProps from "@/interfaces/IErrorProps";
 
 const Custom403 = () => {
   const error403: IErrorProps = {
@@ -12,8 +13,8 @@ const Custom403 = () => {
   };
 
   return (
-    <ContentCenter sxProps={{ minHeight: "100vh" }}>
-      <Error {...error403}></Error>
+    <ContentCenter sxProps={{ minHeight: "100svh" }}>
+      <ErrorContent {...error403}></ErrorContent>
     </ContentCenter>
   );
 };

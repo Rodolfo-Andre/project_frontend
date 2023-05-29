@@ -1,9 +1,12 @@
-import { AuthContext } from "@/contexts/Auth";
-import { Typography, Grid, TextField, Avatar } from "@mui/material";
-import { useContext } from "react";
-import { DateTimePicker } from "@mui/x-date-pickers";
-import { ContentBox } from "@/components";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Avatar from "@mui/material/Avatar";
+import Grid from "@mui/material/Grid";
+import ContentBox from "@/components/ContentBox";
 import dayjs from "dayjs";
+import { AuthContext } from "@/contexts/Auth";
+import { useContext } from "react";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 const AccountForm = () => {
   const { user } = useContext(AuthContext);
@@ -97,6 +100,7 @@ const AccountForm = () => {
               <Grid item xs={12} sm={6}>
                 <DateTimePicker
                   label="Fecha de creción"
+                  format="DD/MM/YYYY hh:mm"
                   defaultValue={date_created_at}
                   readOnly
                   slotProps={{

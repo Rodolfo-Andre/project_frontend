@@ -1,100 +1,180 @@
-import { Edit, Delete } from "@mui/icons-material";
-import {
-  GridColDef,
-  GridActionsCellItem,
-  GridRowParams,
-  GridValueGetterParams,
-  GridCellParams,
-  useGridApiRef,
-} from "@mui/x-data-grid";
-import { FormDialogDelete, DataTable } from "@/components";
-import { useOpenClose } from "@/hooks";
-import { useContext, useState } from "react";
-import { AlertContext } from "@/contexts/AlertSuccess";
-import { deleteObject, fetchAll } from "@/services/HttpRequests";
-import { IDishGet } from "@/interfaces/IDish";
-import { handleLastPageDeletion } from "@/utils";
-import { DishUpdateForm } from "@/features";
-import useSWR, { useSWRConfig } from "swr";
+import Delete from "@mui/icons-material/Delete";
+import Edit from "@mui/icons-material/Edit";
+import DataTable from "@/components/DataTable";
+import DishUpdateForm from "@/features/Dish/DishUpdateForm";
+import Fastfood from "@mui/icons-material/Fastfood";
 import Image from "next/image";
+import DeleteForever from "@mui/icons-material/DeleteForever";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import {
+  useGridApiRef,
+  GridActionsCellItem,
+  GridValueGetterParams,
+  GridRowParams,
+  GridColDef,
+  GridCellParams,
+} from "@mui/x-data-grid";
+import { deleteObject } from "@/services/HttpRequests";
+import { IDishGet, IDishCreateOrUpdate } from "@/interfaces/IDish";
+import { handleLastPageDeletion } from "@/utils";
+import { showForm } from "@/lib/Forms";
+import { showSuccessToastMessage } from "@/lib/Messages";
+import { FormikProps } from "formik/dist/types";
+import { useSWRConfig } from "swr";
+import { ICategoryDishGet } from "@/interfaces/ICategoryDish";
 
-const DishTable = () => {
-  const { data, isLoading } = useSWR("api/dish", () =>
-    fetchAll<IDishGet>("api/dish")
-  );
+interface IDishTableProps {
+  data: IDishGet[];
+  categoriesDishes: ICategoryDishGet[];
+}
+
+const DishTable = ({ data, categoriesDishes }: IDishTableProps) => {
+  let formikRef: FormikProps<IDishCreateOrUpdate>;
+
   const { mutate } = useSWRConfig();
-  const { handleOpen } = useContext(AlertContext);
-  const [selectedDish, setSelectedDish] = useState<IDishGet | null>(null);
-  const [openDialogD, openDialogDelete, closeDialogDelete] =
-    useOpenClose(false);
-  const [openDialogU, openDialogUpdate, closeDialogUpdate] =
-    useOpenClose(false);
+
   const gridApiRef = useGridApiRef();
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 100 },
+    { field: "id", headerName: "ID", minWidth: 100, flex: 1 },
     {
       field: "imageDish",
       headerName: "Imagen",
-      width: 200,
+      minWidth: 150,
       sortable: false,
       filterable: false,
+      flex: 3,
       renderCell: (params: GridCellParams<IDishGet>) => (
-        <Image
-          src={params.row.imgDish}
-          alt="Image"
-          width={800}
-          height={600}
-          priority={true}
-          style={{
-            width: "auto",
-            maxWidth: "100%",
-            objectFit: "cover",
-            height: "auto",
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100px",
+            height: "100px",
+            backgroundColor: "rgb(248, 249, 250)",
           }}
-        />
+        >
+          <Image
+            src={params.row.imgDish}
+            alt="Image"
+            width={800}
+            height={600}
+            priority={true}
+            style={{
+              width: "100%",
+              objectFit: "contain",
+              height: "100%",
+            }}
+          />
+        </Box>
       ),
     },
-    { field: "nameDish", headerName: "Plato", width: 200 },
-    { field: "priceDish", headerName: "Precio", width: 200 },
+    { field: "nameDish", headerName: "Plato", minWidth: 200, flex: 3 },
+    { field: "priceDish", headerName: "Precio", minWidth: 200, flex: 2 },
     {
       field: "category",
       headerName: "Categoría",
       type: "singleSelect",
-      width: 100,
+      minWidth: 150,
+      flex: 3,
       valueGetter: (params: GridValueGetterParams<IDishGet>) =>
-        params.row.categoryDish.nameCatDish,
-      valueOptions: [
-        ...new Set(data?.map((dish) => dish.categoryDish.nameCatDish)),
-      ],
+        params.row.categoryDish.id,
+      valueOptions: categoriesDishes.map((categoryDish) => ({
+        value: categoryDish.id,
+        label: categoryDish.nameCatDish,
+      })),
     },
 
     {
       field: "actions",
       type: "actions",
       headerName: "Acciones",
-      width: 100,
-      getActions: (categoryDish: GridRowParams<IDishGet>) => {
+      minWidth: 100,
+      flex: 1,
+      getActions: (dish: GridRowParams<IDishGet>) => {
         return [
           <GridActionsCellItem
-            key={categoryDish.row.id}
+            key={dish.row.id}
             icon={<Edit />}
             label="Edit"
             className="textPrimary"
             color="warning"
             onClick={() => {
-              setSelectedDish(categoryDish.row);
-              openDialogUpdate();
+              showForm({
+                title: "Actualizar Plato",
+                cancelButtonText: "CANCELAR",
+                confirmButtonText: "ACTUALIZAR",
+                customClass: {
+                  confirmButton: "custom-confirm custom-confirm-update",
+                },
+                icon: (
+                  <Fastfood
+                    sx={{
+                      display: "block",
+                      margin: "auto",
+                      fontSize: "5rem",
+                      color: "#ED6C02",
+                    }}
+                    color="primary"
+                  />
+                ),
+                contentHtml: (
+                  <DishUpdateForm
+                    data={categoriesDishes}
+                    setFormikRef={(ref) => (formikRef = ref)}
+                    values={dish.row}
+                  />
+                ),
+                preConfirm: async () => {
+                  await formikRef.submitForm();
+                  if (formikRef && !formikRef.isValid) {
+                    return false;
+                  }
+                },
+              });
             }}
           />,
           <GridActionsCellItem
-            key={categoryDish.row.id}
+            key={dish.row.id}
             icon={<Delete />}
             label="Delete"
             color="error"
             onClick={() => {
-              setSelectedDish(categoryDish.row);
-              openDialogDelete();
+              showForm({
+                title: "Eliminar Plato",
+                cancelButtonText: "CANCELAR",
+                confirmButtonText: "ELIMINAR",
+                customClass: {
+                  confirmButton: "custom-confirm custom-confirm-create",
+                },
+                icon: (
+                  <DeleteForever
+                    sx={{
+                      display: "block",
+                      margin: "auto",
+                      fontSize: "5rem",
+                    }}
+                    color="error"
+                  />
+                ),
+                contentHtml: (
+                  <Typography>
+                    ¿Estás seguro de eliminar el plato{" "}
+                    {`"${dish.row.nameDish}"`}?
+                  </Typography>
+                ),
+                preConfirm: async () => {
+                  await deleteObject(`api/dish/${dish.row.id}`);
+                  handleLastPageDeletion(gridApiRef, data.length);
+                  mutate("api/dish");
+
+                  showSuccessToastMessage(
+                    "El plato se ha eliminado correctamente"
+                  );
+                },
+              });
             }}
           />,
         ];
@@ -105,39 +185,11 @@ const DishTable = () => {
   return (
     <>
       <DataTable
-        rowHeight={200}
+        rowHeight={130}
         columns={columns}
-        loading={isLoading}
         rows={data}
         apiRef={gridApiRef}
       />
-
-      <FormDialogDelete
-        title={`¿Estás seguro de eliminar el plato "${selectedDish?.nameDish}"?`}
-        open={openDialogD}
-        handleCancel={() => {
-          closeDialogDelete();
-        }}
-        handleSuccess={async () => {
-          await deleteObject(`api/dish/${selectedDish?.id}`);
-          handleLastPageDeletion(gridApiRef, data!.length);
-          mutate("api/dish");
-          closeDialogDelete();
-          handleOpen("El plato se ha eliminado correctamente");
-          setSelectedDish(null);
-        }}
-      />
-
-      {openDialogU && (
-        <DishUpdateForm
-          setSelectedDish={setSelectedDish}
-          open={openDialogU}
-          closeDialog={() => {
-            closeDialogUpdate();
-          }}
-          dish={selectedDish!}
-        />
-      )}
     </>
   );
 };

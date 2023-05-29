@@ -1,6 +1,7 @@
+import ProfileButton from "@/components/ProfileButton";
+import ProfileMenu from "@/components/ProfileMenu";
 import { AuthContext } from "@/contexts/Auth";
 import { useState, useContext, MouseEvent } from "react";
-import { ProfileButton, ProfileMenu } from "@/components";
 
 const Profile = () => {
   const { user, logout } = useContext(AuthContext);

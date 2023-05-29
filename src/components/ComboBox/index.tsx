@@ -1,13 +1,11 @@
-import { fetchAll } from "@/services/HttpRequests";
-import { Autocomplete, TextField, TextFieldProps } from "@mui/material";
-import { useEffect, useState } from "react";
-import useSWR from "swr";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField, { TextFieldProps } from "@mui/material/TextField";
 
 interface IComboBoxProps<T> {
-  value?: string | number;
+  value?: T;
+  values: T[];
   id: keyof T;
   label: keyof T;
-  url: string;
   textFieldProps: TextFieldProps;
   disabled?: boolean;
   handleChange: (value: T | null) => void;
@@ -15,33 +13,21 @@ interface IComboBoxProps<T> {
 
 const ComboBox = <T,>({
   value,
-  url,
+  values,
   id,
   label,
   textFieldProps,
   disabled,
   handleChange,
 }: IComboBoxProps<T>) => {
-  const { data, isLoading } = useSWR(url, () => fetchAll<T>(url));
-  const [object, setObject] = useState<T | null>(null);
-
-  useEffect(() => {
-    if (!isLoading && value && data) {
-      setObject(data.find((object) => object[id] === value) || null);
-    }
-    console.log(value);
-  }, [isLoading, data, id, value]);
-
   return (
     <Autocomplete
-      value={object}
+      value={value}
       isOptionEqualToValue={(option: T, value: T) =>
         value && option[id] === value[id]
       }
-      options={data || []}
-      loading={isLoading}
+      options={values || []}
       onChange={(_event: any, newValue: T | null) => {
-        setObject(newValue);
         handleChange(newValue);
       }}
       disabled={disabled}

@@ -1,8 +1,8 @@
-import { useContext, useEffect, ComponentType } from "react";
-import { AuthContext } from "@/contexts/Auth";
-import { UserRoles } from "@/interfaces";
-import { LoadingBackdrop } from "@/components";
 import Router from "next/router";
+import LoadingBackdrop from "@/components/LoadingBackdrop";
+import UserRoles from "@/interfaces/UserRoles";
+import { AuthContext } from "@/contexts/Auth";
+import { useContext, useEffect, ComponentType } from "react";
 
 interface IProtectedRouteForAuthenticated {
   Component: ComponentType;
@@ -24,7 +24,7 @@ const ProtectedRouteForAuthenticated = <P extends Object>({
       }
 
       if (roles && !roles.includes(role)) {
-        Router.push("403");
+        Router.replace("/403");
       }
     }, [user, role]);
 

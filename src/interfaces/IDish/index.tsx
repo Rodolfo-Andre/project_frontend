@@ -1,4 +1,4 @@
-import { ICategoryDishGet } from "../ICategoryDish";
+import { ICategoryDishGet } from "@/interfaces/ICategoryDish";
 
 interface IDishPrincipal {
   nameDish: string;

@@ -1,7 +1,8 @@
-import { ContentCenter, Error } from "@/components";
-import { IErrorProps } from "@/interfaces";
+import ContentCenter from "@/components/ContentCenter";
+import ErrorContent from "@/components/ErrorContent";
 import Route from "next/router";
 import image404 from "public/404.png";
+import IErrorProps from "@/interfaces/IErrorProps";
 
 const Custom404 = () => {
   const error404: IErrorProps = {
@@ -13,8 +14,8 @@ const Custom404 = () => {
   };
 
   return (
-    <ContentCenter sxProps={{ minHeight: "100vh" }}>
-      <Error {...error404}></Error>
+    <ContentCenter sxProps={{ minHeight: "100svh" }}>
+      <ErrorContent {...error404}></ErrorContent>
     </ContentCenter>
   );
 };

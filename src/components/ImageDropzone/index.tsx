@@ -1,9 +1,10 @@
-import { useDropzone } from "react-dropzone";
-import { useEffect, useState } from "react";
-import { Box, Typography } from "@mui/material";
-import { AddAPhoto } from "@mui/icons-material";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import AddAPhoto from "@mui/icons-material/AddAPhoto";
 import Image from "next/image";
-import ContentCenter from "../ContentCenter";
+import ContentCenter from "@/components/ContentCenter";
+import { useEffect, useState } from "react";
+import { useDropzone } from "react-dropzone";
 
 interface IImageDropzoneProps {
   onDrop: (file: File) => void;
@@ -62,7 +63,7 @@ const ImageDropzone = ({
           style={{
             width: "100%",
             height: "100%",
-            objectFit: "cover",
+            objectFit: "contain",
           }}
           onLoad={() => {
             URL.revokeObjectURL(image);

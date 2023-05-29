@@ -1,5 +1,6 @@
-import { ProtectedRouteForAuthenticated, Layout } from "@/components";
-import { PayMethodSection } from "@/sections";
+import ProtectedRouteForAuthenticated from "@/components/ProtectedRouteForAuthenticated";
+import Layout from "@/components/Layout";
+import PayMethodSection from "@/sections/PayMethodSection";
 
 const PayMethodPage = () => {
   return (
@@ -9,4 +10,7 @@ const PayMethodPage = () => {
   );
 };
 
-export default ProtectedRouteForAuthenticated({ Component: PayMethodPage });
+export default ProtectedRouteForAuthenticated({
+  Component: PayMethodPage,
+  roles: ["Administrador"],
+});
