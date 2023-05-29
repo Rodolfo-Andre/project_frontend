@@ -7,3 +7,9 @@ interface IPayMethodGet extends IPayMethodPrincipal {
 }
 
 export type { IPayMethodPrincipal, IPayMethodGet };
+
+
+export type PayMethod = {
+  id: number;
+  paymethod: string;
+};

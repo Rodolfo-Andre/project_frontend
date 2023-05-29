@@ -1,5 +1,9 @@
 import { Box } from "@mui/material";
-import { DataGrid, GridColDef, GridRowIdGetter } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridColDef,
+  GridRowIdGetter,
+} from "@mui/x-data-grid";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
 import { MutableRefObject } from "react";
 
@@ -19,6 +23,7 @@ const DataTable = <T,>({
   getRowId,
   rowHeight,
   apiRef,
+
 }: IDataTableProps<T>) => {
   return (
     <Box sx={{ display: "flex", marginY: 2, height: "370px" }}>
@@ -28,9 +33,11 @@ const DataTable = <T,>({
         rows={rows || []}
         columns={columns}
         rowHeight={rowHeight || 52}
+        pagination
         initialState={{
           pagination: {
             paginationModel: {
+              page: 0,
               pageSize: 5,
             },
           },
@@ -38,7 +45,7 @@ const DataTable = <T,>({
         getRowId={getRowId}
         loading={loading}
         disableRowSelectionOnClick
-        pageSizeOptions={[5]}
+        pageSizeOptions={[5, 10, 25]}
       />
     </Box>
   );

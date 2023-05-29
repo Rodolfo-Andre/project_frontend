@@ -9,4 +9,5 @@ interface ICashGet {
   establishment: IEstablishmentGet;
 }
 
+
 export type { ICashPrincipal, ICashGet };

@@ -1,5 +1,7 @@
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
+import { AxiosError } from "axios";
 import { MutableRefObject } from "react";
+import Swal, { SweetAlertOptions, SweetAlertResult } from "sweetalert2";
 
 const handleLastPageDeletion = (
   gridApiRef: MutableRefObject<GridApiCommunity>,
@@ -37,3 +39,48 @@ const uploadToCloudinary = async (file: File) => {
 };
 
 export { handleLastPageDeletion, uploadToCloudinary };
+
+export const handleError = (error: any) => {
+  const errores = error as AxiosError;
+  const { response, status } = errores;
+  const text = "Comuníquese con Soporte Técnico";
+  if (!response) {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: text,
+    });
+
+    return;
+  }
+
+  if (status === 500) {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: text,
+    });
+  }
+  const { message } = response.data as { message: string };
+  Swal.fire({
+    icon: "error",
+    title: "Oops...",
+    text: message ?? response.data,
+  });
+};
+
+type ICons = "success" | "error" | "warning" | "info" | "question";
+export const AlertMessage = (
+  title: string,
+  text: string,
+  icon: ICons,
+  props?: SweetAlertOptions
+): Promise<SweetAlertResult<any>> => {
+  return Swal.fire({
+    title: title,
+    text: text,
+    icon: icon,
+    confirmButtonText: "Ok",
+    ...props,
+  });
+};

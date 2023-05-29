@@ -23,7 +23,7 @@ const ProfileButton = ({ user, handleOpen, anchorEl }: IProfileButtonProps) => {
         endIcon={anchorEl ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
         onClick={handleOpen}
       >
-        <Avatar alt="avatar" src={user.img} />
+        <Avatar alt="avatar" src={user?.img ?? ''} />
         <Typography variant="subtitle2">
           {user?.firstName} {user?.lastName}
         </Typography>
