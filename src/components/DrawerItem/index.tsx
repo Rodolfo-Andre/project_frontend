@@ -6,6 +6,8 @@ import Restaurant from "@mui/icons-material/Restaurant";
 import Payments from "@mui/icons-material/Payments";
 import TableRestaurant from "@mui/icons-material/TableRestaurant";
 import Storefront from "@mui/icons-material/Storefront";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import PointOfSale from "@mui/icons-material/PointOfSale";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
@@ -13,20 +15,11 @@ import ListItemButtonLink from "@/components/ListItemButtonLink";
 import useSWR from "swr";
 import ListItemButtonWithCollapse from "@/components/ListItemButtonWithCollapse";
 import UserRoles from "@/interfaces/UserRoles";
-import IMenuItemsProps from "@/interfaces/IMenuItemsProps";
 import IMenuItemsWithSubItemsProps from "@/interfaces/IMenuItemsWithSubItemsProps";
 import { IEstablishmentGet } from "@/interfaces/IEstablishment";
 import { useContext } from "react";
 import { AuthContext } from "@/contexts/Auth";
 import { getObject } from "@/services/HttpRequests";
-
-const items: IMenuItemsProps[] = [
-  {
-    href: "/",
-    text: "Inicio",
-    Icon: Home,
-  },
-];
 
 const itemsWithSubItems: IMenuItemsWithSubItemsProps[] = [
   {
@@ -86,9 +79,23 @@ const DrawerItem = () => {
       </Typography>
 
       <List>
-        {items.map((item) => (
-          <ListItemButtonLink key={item.text} {...item} />
-        ))}
+        <ListItemButtonLink Icon={Home} text="Inicio" href="/" />
+      </List>
+
+      <List>
+        <ListItemButtonLink
+          Icon={ReceiptLongIcon}
+          text="Generar Comandas"
+          href="/commands"
+        />
+      </List>
+
+      <List>
+        <ListItemButtonLink
+          Icon={AccountBalanceWalletIcon}
+          text="Caja Registradora"
+          href="/vouchers"
+        />
       </List>
 
       {user?.role.roleName === ("Administrador" as UserRoles) && (

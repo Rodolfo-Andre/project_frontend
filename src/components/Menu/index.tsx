@@ -14,11 +14,11 @@ const Menu = ({ drawerProps, sxProps }: IMenuProps) => {
     <Drawer
       sx={{
         ...sxProps,
-        width: 260,
+        width: 280,
         zIndex: 11,
         flexShrink: 0,
         "& .MuiDrawer-paper": {
-          width: 260,
+          width: 280,
           boxSizing: "border-box",
         },
         "& .MuiList-root": {

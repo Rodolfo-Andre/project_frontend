@@ -42,8 +42,6 @@ const uploadToCloudinary = async (file: File) => {
   }
 };
 
-
-
 export const handleError = (error: any) => {
   const errores = error as AxiosError;
   const { response, status } = errores;
@@ -88,11 +86,12 @@ export const AlertMessage = (
     ...props,
   });
 };
+
 const theme = createTheme(
   {
     components: {
       MuiCssBaseline: {
-        styleOverrides: (themeParam) => ({
+        styleOverrides: () => ({
           "&::-webkit-scrollbar": {
             width: "7px",
             height: "7px",

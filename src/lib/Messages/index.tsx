@@ -1,5 +1,6 @@
 import Typography from "@mui/material/Typography";
 import Dangerous from "@mui/icons-material/Dangerous";
+import HelpCenterIcon from "@mui/icons-material/HelpCenter";
 import withReactContent, { ReactElementOr } from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import Router from "next/router";
@@ -52,6 +53,35 @@ const showErrorMessage = ({ title, contentHtml }: IShowErrorMessage) => {
     allowEscapeKey: false,
     showCancelButton: true,
     showConfirmButton: false,
+    cancelButtonText: "CERRAR",
+  });
+};
+
+const showInformationMessage = ({ title, contentHtml }: IShowErrorMessage) => {
+  ReactSwal.fire({
+    title,
+    customClass: {
+      icon: "custom-icon",
+      actions: "custom-actions",
+      cancelButton: "custom-confirm-create custom-confirm",
+    },
+    iconHtml: (
+      <HelpCenterIcon
+        sx={{
+          display: "block",
+          margin: "auto",
+          fontSize: "5rem",
+          color: "#0D6EFD",
+        }}
+      />
+    ),
+    html: contentHtml,
+    target: "body",
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    showCancelButton: true,
+    showConfirmButton: false,
+    cancelButtonText: "CERRAR",
   });
 };
 
@@ -68,4 +98,9 @@ const showSuccessToastMessage = (title: string) => {
   });
 };
 
-export { showWelcomeMessage, showErrorMessage, showSuccessToastMessage };
+export {
+  showWelcomeMessage,
+  showErrorMessage,
+  showSuccessToastMessage,
+  showInformationMessage,
+};

@@ -47,7 +47,7 @@ const styles = {
   },
 };
 
-const ComandsPage = () => {
+const CommandsPage = () => {
   const { data, error, loading } = useFectch<ICommandGet[]>(
     "api/Command",
     "get"
@@ -237,4 +237,4 @@ const ComandsPage = () => {
   );
 };
 
-export default ComandsPage;
+export default CommandsPage;

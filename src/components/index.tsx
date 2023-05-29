@@ -21,5 +21,6 @@ export { default as ProfileButton } from "./ProfileButton";
 export { default as ProfileMenu } from "./ProfileMenu";
 export { default as ProgressBar } from "./ProgressBar";
 export { default as ProtectedRouteForAuthenticated } from "./ProtectedRouteForAuthenticated";
+export { default as SeverityPill } from "./SeverityPill";
 export { default as SignInForm } from "./SignInForm";
 export { default as Welcome } from "./Welcome";

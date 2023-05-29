@@ -35,11 +35,11 @@ const CashAddForm = ({ setFormikRef, establishment }: ICashAddFormProps) => {
           showSuccessToastMessage("La caja se ha registrado correctamente");
         }}
       >
-        {({ errors, setFieldValue }) => (
+        {({ errors, setFieldValue, handleSubmit }) => (
           <>
             <Typography>¿Estás seguro de agregar una caja?</Typography>
 
-            <form style={{ display: "none" }}>
+            <form onSubmit={handleSubmit} style={{ display: "none" }}>
               <Grid container spacing={1.5} marginY={2}>
                 <Grid item xs={12}>
                   <ComboBox

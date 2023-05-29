@@ -38,8 +38,8 @@ const PayMethodAddForm = ({
           );
         }}
       >
-        {({ values, errors, handleChange, isSubmitting }) => (
-          <form>
+        {({ values, errors, handleChange, isSubmitting, handleSubmit }) => (
+          <form onSubmit={handleSubmit}>
             <Grid container spacing={1.5} marginY={2}>
               <Grid item xs={12}>
                 <TextField

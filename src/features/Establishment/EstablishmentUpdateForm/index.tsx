@@ -44,7 +44,7 @@ const EstablishmentUpdateForm = ({
 
   return (
     <Grid item sx={{ paddingY: 1 }} xs={12} sm>
-      <form>
+      <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <TextField

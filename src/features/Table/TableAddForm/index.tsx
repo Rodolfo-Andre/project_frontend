@@ -11,7 +11,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import { showSuccessToastMessage } from "@/lib/Messages";
 
 const initialValues: ITablePrincipal = {
-  numSeats: 0,
+  numSeats: 1,
 };
 
 const TableAddForm = ({ setFormikRef }: IFormProps<ITablePrincipal>) => {
@@ -31,13 +31,13 @@ const TableAddForm = ({ setFormikRef }: IFormProps<ITablePrincipal>) => {
           showSuccessToastMessage("La mesa se ha registrado correctamente");
         }}
       >
-        {({ values, errors, handleChange, isSubmitting }) => (
-          <form>
+        {({ values, errors, handleChange, isSubmitting, handleSubmit }) => (
+          <form onSubmit={handleSubmit}>
             <Grid container spacing={1.5} marginY={2}>
               <Grid item xs={12}>
                 <TextField
                   id="numSeats"
-                  type="text"
+                  type="number"
                   label="Cantidad de Asientos:"
                   error={Boolean(errors.numSeats)}
                   value={values.numSeats}

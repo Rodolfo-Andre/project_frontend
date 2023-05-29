@@ -2,9 +2,12 @@ import Delete from "@mui/icons-material/Delete";
 import DeleteForever from "@mui/icons-material/DeleteForever";
 import Typography from "@mui/material/Typography";
 import Edit from "@mui/icons-material/Edit";
+import Help from "@mui/icons-material/Help";
 import TableBar from "@mui/icons-material/TableBar";
 import DataTable from "@/components/DataTable";
 import TableUpdateForm from "@/features/Table/TableUpdateForm";
+import SeverityPill from "@/components/SeverityPill";
+import Colors from "@/interfaces/Colors";
 import {
   useGridApiRef,
   GridActionsCellItem,
@@ -15,13 +18,21 @@ import { deleteObject } from "@/services/HttpRequests";
 import { ITableGet, ITableUpdate } from "@/interfaces/ITable";
 import { handleLastPageDeletion } from "@/utils";
 import { showForm } from "@/lib/Forms";
-import { showSuccessToastMessage } from "@/lib/Messages";
+import {
+  showInformationMessage,
+  showSuccessToastMessage,
+} from "@/lib/Messages";
 import { FormikProps } from "formik/dist/types";
 import { useSWRConfig } from "swr";
 
 interface ITableProps {
   data: ITableGet[];
 }
+
+const statusMap = {
+  Libre: "success",
+  Ocupado: "error",
+};
 
 const Table = ({ data }: ITableProps) => {
   let formikRef: FormikProps<ITableUpdate>;
@@ -43,6 +54,15 @@ const Table = ({ data }: ITableProps) => {
       headerName: "Estado de Mesa",
       minWidth: 140,
       flex: 5,
+      renderCell: (params) => {
+        return (
+          <SeverityPill
+            color={statusMap[params.value as keyof typeof statusMap] as Colors}
+          >
+            {params.value}
+          </SeverityPill>
+        );
+      },
     },
     {
       field: "actions",
@@ -51,7 +71,22 @@ const Table = ({ data }: ITableProps) => {
       minWidth: 100,
       flex: 1,
       getActions: (table: GridRowParams<ITableGet>) => {
-        if (table.row.stateTable === "Ocupado") return [];
+        if (table.row.stateTable === "Ocupado")
+          return [
+            <GridActionsCellItem
+              key={table.row.numTable}
+              icon={<Help />}
+              label="Info"
+              className="textPrimary"
+              color="primary"
+              onClick={() => {
+                showInformationMessage({
+                  title: `NO PUEDES REALIZAR NINGUNA ACCIÓN EN LA MESA`,
+                  contentHtml: `Debido a que la mesa está ocupada, no es posible eliminar ni actualizar`,
+                });
+              }}
+            />,
+          ];
 
         return [
           <GridActionsCellItem

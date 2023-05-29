@@ -45,8 +45,15 @@ const EmployeeAddForm = ({ setFormikRef, data }: IEmployeeAddFormProps) => {
           showSuccessToastMessage("El empleado se ha registrado correctamente");
         }}
       >
-        {({ values, errors, handleChange, setFieldValue, isSubmitting }) => (
-          <form>
+        {({
+          values,
+          errors,
+          handleChange,
+          setFieldValue,
+          isSubmitting,
+          handleSubmit,
+        }) => (
+          <form onSubmit={handleSubmit}>
             <Grid container spacing={1.5} marginY={2}>
               <Grid item xs={12} sm={6}>
                 <TextField

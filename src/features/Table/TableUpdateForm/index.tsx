@@ -39,13 +39,13 @@ const TableUpdateForm = ({
           showSuccessToastMessage("La mesa se ha modificado correctamente");
         }}
       >
-        {({ values, errors, handleChange, isSubmitting }) => (
-          <form>
+        {({ values, errors, handleChange, isSubmitting, handleSubmit }) => (
+          <form onSubmit={handleSubmit}>
             <Grid container spacing={1.5} marginY={2}>
               <Grid item xs={12}>
                 <TextField
                   id="numSeats"
-                  type="text"
+                  type="number"
                   label="Cantidad de Asientos"
                   error={Boolean(errors.numSeats)}
                   value={values.numSeats}

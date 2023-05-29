@@ -1,3 +1,4 @@
+export type { default as Colors } from "./Colors";
 export type { default as IAuthContext } from "./IAuthContext";
 export * from "./ICash";
 export * from "./ICategoryDish";

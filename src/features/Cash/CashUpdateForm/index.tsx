@@ -36,8 +36,8 @@ const CashUpdateForm = ({
           showSuccessToastMessage("La caja se ha modificado correctamente");
         }}
       >
-        {({ values, errors, setFieldValue, isSubmitting }) => (
-          <form>
+        {({ errors, setFieldValue, isSubmitting, handleSubmit }) => (
+          <form onSubmit={handleSubmit}>
             <Grid container spacing={1.5} marginY={2}>
               <Grid item xs={12}>
                 <ComboBox

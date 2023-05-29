@@ -1,5 +1,6 @@
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField, { TextFieldProps } from "@mui/material/TextField";
+import { useState } from "react";
 
 interface IComboBoxProps<T> {
   value?: T;
@@ -20,15 +21,18 @@ const ComboBox = <T,>({
   disabled,
   handleChange,
 }: IComboBoxProps<T>) => {
+  const [valueState, setValueState] = useState<T | null>(value ?? null);
+
   return (
     <Autocomplete
-      value={value}
+      value={valueState}
       isOptionEqualToValue={(option: T, value: T) =>
         value && option[id] === value[id]
       }
       options={values || []}
       onChange={(_event: any, newValue: T | null) => {
         handleChange(newValue);
+        setValueState(newValue);
       }}
       disabled={disabled}
       getOptionLabel={(options: T) => options[label] as string}
