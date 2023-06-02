@@ -50,7 +50,6 @@ const PayMethodTable = ({ data }: IPayMethodTableProps) => {
             key={payMethod.row.id}
             icon={<Edit />}
             label="Edit"
-            className="textPrimary"
             color="warning"
             onClick={() => {
               showForm({

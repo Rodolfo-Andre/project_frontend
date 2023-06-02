@@ -16,12 +16,14 @@ import useSWR from "swr";
 import ListItemButtonWithCollapse from "@/components/ListItemButtonWithCollapse";
 import UserRoles from "@/interfaces/UserRoles";
 import IMenuItemsWithSubItemsProps from "@/interfaces/IMenuItemsWithSubItemsProps";
+import Assessment from "@mui/icons-material/Assessment";
+import Newspaper from "@mui/icons-material/Newspaper";
 import { IEstablishmentGet } from "@/interfaces/IEstablishment";
 import { useContext } from "react";
 import { AuthContext } from "@/contexts/Auth";
 import { getObject } from "@/services/HttpRequests";
 
-const itemsWithSubItems: IMenuItemsWithSubItemsProps[] = [
+const settingsItems: IMenuItemsWithSubItemsProps[] = [
   {
     text: "Configuración",
     Icon: Build,
@@ -66,6 +68,21 @@ const itemsWithSubItems: IMenuItemsWithSubItemsProps[] = [
   },
 ];
 
+const reportsItems: IMenuItemsWithSubItemsProps[] = [
+  {
+    text: "Reportes",
+    Icon: Assessment,
+    section: "reports",
+    items: [
+      {
+        href: "/reports/voucher",
+        text: "Comprobantes de Pago",
+        Icon: Newspaper,
+      },
+    ],
+  },
+];
+
 const DrawerItem = () => {
   const { user } = useContext(AuthContext);
   const { data } = useSWR("api/establishment/first", () =>
@@ -100,11 +117,17 @@ const DrawerItem = () => {
 
       {user?.role.roleName === ("Administrador" as UserRoles) && (
         <List>
-          {itemsWithSubItems.map((item) => (
+          {settingsItems.map((item) => (
             <ListItemButtonWithCollapse key={item.text} {...item} />
           ))}
         </List>
       )}
+
+      <List>
+        {reportsItems.map((item) => (
+          <ListItemButtonWithCollapse key={item.text} {...item} />
+        ))}
+      </List>
     </>
   );
 };

@@ -84,7 +84,6 @@ const EmployeeTable = ({ data, roles }: IEmpoyeeTableProps) => {
             key={employee.row.id}
             icon={<Edit />}
             label="Edit"
-            className="textPrimary"
             color="warning"
             onClick={() => {
               showForm({

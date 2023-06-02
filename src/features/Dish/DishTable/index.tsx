@@ -99,7 +99,6 @@ const DishTable = ({ data, categoriesDishes }: IDishTableProps) => {
             key={dish.row.id}
             icon={<Edit />}
             label="Edit"
-            className="textPrimary"
             color="warning"
             onClick={() => {
               showForm({

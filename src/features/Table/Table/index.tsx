@@ -77,7 +77,6 @@ const Table = ({ data }: ITableProps) => {
               key={table.row.numTable}
               icon={<Help />}
               label="Info"
-              className="textPrimary"
               color="primary"
               onClick={() => {
                 showInformationMessage({
@@ -93,7 +92,6 @@ const Table = ({ data }: ITableProps) => {
             key={table.row.numTable}
             icon={<Edit />}
             label="Edit"
-            className="textPrimary"
             color="warning"
             onClick={() => {
               showForm({

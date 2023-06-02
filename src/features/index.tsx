@@ -5,3 +5,4 @@ export * from "./Establishment";
 export * from "./PayMethod";
 export * from "./Table";
 export * from "./Dish";
+export * from "./VoucherReport";

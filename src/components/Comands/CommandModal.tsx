@@ -147,7 +147,7 @@ const CommandModal: FC<ICommandModalProps> = ({
           console.log(dataTable?.id);
 
           await updateCommand(data, dataTable?.id);
-           window.location.reload();
+          window.location.reload();
           return;
         }
         await createCommand(data);
@@ -179,19 +179,18 @@ const CommandModal: FC<ICommandModalProps> = ({
             "cantidadClientes",
             dataTable?.tableRestaurant.numSeats
           );
-         
 
           if (dataTable != undefined) {
             const lista = dataTable?.detailsComand.map((d) => {
-              return { 
-                 id: d.dish.id,
-                 name: d.dish.nameDish,
-                 category: d.dish.categoryDish.nameCatDish,
-                 quantity: d.cantDish,
-                 price: d.dish.priceDish,
-                 observation: d.observation,
-              }
-           });
+              return {
+                id: d.dish.id,
+                name: d.dish.nameDish,
+                category: d.dish.categoryDish.nameCatDish,
+                quantity: d.cantDish,
+                price: d.dish.priceDish,
+                observation: d.observation,
+              };
+            });
             setListDish(lista);
           }
         }
@@ -463,10 +462,10 @@ const CommandModal: FC<ICommandModalProps> = ({
                     label="Empleado"
                     variant="outlined"
                     value={
-                      dataTable?.user.employee
-                        ? dataTable?.user.employee.firstName +
+                      dataTable?.employee
+                        ? dataTable?.employee.firstName +
                           " " +
-                          dataTable?.user.employee.lastName
+                          dataTable?.employee.lastName
                         : user?.firstName + " " + user?.lastName
                     }
                     disabled

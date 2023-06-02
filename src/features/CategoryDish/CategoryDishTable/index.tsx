@@ -48,7 +48,6 @@ const CategoryDishTable = ({ data }: ICategoryDishTableProps) => {
             key={categoryDish.row.id}
             icon={<Edit />}
             label="Edit"
-            className="textPrimary"
             color="warning"
             onClick={() => {
               showForm({

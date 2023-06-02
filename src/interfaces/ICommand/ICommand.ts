@@ -3,7 +3,7 @@ import { IUserPrincipal } from "../IUser";
 
 export interface ICommand {
   id: number;
-  tableRestaurantId : number;
+  tableRestaurantId: number;
   cantSeats: number;
   listDetails: DetailCommandOrder[];
   statesCommand: StatesCommand;
@@ -21,49 +21,47 @@ interface DetailCommandOrder {
   observation: string;
 }
 
-
-
 export type ICommandGet = {
-  id:              number;
-  detailsComand:   DishList[];
-  statesCommand:   StatesCommand;
-  user:            User;
+  id: number;
+  detailsComand: DishList[];
+  statesCommand: StatesCommand;
+  employee: Employee;
   tableRestaurant: TableRestaurant;
-}
+};
 
 export type TableRestaurant = {
-  numTable:   number;
+  numTable: number;
   stateTable: string;
-  numSeats:   number;
-}
+  numSeats: number;
+};
 
 export type User = {
   employee: Employee;
-  email:    string;
-}
+  email: string;
+};
 
 export type Employee = {
-  id:        number;
+  id: number;
   firstName: string;
-  lastName:  string;
-  phone:     string;
-}
+  lastName: string;
+  phone: string;
+};
 
 export type DishList = {
-  dish:        Dish;
-  cantDish:    number;
+  dish: Dish;
+  cantDish: number;
   observation: string;
-}
+};
 
 export type Dish = {
-  id:           string;
+  id: string;
   categoryDish: CategoryDish;
-  nameDish:     string;
-  priceDish:    number;
-  imgDish:      string;
-}
+  nameDish: string;
+  priceDish: number;
+  imgDish: string;
+};
 
 export type CategoryDish = {
-  id:          string;
+  id: string;
   nameCatDish: string;
-}
+};
