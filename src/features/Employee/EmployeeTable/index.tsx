@@ -15,12 +15,12 @@ import {
 } from "@mui/x-data-grid";
 import { IEmployeeCreateOrUpdate, IEmployeeGet } from "@/interfaces/IEmployee";
 import { useContext } from "react";
-import { deleteObject } from "@/services/HttpRequests";
+import { deleteObject, getObject } from "@/services/HttpRequests";
 import { handleLastPageDeletion } from "@/utils";
 import { useSWRConfig } from "swr";
 import { AuthContext } from "@/contexts/Auth";
 import { showForm } from "@/lib/Forms";
-import { showSuccessToastMessage } from "@/lib/Messages";
+import { showErrorMessage, showSuccessToastMessage } from "@/lib/Messages";
 import { FormikProps } from "formik";
 import { IRoleGet } from "@/interfaces/IRole";
 
@@ -41,6 +41,7 @@ const EmployeeTable = ({ data, roles }: IEmpoyeeTableProps) => {
     { field: "id", headerName: "ID", minWidth: 100, flex: 1 },
     { field: "firstName", headerName: "Nombres", minWidth: 200, flex: 2 },
     { field: "lastName", headerName: "Apellidos", minWidth: 200, flex: 2 },
+    { field: "dni", headerName: "DNI", minWidth: 100, flex: 2 },
     {
       field: "role",
       headerName: "Rol",
@@ -129,7 +130,22 @@ const EmployeeTable = ({ data, roles }: IEmpoyeeTableProps) => {
               icon={<Delete />}
               label="Delete"
               color="error"
-              onClick={() => {
+              onClick={async () => {
+                const count = await getObject<number>(
+                  `api/Employee/${employee.id}/number-commands`
+                );
+
+                if (count > 0) {
+                  showErrorMessage({
+                    title: `NO SE PUEDE ELIMINAR EL EMPLEADO - ${employee.id}`,
+                    contentHtml: `No es posible eliminar el empleado debido a que se encontró ${count} comanda${
+                      count !== 1 ? "s" : ""
+                    } asignado a dicho empleado.`,
+                  });
+
+                  return;
+                }
+
                 showForm({
                   title: "Eliminar Empleado",
                   cancelButtonText: "CANCELAR",

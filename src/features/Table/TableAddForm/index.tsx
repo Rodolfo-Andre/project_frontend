@@ -6,7 +6,7 @@ import { createObject } from "@/services/HttpRequests";
 import { ITableGet, ITablePrincipal } from "@/interfaces/ITable";
 import { IFormProps } from "@/interfaces/IFormProps";
 import { Formik } from "formik";
-import { theme } from "@/utils";
+import { onlyNumber, theme } from "@/utils";
 import { ThemeProvider } from "@mui/material/styles";
 import { showSuccessToastMessage } from "@/lib/Messages";
 
@@ -42,6 +42,8 @@ const TableAddForm = ({ setFormikRef }: IFormProps<ITablePrincipal>) => {
                   error={Boolean(errors.numSeats)}
                   value={values.numSeats}
                   onChange={handleChange}
+                  onKeyDown={onlyNumber}
+                  InputProps={{ componentsProps: { input: { min: 1 } } }}
                   helperText={errors.numSeats}
                   disabled={isSubmitting}
                   fullWidth

@@ -10,6 +10,7 @@ import { updateObject } from "@/services/HttpRequests";
 import { useFormik } from "formik";
 import { useSWRConfig } from "swr";
 import { showSuccessToastMessage } from "@/lib/Messages";
+import { onlyNumber } from "@/utils";
 
 interface IEstablishmentUpdateFormProps {
   establishment: IEstablishmentGet;
@@ -82,6 +83,7 @@ const EstablishmentUpdateForm = ({
               error={Boolean(formik.errors.phone)}
               value={formik.values.phone}
               onChange={formik.handleChange}
+              onKeyDown={onlyNumber}
               helperText={formik.errors.phone}
               disabled={formik.isSubmitting}
               fullWidth
@@ -96,6 +98,7 @@ const EstablishmentUpdateForm = ({
               error={Boolean(formik.errors.ruc)}
               value={formik.values.ruc}
               onChange={formik.handleChange}
+              onKeyDown={onlyNumber}
               helperText={formik.errors.ruc}
               disabled={formik.isSubmitting}
               fullWidth

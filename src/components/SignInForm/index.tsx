@@ -6,8 +6,13 @@ import TextField, { TextFieldProps } from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import useSignIn from "@/hooks/useSingIn";
 import ISignIn from "@/interfaces/ISignIn";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
 import { OutlinedInputProps } from "@mui/material/OutlinedInput";
 import { styled } from "@mui/material/styles";
+import { useState } from "react";
 
 const CustomTextField = styled((props: TextFieldProps) => (
   <TextField
@@ -33,6 +38,10 @@ const initialValues: ISignIn = {
 
 const SignInForm = () => {
   const [formik, error] = useSignIn(initialValues);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+
+  const toggleShowPassword = () =>
+    setShowPassword((showPassword) => !showPassword);
 
   return (
     <Box
@@ -70,8 +79,9 @@ const SignInForm = () => {
 
           <Grid item xs={12}>
             <CustomTextField
+              sx={{ border: "none" }}
               id="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               variant="filled"
               label="Contraseña"
               error={Boolean(formik.errors.password)}
@@ -80,6 +90,34 @@ const SignInForm = () => {
               helperText={formik.errors.password}
               disabled={formik.isSubmitting}
               fullWidth
+              InputProps={{
+                sx: {
+                  "&:after, &:before": {
+                    border: "none",
+                  },
+                  "&:hover:before": {
+                    borderBottom: "none !important",
+                  },
+                  "&:before": {
+                    borderBottomStyle: "none !important",
+                  },
+                },
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={toggleShowPassword}
+                      onMouseDown={toggleShowPassword}
+                      edge="end"
+                    >
+                      {showPassword ? (
+                        <Visibility fontSize="small" />
+                      ) : (
+                        <VisibilityOff fontSize="small" />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
           </Grid>
         </Grid>

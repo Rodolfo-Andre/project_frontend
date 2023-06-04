@@ -5,6 +5,7 @@ interface IEmployeePrincipal {
   firstName: string;
   lastName: string;
   phone: string;
+  dni: string;
 }
 
 interface IEmployeeGet extends IEmployeePrincipal {

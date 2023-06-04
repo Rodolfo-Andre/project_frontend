@@ -17,6 +17,7 @@ Yup.setLocale({
     min: "Debe ser como mínimo ${min}",
     max: "Debe ser como máximo ${max}",
     moreThan: "Debe ser mayor a ${more}",
+    lessThan: "Debe ser menor a ${less}",
     integer: "Debe ser un número entero",
   },
 });

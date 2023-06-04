@@ -123,4 +123,31 @@ const theme = createTheme(
   dataGridEsES
 );
 
-export { handleLastPageDeletion, uploadToCloudinary, theme };
+const validateEntries = (
+  e: React.KeyboardEvent<HTMLInputElement>,
+  exp: RegExp
+) => {
+  const { key, ctrlKey } = e;
+  const allowedKeys = ["Backspace", "Delete", "ArrowLeft", "ArrowRight"];
+  const isNumber = exp.test(key);
+  const isShortcutCut = ctrlKey && key.toLowerCase() === "x";
+  const isValidKey = isNumber || allowedKeys.includes(key) || isShortcutCut;
+
+  if (!isValidKey) {
+    e.preventDefault();
+  }
+};
+
+const onlyNumber = (e: React.KeyboardEvent<HTMLInputElement>) =>
+  validateEntries(e, /^\d$/);
+
+const onlyDecimal = (e: React.KeyboardEvent<HTMLInputElement>) =>
+  validateEntries(e, /^[^Ee+-]+$/);
+
+export {
+  handleLastPageDeletion,
+  uploadToCloudinary,
+  theme,
+  onlyNumber,
+  onlyDecimal,
+};

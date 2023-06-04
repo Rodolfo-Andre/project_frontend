@@ -9,10 +9,10 @@ import {
   GridRowParams,
   GridColDef,
 } from "@mui/x-data-grid";
-import { deleteObject } from "@/services/HttpRequests";
+import { deleteObject, getObject } from "@/services/HttpRequests";
 import { ICashGet } from "@/interfaces/ICash";
 import { showForm } from "@/lib/Forms";
-import { showSuccessToastMessage } from "@/lib/Messages";
+import { showErrorMessage, showSuccessToastMessage } from "@/lib/Messages";
 import { handleLastPageDeletion } from "@/utils";
 
 interface ICashTableProps {
@@ -40,6 +40,21 @@ const CashTable = ({ data }: ICashTableProps) => {
             label="Delete"
             color="error"
             onClick={async () => {
+              const count = await getObject<number>(
+                `api/Cash/${cash.id}/number-voucher`
+              );
+
+              if (count > 0) {
+                showErrorMessage({
+                  title: `NO SE PUEDE ELIMINAR LA CAJA - ${cash.id}`,
+                  contentHtml: `No es posible eliminar la caja debido a que se encontró ${count} comprobrante${
+                    count !== 1 ? "s" : ""
+                  } de pago asignado a dicha caja.`,
+                });
+
+                return;
+              }
+
               showForm({
                 title: "Eliminar Caja",
                 cancelButtonText: "CANCELAR",

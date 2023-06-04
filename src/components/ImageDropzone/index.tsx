@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import AddAPhoto from "@mui/icons-material/AddAPhoto";
 import Image from "next/image";
 import ContentCenter from "@/components/ContentCenter";
+import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
@@ -20,6 +21,14 @@ const ImageDropzone = ({
   const [image, setImage] = useState<string | null>(imageDish || null);
 
   const handleDrop = (acceptedFiles: File[]) => {
+    if (acceptedFiles.length === 0) {
+      Swal.showValidationMessage(
+        "Por favor seleccione una imagen con un peso menor a 1MB"
+      );
+
+      return;
+    }
+
     const url = URL.createObjectURL(acceptedFiles[0]);
     setImage(url);
     onDrop(acceptedFiles[0]);
@@ -31,6 +40,7 @@ const ImageDropzone = ({
     },
     maxFiles: 1,
     multiple: false,
+    maxSize: 1048576,
     onDrop: handleDrop,
   });
 

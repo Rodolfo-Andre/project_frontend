@@ -6,7 +6,6 @@ import Restaurant from "@mui/icons-material/Restaurant";
 import Payments from "@mui/icons-material/Payments";
 import TableRestaurant from "@mui/icons-material/TableRestaurant";
 import Storefront from "@mui/icons-material/Storefront";
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import PointOfSale from "@mui/icons-material/PointOfSale";
 import List from "@mui/material/List";
@@ -104,14 +103,6 @@ const DrawerItem = () => {
           Icon={ReceiptLongIcon}
           text="Generar Comandas"
           href="/commands"
-        />
-      </List>
-
-      <List>
-        <ListItemButtonLink
-          Icon={AccountBalanceWalletIcon}
-          text="Caja Registradora"
-          href="/vouchers"
         />
       </List>
 

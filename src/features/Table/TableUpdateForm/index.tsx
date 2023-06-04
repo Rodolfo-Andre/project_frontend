@@ -1,13 +1,13 @@
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
+import TypeTableState from "@/enum/TypeTableState";
 import { ITableGet, ITableUpdate } from "@/interfaces/ITable";
 import { IUpdateFormProps } from "@/interfaces/IFormProps";
 import { useSWRConfig } from "swr";
 import { updateObject } from "@/services/HttpRequests";
-import TypeTableState from "@/enum/TypeTableState";
 import { tableUpdateSchema } from "@/schemas";
 import { Formik } from "formik";
-import { theme } from "@/utils";
+import { onlyNumber, theme } from "@/utils";
 import { ThemeProvider } from "@mui/material/styles";
 import { showSuccessToastMessage } from "@/lib/Messages";
 
@@ -50,6 +50,8 @@ const TableUpdateForm = ({
                   error={Boolean(errors.numSeats)}
                   value={values.numSeats}
                   onChange={handleChange}
+                  onKeyDown={onlyNumber}
+                  InputProps={{ componentsProps: { input: { min: 1 } } }}
                   helperText={errors.numSeats}
                   disabled={isSubmitting}
                   fullWidth

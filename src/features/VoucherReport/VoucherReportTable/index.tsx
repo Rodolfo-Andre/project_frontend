@@ -8,6 +8,7 @@ import {
   GridColDef,
   GridRowParams,
   GridValueGetterParams,
+  GridValueFormatterParams,
 } from "@mui/x-data-grid";
 import { AxiosServices } from "@/services";
 import { DataTable } from "@/components";
@@ -65,10 +66,11 @@ const VoucherReportTable = ({ data }: IVoucherReportTableProps) => {
     {
       field: "totalPrice",
       headerName: "Precio Total",
+      type: "number",
       minWidth: 140,
       flex: 1,
-      valueGetter: (params: GridValueGetterParams<IVoucherReportGet>) =>
-        `S/. ${params.row.totalPrice}`,
+      valueFormatter: (params: GridValueFormatterParams) =>
+        `S/. ${(params.value as number).toFixed(2)}`,
     },
     {
       field: "actions",

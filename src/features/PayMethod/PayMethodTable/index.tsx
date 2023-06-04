@@ -11,11 +11,11 @@ import {
   GridRowParams,
   GridColDef,
 } from "@mui/x-data-grid";
-import { deleteObject } from "@/services/HttpRequests";
+import { deleteObject, getObject } from "@/services/HttpRequests";
 import { IPayMethodGet, IPayMethodPrincipal } from "@/interfaces/IPayMethod";
 import { handleLastPageDeletion } from "@/utils";
 import { showForm } from "@/lib/Forms";
-import { showSuccessToastMessage } from "@/lib/Messages";
+import { showErrorMessage, showSuccessToastMessage } from "@/lib/Messages";
 import { FormikProps } from "formik/dist/types";
 import { useSWRConfig } from "swr";
 
@@ -90,7 +90,22 @@ const PayMethodTable = ({ data }: IPayMethodTableProps) => {
             icon={<Delete />}
             label="Delete"
             color="error"
-            onClick={() => {
+            onClick={async () => {
+              const count = await getObject<number>(
+                `api/PayMethod/${payMethod.id}/number-vouchers-details`
+              );
+
+              if (count > 0) {
+                showErrorMessage({
+                  title: `NO SE PUEDE ELIMINAR EL MÉTODO DE PAGO - ${payMethod.id}`,
+                  contentHtml: `No es posible eliminar el método de pago debido a que se encontró ${count} comprobrante${
+                    count !== 1 ? "s" : ""
+                  } de pago asignado a dicho método.`,
+                });
+
+                return;
+              }
+
               showForm({
                 title: "Eliminar Método de Pago",
                 cancelButtonText: "CANCELAR",

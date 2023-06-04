@@ -2,11 +2,12 @@ import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/Edit";
 import DataTable from "@/components/DataTable";
 import DishUpdateForm from "@/features/Dish/DishUpdateForm";
+import InsertPhotoOutlined from "@mui/icons-material/InsertPhotoOutlined";
 import Fastfood from "@mui/icons-material/Fastfood";
 import Image from "next/image";
+import ContentCenter from "@/components/ContentCenter";
 import DeleteForever from "@mui/icons-material/DeleteForever";
 import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
 import {
   useGridApiRef,
   GridActionsCellItem,
@@ -14,12 +15,13 @@ import {
   GridRowParams,
   GridColDef,
   GridCellParams,
+  GridValueFormatterParams,
 } from "@mui/x-data-grid";
-import { deleteObject } from "@/services/HttpRequests";
+import { deleteObject, getObject } from "@/services/HttpRequests";
 import { IDishGet, IDishCreateOrUpdate } from "@/interfaces/IDish";
 import { handleLastPageDeletion } from "@/utils";
 import { showForm } from "@/lib/Forms";
-import { showSuccessToastMessage } from "@/lib/Messages";
+import { showErrorMessage, showSuccessToastMessage } from "@/lib/Messages";
 import { FormikProps } from "formik/dist/types";
 import { useSWRConfig } from "swr";
 import { ICategoryDishGet } from "@/interfaces/ICategoryDish";
@@ -46,33 +48,45 @@ const DishTable = ({ data, categoriesDishes }: IDishTableProps) => {
       filterable: false,
       flex: 3,
       renderCell: (params: GridCellParams<IDishGet>) => (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+        <ContentCenter
+          sxProps={{
             width: "100px",
             height: "100px",
             backgroundColor: "rgb(248, 249, 250)",
           }}
         >
-          <Image
-            src={params.row.imgDish}
-            alt="Image"
-            width={800}
-            height={600}
-            priority={true}
-            style={{
-              width: "100%",
-              objectFit: "contain",
-              height: "100%",
-            }}
-          />
-        </Box>
+          {params.row.imgDish ? (
+            <Image
+              src={params.row.imgDish}
+              alt="Image"
+              width={800}
+              height={600}
+              priority={true}
+              style={{
+                width: "100%",
+                objectFit: "contain",
+                height: "100%",
+              }}
+            />
+          ) : (
+            <InsertPhotoOutlined fontSize="large" />
+          )}
+        </ContentCenter>
       ),
     },
     { field: "nameDish", headerName: "Plato", minWidth: 200, flex: 3 },
-    { field: "priceDish", headerName: "Precio", minWidth: 200, flex: 2 },
+    {
+      field: "priceDish",
+      headerName: "Precio",
+      type: "number",
+      headerAlign: "left",
+      align: "left",
+      minWidth: 200,
+      flex: 2,
+      valueFormatter: (params: GridValueFormatterParams) => {
+        return `S/. ${(params.value as number).toFixed(2)}`;
+      },
+    },
     {
       field: "category",
       headerName: "Categoría",
@@ -140,7 +154,22 @@ const DishTable = ({ data, categoriesDishes }: IDishTableProps) => {
             icon={<Delete />}
             label="Delete"
             color="error"
-            onClick={() => {
+            onClick={async () => {
+              const count = await getObject<number>(
+                `api/Dish/${dish.id}/number-details-commands`
+              );
+
+              if (count > 0) {
+                showErrorMessage({
+                  title: `NO SE PUEDE ELIMINAR EL PLATO - ${dish.id}`,
+                  contentHtml: `No es posible eliminar el plato debido a que se encontró ${count} comanda${
+                    count !== 1 ? "s" : ""
+                  } asignado a dicho plato.`,
+                });
+
+                return;
+              }
+
               showForm({
                 title: "Eliminar Plato",
                 cancelButtonText: "CANCELAR",

@@ -9,7 +9,7 @@ import { IUpdateFormProps } from "@/interfaces/IFormProps";
 import { useSWRConfig } from "swr";
 import { useState } from "react";
 import { updateObject } from "@/services/HttpRequests";
-import { uploadToCloudinary, theme } from "@/utils";
+import { uploadToCloudinary, theme, onlyDecimal } from "@/utils";
 import { Formik } from "formik";
 import { ThemeProvider } from "@mui/material/styles";
 import { showSuccessToastMessage } from "@/lib/Messages";
@@ -91,13 +91,15 @@ const DishUpdateForm = ({
               <Grid item xs={12} sm={6}>
                 <TextField
                   id="priceDish"
-                  type="text"
+                  type="number"
                   label="Precio"
                   error={Boolean(errors.priceDish)}
                   value={values.priceDish}
                   onChange={handleChange}
+                  onKeyDown={onlyDecimal}
                   helperText={errors.priceDish}
                   disabled={isSubmitting}
+                  InputProps={{ componentsProps: { input: { min: 0 } } }}
                   fullWidth
                 />
               </Grid>

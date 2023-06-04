@@ -14,11 +14,12 @@ import {
   GridRowParams,
   GridColDef,
 } from "@mui/x-data-grid";
-import { deleteObject } from "@/services/HttpRequests";
+import { deleteObject, getObject } from "@/services/HttpRequests";
 import { ITableGet, ITableUpdate } from "@/interfaces/ITable";
 import { handleLastPageDeletion } from "@/utils";
 import { showForm } from "@/lib/Forms";
 import {
+  showErrorMessage,
   showInformationMessage,
   showSuccessToastMessage,
 } from "@/lib/Messages";
@@ -45,6 +46,9 @@ const Table = ({ data }: ITableProps) => {
     { field: "numTable", headerName: "Número de Mesa", minWidth: 140, flex: 1 },
     {
       field: "numSeats",
+      type: "number",
+      headerAlign: "left",
+      align: "left",
       headerName: "Cantidad de Asientos",
       minWidth: 160,
       flex: 5,
@@ -132,7 +136,22 @@ const Table = ({ data }: ITableProps) => {
             icon={<Delete />}
             label="Delete"
             color="error"
-            onClick={() => {
+            onClick={async () => {
+              const count = await getObject<number>(
+                `api/Table/${table.id}/number-commands`
+              );
+
+              if (count > 0) {
+                showErrorMessage({
+                  title: `NO SE PUEDE ELIMINAR LA MESA - ${table.id}`,
+                  contentHtml: `No es posible eliminar la mesa debido a que se encontró ${count} comanda${
+                    count !== 1 ? "s" : ""
+                  } asignado a dicha mesa.`,
+                });
+
+                return;
+              }
+
               showForm({
                 title: "Eliminar Mesa",
                 cancelButtonText: "CANCELAR",

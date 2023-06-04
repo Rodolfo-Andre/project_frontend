@@ -8,7 +8,7 @@ import { IFormProps } from "@/interfaces/IFormProps";
 import { Formik } from "formik";
 import { useSWRConfig } from "swr";
 import { createObject } from "@/services/HttpRequests";
-import { theme } from "@/utils";
+import { onlyNumber, theme } from "@/utils";
 import { ThemeProvider } from "@mui/material/styles";
 import { showSuccessToastMessage } from "@/lib/Messages";
 
@@ -16,6 +16,7 @@ const initialValues: IEmployeeCreateOrUpdate = {
   firstName: "",
   lastName: "",
   phone: "",
+  dni: "",
   user: {
     email: "",
   },
@@ -91,6 +92,7 @@ const EmployeeAddForm = ({ setFormikRef, data }: IEmployeeAddFormProps) => {
                   error={Boolean(errors.phone)}
                   value={values.phone}
                   onChange={handleChange}
+                  onKeyDown={onlyNumber}
                   helperText={errors.phone}
                   disabled={isSubmitting}
                   fullWidth
@@ -113,7 +115,22 @@ const EmployeeAddForm = ({ setFormikRef, data }: IEmployeeAddFormProps) => {
                 />
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id="dni"
+                  type="text"
+                  label="DNI"
+                  error={Boolean(errors.dni)}
+                  value={values.dni}
+                  onChange={handleChange}
+                  onKeyDown={onlyNumber}
+                  helperText={errors.dni}
+                  disabled={isSubmitting}
+                  fullWidth
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
                 <ComboBox
                   id="id"
                   label="roleName"

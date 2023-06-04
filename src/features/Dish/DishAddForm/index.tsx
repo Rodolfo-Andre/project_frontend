@@ -10,7 +10,7 @@ import { createObject } from "@/services/HttpRequests";
 import { ICategoryDishGet } from "@/interfaces/ICategoryDish";
 import { IDishCreateOrUpdate, IDishGet } from "@/interfaces/IDish";
 import { IFormProps } from "@/interfaces/IFormProps";
-import { uploadToCloudinary } from "@/utils";
+import { onlyDecimal, uploadToCloudinary } from "@/utils";
 import { Formik } from "formik";
 import { useState } from "react";
 import { showSuccessToastMessage } from "@/lib/Messages";
@@ -66,6 +66,11 @@ const DishAddForm = ({ setFormikRef, data }: IDishAddFormProps) => {
                 <ImageDropzone
                   isSubmitting={isSubmitting}
                   onDrop={(file) => {
+                    if (file.size > 1048576) {
+                      console.log("hola");
+
+                      return;
+                    }
                     setFile(file);
                     setFieldValue("imgDish", file.name);
                   }}
@@ -99,11 +104,13 @@ const DishAddForm = ({ setFormikRef, data }: IDishAddFormProps) => {
               <Grid item xs={12} sm={6}>
                 <TextField
                   id="priceDish"
-                  type="text"
+                  type="number"
                   label="Precio"
                   error={Boolean(errors.priceDish)}
                   value={values.priceDish}
                   onChange={handleChange}
+                  onKeyDown={onlyDecimal}
+                  InputProps={{ componentsProps: { input: { min: 0 } } }}
                   helperText={errors.priceDish}
                   disabled={isSubmitting}
                   fullWidth
