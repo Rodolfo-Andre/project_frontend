@@ -75,7 +75,7 @@ const AccountForm = () => {
 
               <Grid item xs={12} sm={6}>
                 <TextField
-                  label="Correo Eletrónioo"
+                  label="Correo Eletrónico"
                   defaultValue={user?.user.email}
                   InputProps={{
                     readOnly: true,
@@ -98,6 +98,18 @@ const AccountForm = () => {
               </Grid>
 
               <Grid item xs={12} sm={6}>
+                <TextField
+                  label="DNI"
+                  defaultValue={user?.dni}
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                  fullWidth={true}
+                  variant="standard"
+                />
+              </Grid>
+
+              <Grid item xs={12}>
                 <DateTimePicker
                   label="Fecha de creción"
                   format="DD/MM/YYYY hh:mm"
