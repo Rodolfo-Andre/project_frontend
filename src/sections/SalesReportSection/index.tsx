@@ -14,6 +14,8 @@ import { ISalesDataPerDate } from "@/interfaces/IVoucherReport";
 import { fetchAll } from "@/services/HttpRequests";
 import { useState } from "react";
 import { Formik } from "formik";
+import DishOrderStatisticsGraphics from "@/features/SalesReport/DishOrderStatisticsGraphics";
+import SaleDataGraphics from "@/features/SalesReport/SalesDataGraphics";
 
 interface IOptionsReport {
   id: number;
@@ -47,58 +49,70 @@ const SalesReportSection = () => {
   if (isLoadingDishes || isLoadingSalesData) return <LoaderComponent />;
 
   return (
-    <ContentBox>
-      <Box sx={{ marginTop: 2, marginX: 2 }}>
-        <Typography variant="h5" sx={{ marginBottom: 2 }}>
-          Reporte de Ventas
-        </Typography>
+    <>
+      <ContentBox>
+        <Box sx={{ marginTop: 2, marginX: 2 }}>
+          <Typography variant="h5" sx={{ marginBottom: 2 }}>
+            Reporte de Ventas
+          </Typography>
 
-        <Formik<IOptionsReport>
-          initialValues={options[0]}
-          validateOnChange={false}
-          onSubmit={(option) => {
-            setTypeReport(option.id);
-          }}
-        >
-          {({ values, handleSubmit, setValues }) => (
-            <Grid container spacing={1.5} marginY={2} alignItems={"center"}>
-              <Grid item xs={4} minWidth={250}>
-                <ComboBox
-                  id={"id"}
-                  values={options}
-                  value={values}
-                  label={"label"}
-                  textFieldProps={{
-                    label: "Tipo de Reporte",
-                  }}
-                  disableClearable={true}
-                  size="small"
-                  handleChange={(e) => {
-                    setValues(e!);
-                  }}
-                />
+          <Formik<IOptionsReport>
+            initialValues={options[0]}
+            validateOnChange={false}
+            onSubmit={(option) => {
+              setTypeReport(option.id);
+            }}
+          >
+            {({ values, handleSubmit, setValues }) => (
+              <Grid container spacing={1.5} marginY={2} alignItems={"center"}>
+                <Grid item xs={4} minWidth={250}>
+                  <ComboBox
+                    id={"id"}
+                    values={options}
+                    value={values}
+                    label={"label"}
+                    textFieldProps={{
+                      label: "Tipo de Reporte",
+                    }}
+                    disableClearable={true}
+                    size="small"
+                    handleChange={(e) => {
+                      setValues(e!);
+                    }}
+                  />
+                </Grid>
+
+                <Grid item xs>
+                  <Button
+                    startIcon={<Article />}
+                    onClick={() => handleSubmit()}
+                    variant="contained"
+                  >
+                    Ver Reporte
+                  </Button>
+                </Grid>
               </Grid>
+            )}
+          </Formik>
+        </Box>
 
-              <Grid item xs>
-                <Button
-                  startIcon={<Article />}
-                  onClick={() => handleSubmit()}
-                  variant="contained"
-                >
-                  Ver Reporte
-                </Button>
-              </Grid>
-            </Grid>
-          )}
-        </Formik>
-      </Box>
+        {typeReport === 1 ? (
+          <>
+            <DishOrderStatisticsTable data={dishes!} />
+          </>
+        ) : (
+          <SalesDataTable data={salesData!} />
+        )}
+      </ContentBox>
 
-      {typeReport === 1 ? (
-        <DishOrderStatisticsTable data={dishes!} />
-      ) : (
-        <SalesDataTable data={salesData!} />
+      {typeReport === 1 && dishes!.length > 0 && (
+        <DishOrderStatisticsGraphics data={dishes!} />
       )}
-    </ContentBox>
+
+      {typeReport === 2 && salesData!.length > 0 && (
+        <SaleDataGraphics data={salesData!} />
+      )}
+    </>
   );
 };
 

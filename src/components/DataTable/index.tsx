@@ -48,7 +48,6 @@ const DataTable = <T,>({
   getRowId,
   rowHeight,
   apiRef,
-
 }: IDataTableProps<T>) => {
   return (
     <>
