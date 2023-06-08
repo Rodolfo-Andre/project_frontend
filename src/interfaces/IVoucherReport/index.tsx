@@ -13,4 +13,12 @@ interface IVoucherReportGet {
   cash: ICashGet;
 }
 
-export default IVoucherReportGet;
+interface ISalesDataPerDate {
+  dateIssued: Date;
+  accumulatedSales: number;
+  numberOfGeneratedReceipts: number;
+  quantityOfDishSales: number;
+  bestSellingDish: string;
+}
+
+export type { IVoucherReportGet, ISalesDataPerDate };

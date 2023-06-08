@@ -19,6 +19,6 @@ export type { default as ISignInResponse } from "./ISignInResponse";
 export type { default as ISignIn } from "./ISignIn";
 export * from "./ITable";
 export * from "./IUser";
-export type { default as IVoucherReport } from "./IVoucherReport";
+export * from "./IVoucherReport";
 export * from "./IVoucherType";
 export type { default as UserRoles } from "./UserRoles";

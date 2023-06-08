@@ -17,6 +17,7 @@ import UserRoles from "@/interfaces/UserRoles";
 import IMenuItemsWithSubItemsProps from "@/interfaces/IMenuItemsWithSubItemsProps";
 import Assessment from "@mui/icons-material/Assessment";
 import Newspaper from "@mui/icons-material/Newspaper";
+import MonetizationOn from "@mui/icons-material/MonetizationOn";
 import { IEstablishmentGet } from "@/interfaces/IEstablishment";
 import { useContext } from "react";
 import { AuthContext } from "@/contexts/Auth";
@@ -73,6 +74,11 @@ const reportsItems: IMenuItemsWithSubItemsProps[] = [
     Icon: Assessment,
     section: "reports",
     items: [
+      {
+        href: "/reports/sales",
+        text: "Ventas",
+        Icon: MonetizationOn,
+      },
       {
         href: "/reports/voucher",
         text: "Comprobantes de Pago",

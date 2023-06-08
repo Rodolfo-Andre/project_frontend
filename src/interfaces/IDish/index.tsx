@@ -15,4 +15,18 @@ interface IDishGet extends IDishPrincipal {
   categoryDish: ICategoryDishGet;
 }
 
-export type { IDishPrincipal, IDishCreateOrUpdate, IDishGet };
+interface IDishOrderStatistics {
+  dishId: string;
+  nameDish: string;
+  imgDish: string;
+  nameCatDish: string;
+  totalSales: number;
+  quantityOfDishesSold: number;
+}
+
+export type {
+  IDishPrincipal,
+  IDishCreateOrUpdate,
+  IDishGet,
+  IDishOrderStatistics,
+};

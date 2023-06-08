@@ -9,6 +9,8 @@ interface IComboBoxProps<T> {
   label: keyof T;
   textFieldProps: TextFieldProps;
   disabled?: boolean;
+  disableClearable?: boolean;
+  size?: "medium" | "small";
   handleChange: (value: T | null) => void;
 }
 
@@ -19,6 +21,8 @@ const ComboBox = <T,>({
   label,
   textFieldProps,
   disabled,
+  disableClearable,
+  size,
   handleChange,
 }: IComboBoxProps<T>) => {
   const [valueState, setValueState] = useState<T | null>(value ?? null);
@@ -34,7 +38,9 @@ const ComboBox = <T,>({
         handleChange(newValue);
         setValueState(newValue);
       }}
+      size={size}
       disabled={disabled}
+      disableClearable={disableClearable}
       getOptionLabel={(options: T) => options[label] as string}
       renderInput={(params) => <TextField {...params} {...textFieldProps} />}
     />

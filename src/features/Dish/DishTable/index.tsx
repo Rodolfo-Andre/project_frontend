@@ -100,7 +100,6 @@ const DishTable = ({ data, categoriesDishes }: IDishTableProps) => {
         label: categoryDish.nameCatDish,
       })),
     },
-
     {
       field: "actions",
       type: "actions",

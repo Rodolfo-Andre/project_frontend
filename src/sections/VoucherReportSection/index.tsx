@@ -1,4 +1,4 @@
-import IVoucherReportGet from "@/interfaces/IVoucherReport";
+import { IVoucherReportGet } from "@/interfaces/IVoucherReport";
 import LoaderComponent from "@/components/LoaderComponent";
 import useSWR from "swr";
 import ContentBox from "@/components/ContentBox";
@@ -17,7 +17,7 @@ const VoucherReportSection = () => {
 
   return (
     <ContentBox>
-      <Box sx={{ marginTop: 2, marginLeft: 2 }}>
+      <Box sx={{ marginTop: 2, marginX: 2 }}>
         <Typography variant="h5" sx={{ marginBottom: 2 }}>
           Reporte de Comprobantes de Pago
         </Typography>

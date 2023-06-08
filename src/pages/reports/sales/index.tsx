@@ -1,16 +1,16 @@
 import Layout from "@/components/Layout";
 import ProtectedRouteForAuthenticated from "@/components/ProtectedRouteForAuthenticated";
-import VoucherReportSection from "@/sections/VoucherReportSection";
+import SalesReportSection from "@/sections/SalesReportSection";
 
-const VoucherReportPage = () => {
+const SalesReportPage = () => {
   return (
     <Layout>
-      <VoucherReportSection />
+      <SalesReportSection />
     </Layout>
   );
 };
 
 export default ProtectedRouteForAuthenticated({
-  Component: VoucherReportPage,
+  Component: SalesReportPage,
   roles: ["Administrador"],
 });

@@ -22,7 +22,7 @@ const TableSection = () => {
 
   return (
     <ContentBox>
-      <Box sx={{ marginTop: 2, marginLeft: 2 }}>
+      <Box sx={{ marginTop: 2, marginX: 2 }}>
         <Typography variant="h5" sx={{ marginBottom: 2 }}>
           Mesas
         </Typography>

@@ -1,4 +1,4 @@
-import IVoucherReportGet from "@/interfaces/IVoucherReport";
+import { IVoucherReportGet } from "@/interfaces/IVoucherReport";
 import InsertDriveFile from "@mui/icons-material/InsertDriveFile";
 import Box from "@mui/material/Box";
 import dayjs from "dayjs";
@@ -24,16 +24,16 @@ const VoucherReportTable = ({ data }: IVoucherReportTableProps) => {
     {
       field: "customerFullName",
       headerName: "Cliente",
-      minWidth: 140,
-      flex: 1,
+      minWidth: 250,
+      flex: 2,
       valueGetter: (params: GridValueGetterParams<IVoucherReportGet>) =>
         `${params.row.customer.firstName} ${params.row.customer.lastName}`,
     },
     {
       field: "waiterFullName",
       headerName: "Mesero",
-      minWidth: 140,
-      flex: 1,
+      minWidth: 250,
+      flex: 2,
       valueGetter: (params: GridValueGetterParams<IVoucherReportGet>) =>
         `${params.row.employee.firstName} ${params.row.employee.lastName}`,
     },
@@ -42,7 +42,7 @@ const VoucherReportTable = ({ data }: IVoucherReportTableProps) => {
       headerName: "Fecha de Emisión",
       type: "dateTime",
       minWidth: 160,
-      flex: 2,
+      flex: 1,
       valueGetter: (params: GridValueGetterParams<IVoucherReportGet>) =>
         dayjs(params.row.dateIssued).toDate(),
     },
@@ -50,7 +50,7 @@ const VoucherReportTable = ({ data }: IVoucherReportTableProps) => {
       field: "voucherType",
       headerName: "Tipo de Comprobante",
       minWidth: 160,
-      flex: 2,
+      flex: 1,
       valueGetter: (params: GridValueGetterParams<IVoucherReportGet>) =>
         params.row.voucherType.name,
     },
@@ -58,8 +58,8 @@ const VoucherReportTable = ({ data }: IVoucherReportTableProps) => {
     {
       field: "cash",
       headerName: "Caja",
-      minWidth: 160,
-      flex: 2,
+      minWidth: 100,
+      flex: 1,
       valueGetter: (params: GridValueGetterParams<IVoucherReportGet>) =>
         params.row.cash.id,
     },
@@ -67,6 +67,8 @@ const VoucherReportTable = ({ data }: IVoucherReportTableProps) => {
       field: "totalPrice",
       headerName: "Precio Total",
       type: "number",
+      headerAlign: "left",
+      align: "left",
       minWidth: 140,
       flex: 1,
       valueFormatter: (params: GridValueFormatterParams) =>
@@ -108,15 +110,18 @@ const VoucherReportTable = ({ data }: IVoucherReportTableProps) => {
                 showConfirmButton: false,
                 willOpen: async () => {
                   Swal.showLoading();
+
+                  console.log(voucherReport.row.id);
                   const { data } = await AxiosServices.get(
                     `api/report/voucher/${voucherReport.row.id}`,
                     { responseType: "blob" }
                   );
+
                   const url = URL.createObjectURL(data);
 
                   window.open(url, "_blank");
-                  setTimeout(() => URL.revokeObjectURL(url), 1000);
 
+                  URL.revokeObjectURL(url);
                   Swal.close();
                 },
               });
