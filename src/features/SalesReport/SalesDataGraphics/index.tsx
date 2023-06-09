@@ -59,7 +59,7 @@ const SaleDataGraphics = ({ data }: ISaleDataGraphicsProps) => {
                 },
               },
               title: {
-                text: "LOS PLATOS MÁS VENDIDOS",
+                text: "LOS DÍAS COM MÁS VENTAS",
                 display: true,
                 font: { size: 24 },
               },

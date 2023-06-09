@@ -29,7 +29,7 @@ const options: IOptionsReport[] = [
   },
   {
     id: 2,
-    label: "Reporte de Ventas",
+    label: "Reporte por Fechas",
   },
 ];
 
