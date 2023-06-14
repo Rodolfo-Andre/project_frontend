@@ -28,10 +28,10 @@ const TableSection = () => {
         </Typography>
 
         <ButtonAdd
-          text="Añadir Método de Pago"
+          text="Añadir Mesa"
           openDialog={() => {
             showForm({
-              title: "Añadir Método de Pago",
+              title: "Añadir Mesa",
               cancelButtonText: "CANCELAR",
               confirmButtonText: "AÑADIR",
               customClass: {

@@ -8,7 +8,29 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import type { AppProps } from "next/app";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  Title,
+  Colors,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+} from "chart.js";
 import "../css/styles.css";
+
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  Colors,
+  Title,
+  CategoryScale,
+  LinearScale,
+  BarElement
+);
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();

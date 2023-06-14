@@ -16,10 +16,13 @@ const SalesDataTable = ({ data }: ISalesDataTableProps) => {
     {
       field: "dateIssued",
       headerName: "Fecha",
-      type: "dateTime",
+      type: "date",
       minWidth: 150,
       sortable: false,
       flex: 1,
+      valueFormatter: (params: GridValueFormatterParams) => {
+        return dayjs(params.value as Date).format("DD/MM/YYYY");
+      },
       valueGetter: (params: GridValueGetterParams<ISalesDataPerDate>) =>
         dayjs(params.row.dateIssued).toDate(),
     },

@@ -27,3 +27,11 @@
   background-color: #d32f2f !important;
   flex-grow: 1;
 }
+
+.chart {
+  max-width: 100%;
+  width: 100% !important;
+  height: auto !important;
+  max-height: 400px !important;
+  margin: 0.5rem 0;
+}

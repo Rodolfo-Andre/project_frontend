@@ -17,7 +17,7 @@ const Main = ({ children }: IMainProps) => {
         flexGrow: 1,
         gap: 2,
         backgroundColor: "#F2F5F8",
-        padding: "1rem 2rem",
+        padding: "1rem",
         minHeight: "100svh",
       }}
     >
