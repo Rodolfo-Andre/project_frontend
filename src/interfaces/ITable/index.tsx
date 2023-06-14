@@ -14,27 +14,40 @@ interface ITableGet extends ITablePrincipal {
 }
 
 export type ITableGetCommand = {
-  numTable:   number;
+  numTable: number;
   stateTable: string;
-  numSeats:   number;
+  numSeats: number;
   listComand: ListComand[];
-}
+};
 
 export type ListComand = {
-  id:            number;
+  id: number;
   detailsComand: any[];
   statesCommand: StatesCommand;
-  user:          User;
-}
+  user: User;
+};
 
 export type StatesCommand = {
   state: string;
-}
+};
 
 export type User = {
   employee: null;
-  email:    string;
-}
+  email: string;
+};
 
+type ITableWithComand = {
+  numTable: number;
+  numSeats: number;
+  stateTable: string;
+  commands: CommandCustom[];
+};
+type CommandCustom = {
+  id: number;
+  cantSeats: number;
+  precTotOrder: number;
+  createdAt: Date;
+  tableRestaurantId: number;
+};
 
-export type { ITablePrincipal, ITableUpdate, ITableGet };
+export type { ITablePrincipal, ITableUpdate, ITableGet, ITableWithComand };
