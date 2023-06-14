@@ -2,6 +2,7 @@ import {
   GridColDef,
   GridValueFormatterParams,
   GridCellParams,
+  GridValueGetterParams,
 } from "@mui/x-data-grid";
 import ContentCenter from "@/components/ContentCenter";
 import DataTable from "@/components/DataTable";
@@ -55,6 +56,8 @@ const DishOrderStatisticsTable = ({ data }: IDishOrderStatisticsTableProps) => {
           )}
         </ContentCenter>
       ),
+      valueGetter: (params: GridValueGetterParams<IDishOrderStatistics>) =>
+        params.row.imgDish,
     },
     {
       field: "nameDish",

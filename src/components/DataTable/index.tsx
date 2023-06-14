@@ -63,6 +63,7 @@ const DataTable = <T,>({
             minWidth: "100%",
           }}
           slots={{ toolbar: GridToolbar }}
+          slotProps={{ toolbar: { csvOptions: { utf8WithBom: true } } }}
           apiRef={apiRef}
           rows={(rows || []) as GridValidRowModel[]}
           columns={columns}

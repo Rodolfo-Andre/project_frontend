@@ -73,6 +73,8 @@ const DishTable = ({ data, categoriesDishes }: IDishTableProps) => {
           )}
         </ContentCenter>
       ),
+      valueGetter: (params: GridValueGetterParams<IDishGet>) =>
+        params.row.imgDish,
     },
     { field: "nameDish", headerName: "Plato", minWidth: 200, flex: 3 },
     {

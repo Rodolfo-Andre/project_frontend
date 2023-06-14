@@ -130,7 +130,7 @@ const VoucherReportTable = ({ data }: IVoucherReportTableProps) => {
                 Swal.fire({
                   icon: "success",
                   title:
-                    "Carga completada! Ya puedes visualizar el comprobante de pago",
+                    "¡Carga completada! Ya puedes visualizar el comprobante de pago",
                 });
               }
             }}
