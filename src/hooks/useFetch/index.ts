@@ -11,7 +11,7 @@ const useFectch = <T>(
   parameters: any = {}
 )=> {
   const [data, setData] = useState<T | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isError, setIsError] = useState(false)
 
