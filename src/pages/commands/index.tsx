@@ -103,6 +103,7 @@ const CommandsPage = () => {
                               : styles.cardSuccess),
                           }}
                           key={ramdonKey("item")}
+                          
 
                           onClick={() => {
                             window.location.href = `commands/detail-comand/${d.numTable}`;
