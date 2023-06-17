@@ -79,7 +79,7 @@ interface IDishView extends IDishGet {
 const DetalleComanda = () => {
   const router = useRouter();
   const queryValue = router.query["id"] || router.asPath.match(new RegExp(`[&?]${"id"}=(.*)(&|$)`))
-  console.log(queryValue);
+console.log(queryValue);
 
   const { user } = useContext(AuthContext);
   const [stateLoading, setStateLoading] = useState(false)
@@ -110,7 +110,10 @@ const DetalleComanda = () => {
 
   useEffect(() => {
     const { getCategoryDish } = ServiceDish;
-     
+    if (queryValue === undefined) {
+      return
+    } 
+
     setStateLoading(true)
     const getIntialData = async () => {
       try {
@@ -121,7 +124,6 @@ const DetalleComanda = () => {
           listCategory: data,
         }));
       } catch (error) {
-        console.log(error);
 
         AlertMessage(
           "Error!",
