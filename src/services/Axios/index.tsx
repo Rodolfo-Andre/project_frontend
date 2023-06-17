@@ -7,11 +7,11 @@ const agent = new https.Agent({
 
 const axiosObject = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL || "https://localhost:7208",
-  timeout: 5000,
   headers: {
     "Content-Type": "application/json",
     accept: "application/json",
   },
+  timeout: 20000,
   httpsAgent: agent,
 });
 

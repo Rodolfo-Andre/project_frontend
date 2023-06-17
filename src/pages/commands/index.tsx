@@ -1,6 +1,8 @@
 import { ContentBox, Layout } from "@/components";
 import TableRestaurantIcon from "@mui/icons-material/TableRestaurant";
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import PriceChangeIcon from "@mui/icons-material/PriceChange"; 
+import ChairAltIcon from '@mui/icons-material/ChairAlt';
 import AccessTimeFilledOutlinedIcon from "@mui/icons-material/AccessTimeFilledOutlined";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Typography from "@mui/material/Typography";
@@ -33,7 +35,7 @@ const styles = {
     padding: 4,
     mb: 2,
     width: "250px",
-    height: "250px",
+    height: "320px",
     display: "flex",
     flexDirection: "column",
     fontWeight: "bold",
@@ -65,38 +67,13 @@ const styles = {
   },
 };
 
-const dataFake = [
-  {
-    id: 1,
-    mesa: 1,
-    estado: "Ocupada",
-    fecha: "2021-10-10",
-    price: 100,
-  },
-  {
-    id: 2,
-    mesa: 2,
-    estado: "Libre",
-    fecha: "2021-10-10",
-    price: 100,
-  },
-];
+
 
 const CommandsPage = () => {
   const { data, error, loading } = useFectch<ITableWithComand[]>(
-    "api/table/tableComands",
+    "api/table/table-command",
     "get"
   );
-
-  const [selectData, setSelectData] = useState<ITableWithComand | null>(null);
-
-
-  const calcularPrice = (table: ITableWithComand) => {
-    if (table.commands.length == 0) {
-      return 0;
-    }
-    return table.commands.reduce((a, b) => a + b.precTotOrder, 0);
-  };
 
   const ramdonKey = (name: string) => {
     return Math.random()
@@ -126,7 +103,10 @@ const CommandsPage = () => {
                               : styles.cardSuccess),
                           }}
                           key={ramdonKey("item")}
-                          onClick={() => setSelectData(d)}
+
+                          onClick={() => {
+                            window.location.href = `commands/detail-comand/${d.numTable}`;
+                          }}
                         >
                           <Box
                             sx={{
@@ -144,7 +124,7 @@ const CommandsPage = () => {
                             sx={{
                               color: "#fff",
                               gap: 1,
-                              my: 2,
+                              my: 1,
                               display: "flex",
                               alignItems: "center",
                             }}
@@ -152,9 +132,9 @@ const CommandsPage = () => {
                             {d.stateTable == "Ocupado" ? (
                               <AccessTimeFilledOutlinedIcon fontSize="large" />
                             ) : (
-                              <CheckCircleIcon fontSize="large" />
+                              <ChairAltIcon fontSize="large" />
                             )}
-                            <Typography variant="h6">{d.stateTable}</Typography>
+                            <Typography variant="h6">{d.numSeats}</Typography>
                           </Box>
 
                           {/* <Box
@@ -170,7 +150,22 @@ const CommandsPage = () => {
                             <Typography variant="h6">{d.}</Typography>
                           </Box> */}
 
-                          {d.stateTable == "Ocupado" && (
+                      {(d.stateTable == "Ocupado" && d.commandActive !=null) && (
+                            <Box
+                            sx={{
+                              color: "#fff",
+                              gap: 1,
+                              mb: 2,
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            <CalendarMonthIcon fontSize="large" />
+                            <Typography variant="h6">{d.commandActive.createdAt}</Typography>
+                          </Box>
+                          )}
+
+                          {(d.stateTable == "Ocupado" && d.commandActive !=null) && (
                             <Box
                               sx={{
                                 color: "#fff",
@@ -182,10 +177,32 @@ const CommandsPage = () => {
                             >
                               <PriceChangeIcon fontSize="large" />
                               <Typography variant="h6">
-                                {calcularPrice(d)}
+                                {d.commandActive.precTotOrder}
                               </Typography>
                             </Box>
                           )}
+
+
+                            <Box
+                            sx={{
+                              color: "#fff",
+                              gap: 1,
+                              width: "100%",
+                              mt: 'auto', // 'auto
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                          >
+                            {d.stateTable == "Ocupado" ? (
+                              <AccessTimeFilledOutlinedIcon fontSize="large" />
+                            ) : (
+                              <CheckCircleIcon fontSize="large" />
+                            )}
+                            <Typography variant="h6">{d.stateTable}</Typography>
+                          </Box>
+
+
                         </Box>
                       ))
                     ) : (

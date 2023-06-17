@@ -84,7 +84,7 @@ export const AlertMessage = (
     icon: icon,
     confirmButtonText: "Ok",
     ...props,
-  });
+  }) 
 };
 
 const theme = createTheme(

@@ -13,6 +13,7 @@ const useFectch = <T>(
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isError, setIsError] = useState(false)
 
   React.useEffect(() => {
     if (api && method) {
@@ -35,8 +36,10 @@ const useFectch = <T>(
         return data;
       });
     } catch (error) {
+      setIsError(true)
+      console.log(error);
+      
       const { response } = error as AxiosError;
-
       if (response) {
         const { message } = response.data as { message: string };
         setError((prevError: string | null) => {
@@ -47,10 +50,14 @@ const useFectch = <T>(
       }
     } finally {
       setLoading(false);
+ 
+      
     }
+
+
   }, [api, method, body, parameters]);
 
-  return { data, loading, error };
+  return { data, loading, error, isError };
 };
 
 export default useFectch;

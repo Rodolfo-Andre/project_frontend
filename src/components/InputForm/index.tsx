@@ -11,11 +11,14 @@ import {
 interface IInputForm {
   id: string;
   label: string;
-  value: string;
+  value: string | number;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   Icon?: React.ReactNode;
   isErrored: boolean;
   errorText: string;
+  type: string;
+  disabled?: boolean;
+   
 }
 
 export const InputForm = ({
@@ -26,9 +29,15 @@ export const InputForm = ({
   Icon,
   isErrored,
   errorText,
+  type = "text",
+  disabled = false,
+
 }: IInputForm) => {
   return (
-    <FormControl fullWidth sx={{ m: 1 }}>
+    <FormControl
+      
+    
+    fullWidth sx={{ mb: 1 }}>
       <InputLabel htmlFor={id}>
         {label}
       </InputLabel>
@@ -37,6 +46,8 @@ export const InputForm = ({
         startAdornment={
           <InputAdornment position="start">{Icon ? Icon : null}</InputAdornment>
         }
+        disabled={disabled}
+        type={type}
         label={label}
         value={value}
         onChange={onChange}
