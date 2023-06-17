@@ -9,7 +9,7 @@ import Select from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import FastfoodIcon from "@mui/icons-material/Fastfood";
+import FastfoodIcon from '@mui/icons-material/Fastfood';
 import Grid3x3OutlinedIcon from "@mui/icons-material/Grid3x3Outlined";
 import TableRestaurantIcon from "@mui/icons-material/TableRestaurant";
 import PriceChangeIcon from "@mui/icons-material/PriceChange";
@@ -19,7 +19,7 @@ import SmartScreenIcon from "@mui/icons-material/SmartScreen";
 import ChromeReaderModeIcon from "@mui/icons-material/ChromeReaderMode";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import React, { useEffect, useContext, useState } from "react";
-import { InputForm } from "@/components/InputForm";
+import {InputForm} from "@/components/InputForm";
 import { ICategoryDishGet, IDishGet, ITableWithComand2 } from "@/interfaces";
 import useFectch from "@/hooks/useFetch";
 import { useRouter } from "next/router";
@@ -35,7 +35,9 @@ const style = {
     fontWeight: "bold",
     color: "#637381",
   },
-  containerForm: {},
+  containerForm: {
+    
+  },
   modal: {
     position: "absolute" as "absolute",
     top: "50%",
@@ -75,14 +77,12 @@ interface IDishView extends IDishGet {
 }
 
 const DetalleComanda = () => {
-  const { isReady, query } = useRouter();
-  const { user } = useContext(AuthContext);
-  useEffect(() => {
-    if (!isReady) return;
+  const router = useRouter();
+  const queryValue = router.query["id"] || router.asPath.match(new RegExp(`[&?]${"id"}=(.*)(&|$)`))
+  console.log(queryValue);
 
-    // codes using router.query
-  }, [isReady]);
-  const [stateLoading, setStateLoading] = useState(true);
+  const { user } = useContext(AuthContext);
+  const [stateLoading, setStateLoading] = useState(false)
   const [stateDish, setstateDish] = useState<IStateDish>({
     listDish: [],
     listCategory: [],
@@ -102,16 +102,16 @@ const DetalleComanda = () => {
     quantity: 0,
     observation: "",
   });
-  
 
-  const { data, loading, isError } = useFectch<ITableWithComand2>(
-    "api/command/getCommandByTableId/" + query.id,
+  const { data,   loading, isError } = useFectch<ITableWithComand2>(
+    "api/command/getCommandByTableId/" + queryValue,
     "get"
   );
 
   useEffect(() => {
     const { getCategoryDish } = ServiceDish;
-    setStateLoading(true);
+     
+    setStateLoading(true)
     const getIntialData = async () => {
       try {
         const data = await getCategoryDish();
@@ -128,8 +128,8 @@ const DetalleComanda = () => {
           "No se pudo cargar las categorias",
           "error"
         ).then(() => {});
-      } finally {
-        setStateLoading(false);
+      }finally{
+        setStateLoading(false)
       }
     };
 
@@ -155,6 +155,7 @@ const DetalleComanda = () => {
         listDishViewAndPost: listado,
       }));
     }
+
     getIntialData();
   }, [data]);
 
@@ -178,13 +179,15 @@ const DetalleComanda = () => {
     getIntialData();
   }, [stateDish.selectedCategory]);
 
+ 
+
   const ramdonKey = (name: string) => {
     return Math.random()
       .toString(36)
       .replace("0.", name || "");
   };
 
-  if (loading ||  !isReady) {
+  if (loading ) {
     return <LoaderCustom />;
   }
 
@@ -278,6 +281,7 @@ const DetalleComanda = () => {
   };
 
   const saveCommand = async () => {
+
     const validCantPerson = cantPerson > 0;
     const validateListDish = stateDish.listDishViewAndPost.length > 0;
 
@@ -318,7 +322,7 @@ const DetalleComanda = () => {
       total: total,
       listDish: listDishPost,
     };
-
+    
     setStateLoading(true);
     try {
       const data = await CommandServices.saveCommand(objectPost);
@@ -332,7 +336,7 @@ const DetalleComanda = () => {
       AlertMessage("Error!", "No se pudo guardar la comanda", "error").then(
         () => {}
       );
-    } finally {
+    }finally{
       setStateLoading(false);
     }
   };
@@ -355,7 +359,7 @@ const DetalleComanda = () => {
       AlertMessage("Error!", "No se pudo eliminar la comanda", "error").then(
         () => {}
       );
-    } finally {
+    }finally{
       setStateLoading(false);
     }
   };
@@ -384,11 +388,10 @@ const DetalleComanda = () => {
             </Button>
           </>
         ) : (
-          <Grid container sx={style.containerForm}>
-            <Grid
-              item
-              xs={12}
-              md={6}
+          <Grid 
+          container sx={style.containerForm}>
+            <Grid 
+            item xs={12} md={6} 
               sx={{
                 height: "100%",
                 padding: 2,
@@ -495,19 +498,21 @@ const DetalleComanda = () => {
                   </Button>
                 </Grid>
 
-                {data.id !== 0 && (
-                  <Grid item xs={12} sm={12} md={3}>
-                    <Button
-                      variant="contained"
-                      color="error"
-                      onClick={deleteCommand}
-                      disabled={stateLoading}
-                      fullWidth
-                    >
-                      Eliminar
-                    </Button>
-                  </Grid>
-                )}
+                    {
+                      data.id !== 0 && (
+                        <Grid item xs={12} sm={12} md={3}>
+                        <Button
+                          variant="contained"
+                          color="error"
+                          onClick={deleteCommand}
+                          disabled={stateLoading}
+                          fullWidth
+                        >
+                          Eliminar
+                        </Button>
+                      </Grid>
+                      )
+                    }
 
                 <Grid item xs={12} sm={12} md={3}>
                   <Button
@@ -524,16 +529,11 @@ const DetalleComanda = () => {
               </Grid>
             </Grid>
 
-            <Grid
-              item
-              xs={12}
-              md={6}
-              sx={{
-                height: "100%",
-                padding: 2,
-                borderLeft: "1px solid #E0E0E0",
-              }}
-            >
+            <Grid 
+            item xs={12} md={6}
+            sx={{  height: "100%", padding: 2 ,
+            borderLeft: "1px solid #E0E0E0",
+             }}>
               <FormControl sx={{ marginBottom: 2 }} fullWidth>
                 <InputLabel id="lbl-category">Categoria</InputLabel>
                 <Select
@@ -657,15 +657,14 @@ const DetalleComanda = () => {
                     aria-describedby="modal-description"
                   >
                     <Box sx={style.modal}>
-                      <Typography
-                        variant="h5"
-                        color={"primary"}
-                        sx={{ marginBottom: 2, textAlign: "center" }}
-                      >
-                        {stateDish.selectDish.nameDish}
+                      <Typography variant="h5" 
+                      color={"primary"}
+                      sx={{ marginBottom: 2,textAlign: 'center' }}>
+                       {stateDish.selectDish.nameDish}
                       </Typography>
 
                       <Box sx={style.containerModal}>
+
                         <InputForm
                           errorText=""
                           Icon={<FastfoodIcon color="primary" />}
@@ -676,7 +675,7 @@ const DetalleComanda = () => {
                           onChange={(event) => {}}
                           isErrored={false}
                           disabled={true}
-                        />
+                          />
 
                         <InputForm
                           errorText=""
@@ -688,13 +687,12 @@ const DetalleComanda = () => {
                           onChange={(event) => {}}
                           isErrored={false}
                           disabled={true}
-                        />
+                          />
+
 
                         <InputForm
                           errorText=""
-                          Icon={
-                            <ProductionQuantityLimitsIcon color="primary" />
-                          }
+                          Icon={<ProductionQuantityLimitsIcon color="primary" />}
                           id="desc-quantity-dish"
                           label="Cantidad"
                           value={stateDish.selectDish.quantity}
@@ -702,7 +700,8 @@ const DetalleComanda = () => {
                           onChange={(event) => {}}
                           isErrored={false}
                           disabled={true}
-                        />
+                          />
+
 
                         <InputForm
                           errorText=""
@@ -714,13 +713,14 @@ const DetalleComanda = () => {
                           onChange={(event) => {}}
                           isErrored={false}
                           disabled={true}
-                        />
+                          />
+
                       </Box>
                     </Box>
                   </Modal>
                 )}
               </Box>
-            </Grid>
+            </Grid> 
           </Grid>
         )}
       </ContentBox>
