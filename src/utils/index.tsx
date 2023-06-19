@@ -164,6 +164,12 @@ const colorsWithAlphaForChart = [
   "rgba(201, 203, 207, 0.2)",
 ];
 
+const ramdonKey = (name: string) => {
+  return Math.random()
+    .toString(36)
+    .replace("0.", name || "");
+};
+
 export {
   handleLastPageDeletion,
   uploadToCloudinary,
@@ -172,4 +178,5 @@ export {
   onlyDecimal,
   colorsForChart,
   colorsWithAlphaForChart,
+  ramdonKey
 };

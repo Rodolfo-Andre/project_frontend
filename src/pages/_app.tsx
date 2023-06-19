@@ -20,6 +20,7 @@ import {
   BarElement,
 } from "chart.js";
 import "../css/styles.css";
+import { CommandProvider } from "@/contexts/Command";
 
 ChartJS.register(
   ArcElement,
@@ -57,7 +58,9 @@ export default function App({ Component, pageProps }: AppProps) {
         <AuthProvider>
           <CssBaseline />
           {loading && <ProgressBar />}
-          <Component {...pageProps} />
+           <CommandProvider> 
+           <Component {...pageProps} />
+           </CommandProvider>
         </AuthProvider>
       </ThemeProvider>
     </LocalizationProvider>
