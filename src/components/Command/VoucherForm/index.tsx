@@ -301,12 +301,13 @@ console.log("hola");
 
       try {
         console.log("hola");
-        const {data: response} = await axiosObject.post("/api/voucher", objs);
-        console.log(response);
-
-        AlertMessage("Agregado!" , "Se agrego correctamente", "success").then(() => {
-          window.location.href = "/table";
-        });
+        const {data: response,status} = await axiosObject.post("/api/voucher", objs);
+        
+        if (status == 200) {
+          AlertMessage("Agregado!" , "Se agrego correctamente", "success").then(() => {
+            window.location.href = "/table";
+          });
+        }
 
 
       } catch (error) {
@@ -865,7 +866,7 @@ console.log("hola");
             onClick={
               () => {
                  saveVoucher()
-                 
+
               }
             }
           >
