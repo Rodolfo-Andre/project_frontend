@@ -14,6 +14,7 @@ import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
+import FormVoucher from "@/components/Command/VoucherForm";
 const style = {
   titulo: {
     m: 4,
@@ -150,6 +151,13 @@ const DetalleComanda = () => {
             </Box>
           </Modal>
         )} 
+
+       {
+        state.modalVocher && (
+          <FormVoucher/>
+        )
+       }
+
       </ContentBox>
     </Layout>
   );

@@ -43,6 +43,9 @@ const CommandContext = createContext({
   deleteCommand: (id: number) => {},
   setIdTable: (id: number) => {},
   idTable: 0,
+  calculateTotal: () => {},
+  addPayment: (numero: number) => {},
+
 });
 
 const CommandProvider = ({ children }: { children: ReactNode }) => {
@@ -318,6 +321,75 @@ const CommandProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const calculateTotal = () => {
+     const subtotal = state.data.listDishViewAndPost.reduce( 
+      (acc, item) => acc + item.total, 0
+    );
+
+    const igv = subtotal * 0.18;
+    let total = subtotal + igv;
+
+    if (state.valuesVocher.values.descount > 0) {
+      total = total -  state.valuesVocher.values.descount;
+    }
+
+    const mountVoucher = state.valuesVocher.values.ListPayment.reduce(
+      (acc, item) => acc + item.amount, 0
+    )
+
+    total = total - mountVoucher;
+
+    dispatch({
+      type: "SET_VALUES_VOCHER",
+      payload: {
+        ...state.valuesVocher.values,
+        subtotal,
+        igv,
+        total,
+      },
+    });
+
+
+  };
+
+  const  addPayment =  (numero:number) => {
+    
+    if (state.valuesVocher.values.valTypePayment === "") {
+      AlertMessage("Error!", "Debe seleccionar un tipo de pago", "error");
+      return;
+    }
+
+    if (numero <= 0) {
+      AlertMessage("Error!", "El monto debe ser mayor a 0", "error");
+      return;
+    }
+
+    const listPayment = state.valuesVocher.values.ListPayment;
+    const newPayment = {
+      id:  listPayment.find(x => x.id === Number(state.valuesVocher.values.valTypePayment))?.id ?? 0,
+      amount: numero,
+      typePayment: state.valuesVocher.values.valTypePayment,
+      name : listPayment.find(x => x.id === Number(state.valuesVocher.values.valTypePayment))?.name ?? ""
+    };
+
+    const newListPayment = [...listPayment, newPayment];
+
+    dispatch({
+      type: "SET_VALUES_VOCHER",
+      payload: {
+        ...state.valuesVocher.values,
+        ListPayment: newListPayment,
+        valAmount: 0,
+        valTypePayment: "",
+      },
+    });
+
+    console.log(state.valuesVocher.values.ListPayment);
+    
+
+    calculateTotal();
+  }
+
   return (
     <CommandContext.Provider
       value={{
@@ -337,6 +409,8 @@ const CommandProvider = ({ children }: { children: ReactNode }) => {
         loading,
         stateLoading,
         setIdTable,
+        calculateTotal,
+        addPayment,
         idTable,
       }}
     >

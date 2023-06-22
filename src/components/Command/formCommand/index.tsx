@@ -114,19 +114,23 @@ const FormCommand: React.FC<IFormCommand> = ({ data }) => {
         />
 
         <Grid sx={{ marginTop: 2 }} width={"100%"} container gap={1}>
-          <Grid item xs={12} sm={12} md={3}>
-            <Button
-              variant="contained"
-              onClick={() => {
-                alert("GARY CABRO");
-              }}
-              fullWidth
-              sx={{ bgcolor: "#6f42c1" }}
-            >
-              Facturar
-            </Button>
-          </Grid>
-
+            {
+              data.id !== 0 && data.statesCommandId === 2 && (
+                <Grid item xs={12} sm={12} md={3}>
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    dispatch({type : "SET_MODAL_VOCHER",payload : true})
+                  }}
+                  fullWidth
+                  sx={{ bgcolor: "#6f42c1" }}
+                >
+                  Facturar
+                </Button>
+              </Grid>
+              )
+            }
+             
           <Grid item xs={12} sm={12} md={3}>
             <Button
               variant="contained"
@@ -146,7 +150,7 @@ const FormCommand: React.FC<IFormCommand> = ({ data }) => {
             </Button>
           </Grid>
 
-          {data.id !== 0 && (
+          {data.id !== 0  && (
             <Grid item xs={12} sm={12} md={3}>
               <Button
                 variant="contained"
