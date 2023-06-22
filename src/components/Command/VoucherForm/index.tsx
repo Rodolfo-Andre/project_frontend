@@ -304,6 +304,8 @@ console.log("hola");
         const data = await axiosObject.post("/api/voucher", objs);
         console.log(data);
         if (data.status == 200) {
+          dispatch({ type: "SET_MODAL_VOCHER", payload: false });
+
           AlertMessage("Agregado!" , "Se agrego correctamente", "success").then(() => {
             window.location.href = "/commands";
           });
