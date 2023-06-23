@@ -78,11 +78,13 @@ const reportsItems: IMenuItemsWithSubItemsProps[] = [
         href: "/reports/sales",
         text: "Ventas",
         Icon: MonetizationOn,
+        roles: ["Administrador", "Gerente"],
       },
       {
         href: "/reports/voucher",
         text: "Comprobantes de Pago",
         Icon: Newspaper,
+        roles: ["Administrador", "Gerente", "Mesero", "Cajero"],
       },
     ],
   },
@@ -104,13 +106,17 @@ const DrawerItem = () => {
         <ListItemButtonLink Icon={Home} text="Inicio" href="/" />
       </List>
 
-      <List>
-        <ListItemButtonLink
-          Icon={ReceiptLongIcon}
-          text="Generar Comandas"
-          href="/commands"
-        />
-      </List>
+      {(
+        ["Administrador", "Cajero", "Cocinero", "Mesero"] as UserRoles[]
+      ).includes(user?.role.roleName as UserRoles) && (
+        <List>
+          <ListItemButtonLink
+            Icon={ReceiptLongIcon}
+            text="Generar Comandas"
+            href="/commands"
+          />
+        </List>
+      )}
 
       {user?.role.roleName === ("Administrador" as UserRoles) && (
         <List>
@@ -120,11 +126,13 @@ const DrawerItem = () => {
         </List>
       )}
 
-      <List>
-        {reportsItems.map((item) => (
-          <ListItemButtonWithCollapse key={item.text} {...item} />
-        ))}
-      </List>
+      {user?.role.roleName !== ("Cocinero" as UserRoles) && (
+        <List>
+          {reportsItems.map((item) => (
+            <ListItemButtonWithCollapse key={item.text} {...item} />
+          ))}
+        </List>
+      )}
     </>
   );
 };

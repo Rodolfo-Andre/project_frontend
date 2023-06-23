@@ -5,16 +5,17 @@ import Layout from "@/components/Layout";
 import LoaderCustom from "@/components/Loader";
 import { CommandContext } from "@/contexts/Command";
 import { useRouter } from "next/router";
-import {  useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import { InputForm } from "@/components/InputForm";
-import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
-import FastfoodIcon from '@mui/icons-material/Fastfood';
-import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
+import ProductionQuantityLimitsIcon from "@mui/icons-material/ProductionQuantityLimits";
+import FastfoodIcon from "@mui/icons-material/Fastfood";
+import ChromeReaderModeIcon from "@mui/icons-material/ChromeReaderMode";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
 import FormVoucher from "@/components/Command/VoucherForm";
+import ProtectedRouteForAuthenticated from "@/components/ProtectedRouteForAuthenticated";
 const style = {
   titulo: {
     m: 4,
@@ -45,7 +46,8 @@ const style = {
 };
 const DetalleComanda = () => {
   const { query, isReady } = useRouter();
-  const { setIdTable, loading, data,state,dispatch } = useContext(CommandContext);
+  const { setIdTable, loading, data, state, dispatch } =
+    useContext(CommandContext);
 
   useEffect(() => {
     const id = Number(query.id ?? 0);
@@ -64,8 +66,6 @@ const DetalleComanda = () => {
   //   return <LoaderCustom />;
   // }
 
-
-
   return (
     <Layout>
       <ContentBox>
@@ -77,26 +77,32 @@ const DetalleComanda = () => {
           </Grid>
         )}
 
-     {state.modal.selectDish !== null && (
+        {state.modal.selectDish !== null && (
           <Modal
             open={state.modal.open}
-            onClose={() =>  dispatch({type:'SET_MODAL',payload:{
-               ...state.modal,
-                open:false,
-                selectDish:null
-            }})}
+            onClose={() =>
+              dispatch({
+                type: "SET_MODAL",
+                payload: {
+                  ...state.modal,
+                  open: false,
+                  selectDish: null,
+                },
+              })
+            }
             aria-labelledby="modal"
             aria-describedby="modal-description"
           >
             <Box sx={style.modal}>
-              <Typography variant="h5" 
-              color={"primary"}
-              sx={{ marginBottom: 2,textAlign: 'center' }}>
-               {state.modal.selectDish.nameDish}
+              <Typography
+                variant="h5"
+                color={"primary"}
+                sx={{ marginBottom: 2, textAlign: "center" }}
+              >
+                {state.modal.selectDish.nameDish}
               </Typography>
 
               <Box sx={style.containerModal}>
-
                 <InputForm
                   errorText=""
                   Icon={<FastfoodIcon color="primary" />}
@@ -107,7 +113,7 @@ const DetalleComanda = () => {
                   onChange={(event) => {}}
                   isErrored={false}
                   disabled={true}
-                  />
+                />
 
                 <InputForm
                   errorText=""
@@ -119,8 +125,7 @@ const DetalleComanda = () => {
                   onChange={(event) => {}}
                   isErrored={false}
                   disabled={true}
-                  />
-
+                />
 
                 <InputForm
                   errorText=""
@@ -132,8 +137,7 @@ const DetalleComanda = () => {
                   onChange={(event) => {}}
                   isErrored={false}
                   disabled={true}
-                  />
-
+                />
 
                 <InputForm
                   errorText=""
@@ -145,22 +149,19 @@ const DetalleComanda = () => {
                   onChange={(event) => {}}
                   isErrored={false}
                   disabled={true}
-                  />
-
+                />
               </Box>
             </Box>
           </Modal>
-        )} 
+        )}
 
-       {
-        state.modalVocher && (
-          <FormVoucher/>
-        )
-       }
-
+        {state.modalVocher && <FormVoucher />}
       </ContentBox>
     </Layout>
   );
 };
 
-export default DetalleComanda;
+export default ProtectedRouteForAuthenticated({
+  Component: DetalleComanda,
+  roles: ["Administrador", "Cajero", "Mesero", "Cocinero"],
+});

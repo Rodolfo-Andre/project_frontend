@@ -20,6 +20,7 @@ import {
   useEffect,
 } from "react";
 import ServiceDish from "@/services/apis/dish-services";
+import { AxiosError } from "axios";
 const CommandContext = createContext({
   state: {} as IStateDish,
   setListDish: (listDish: IDishGet[]) => {},
@@ -38,6 +39,7 @@ const CommandContext = createContext({
     cantPerson: number;
     userId: number;
   }) => {},
+  prepareCommand: (id: number) => {},
   data: {} as ITableWithComand2 | null,
   loadCommand: async (id: number) => {},
   deleteCommand: (id: number) => {},
@@ -45,7 +47,6 @@ const CommandContext = createContext({
   idTable: 0,
   calculateTotal: () => {},
   addPayment: (numero: number) => {},
-
 });
 
 const CommandProvider = ({ children }: { children: ReactNode }) => {
@@ -71,8 +72,11 @@ const CommandProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (state.data.listDishViewAndPost.length !== 0) {
-      console.log("state.data.listDishViewAndPost", state.data.listDishViewAndPost);
-      
+      console.log(
+        "state.data.listDishViewAndPost",
+        state.data.listDishViewAndPost
+      );
+
       updateTotal();
     }
   }, [state.data.listDishViewAndPost]);
@@ -234,7 +238,6 @@ const CommandProvider = ({ children }: { children: ReactNode }) => {
 
       if (data) {
         AlertMessage("Exito!", "Se guardo la comanda", "success").then(() => {
-
           window.location.href = "/commands";
         });
       }
@@ -242,6 +245,24 @@ const CommandProvider = ({ children }: { children: ReactNode }) => {
       AlertMessage("Error!", "No se pudo guardar la comanda", "error").then(
         () => {}
       );
+    } finally {
+      setStateLoading(false);
+    }
+  };
+
+  const prepareCommand = async (id: number) => {
+    setStateLoading(true);
+    try {
+      const data = await CommandServices.prepareCommand(id);
+
+      if (data) {
+        AlertMessage("Exito!", data, "success").then(() => {
+          window.location.href = "/commands";
+        });
+      }
+    } catch (error) {
+      const err = error as AxiosError;
+      AlertMessage("Error!", err.response!.data as string, "error");
     } finally {
       setStateLoading(false);
     }
@@ -322,20 +343,22 @@ const CommandProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const calculateTotal = () => {
-     const subtotal = state.data.listDishViewAndPost.reduce( 
-      (acc, item) => acc + item.total, 0
+    const subtotal = state.data.listDishViewAndPost.reduce(
+      (acc, item) => acc + item.total,
+      0
     );
 
     const igv = subtotal * 0.18;
     let total = subtotal + igv;
 
     if (state.valuesVocher.values.descount > 0) {
-      total = total -  state.valuesVocher.values.descount;
+      total = total - state.valuesVocher.values.descount;
     }
 
     const mountVoucher = state.valuesVocher.values.ListPayment.reduce(
-      (acc, item) => acc + item.amount, 0
-    )
+      (acc, item) => acc + item.amount,
+      0
+    );
 
     total = total - mountVoucher;
 
@@ -348,12 +371,9 @@ const CommandProvider = ({ children }: { children: ReactNode }) => {
         total,
       },
     });
-
-
   };
 
-  const  addPayment =  (numero:number) => {
-    
+  const addPayment = (numero: number) => {
     if (state.valuesVocher.values.valTypePayment === "") {
       AlertMessage("Error!", "Debe seleccionar un tipo de pago", "error");
       return;
@@ -366,10 +386,16 @@ const CommandProvider = ({ children }: { children: ReactNode }) => {
 
     const listPayment = state.valuesVocher.values.ListPayment;
     const newPayment = {
-      id:  listPayment.find(x => x.id === Number(state.valuesVocher.values.valTypePayment))?.id ?? 0,
+      id:
+        listPayment.find(
+          (x) => x.id === Number(state.valuesVocher.values.valTypePayment)
+        )?.id ?? 0,
       amount: numero,
       typePayment: state.valuesVocher.values.valTypePayment,
-      name : listPayment.find(x => x.id === Number(state.valuesVocher.values.valTypePayment))?.name ?? ""
+      name:
+        listPayment.find(
+          (x) => x.id === Number(state.valuesVocher.values.valTypePayment)
+        )?.name ?? "",
     };
 
     const newListPayment = [...listPayment, newPayment];
@@ -385,10 +411,9 @@ const CommandProvider = ({ children }: { children: ReactNode }) => {
     });
 
     console.log(state.valuesVocher.values.ListPayment);
-    
 
     calculateTotal();
-  }
+  };
 
   return (
     <CommandContext.Provider
@@ -403,6 +428,7 @@ const CommandProvider = ({ children }: { children: ReactNode }) => {
         updateTotal,
         resetError,
         saveCommand,
+        prepareCommand,
         setError,
         deleteCommand,
         loadCommand,
