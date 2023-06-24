@@ -2,6 +2,7 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import ComboBox from "@/components/ComboBox";
 import employeeSchema from "@/schemas/Employee";
+import Swal from "sweetalert2";
 import { IEmployeeGet, IEmployeeCreateOrUpdate } from "@/interfaces/IEmployee";
 import { IRoleGet } from "@/interfaces/IRole";
 import { IUpdateFormProps } from "@/interfaces/IFormProps";
@@ -11,6 +12,7 @@ import { updateObject } from "@/services/HttpRequests";
 import { onlyNumber, theme } from "@/utils";
 import { ThemeProvider } from "@mui/material/styles";
 import { showSuccessToastMessage } from "@/lib/Messages";
+import { AxiosError } from "axios";
 
 interface IEmployeeUpdateFormProps
   extends IUpdateFormProps<IEmployeeCreateOrUpdate, IEmployeeGet> {
@@ -39,13 +41,21 @@ const EmployeeUpdateForm = ({
         validateOnChange={false}
         validationSchema={employeeSchema}
         onSubmit={async (employeeUpdate) => {
-          await updateObject<IEmployeeGet, IEmployeeCreateOrUpdate>(
-            `api/employee/${employee.id}`,
-            employeeUpdate
-          );
-          mutate("api/employee");
+          try {
+            await updateObject<IEmployeeGet, IEmployeeCreateOrUpdate>(
+              `api/employee/${employee.id}`,
+              employeeUpdate
+            );
 
-          showSuccessToastMessage("El empleado se ha modificado correctamente");
+            mutate("api/employee");
+
+            showSuccessToastMessage(
+              "El empleado se ha modificado correctamente"
+            );
+          } catch (err) {
+            const error = err as AxiosError;
+            Swal.showValidationMessage(error.response?.data as string);
+          }
         }}
       >
         {({

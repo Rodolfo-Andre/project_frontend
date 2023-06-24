@@ -2,6 +2,7 @@ import ComboBox from "@/components/ComboBox";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import employeeSchema from "@/schemas/Employee";
+import Swal from "sweetalert2";
 import { IEmployeeGet, IEmployeeCreateOrUpdate } from "@/interfaces/IEmployee";
 import { IRoleGet } from "@/interfaces/IRole";
 import { IFormProps } from "@/interfaces/IFormProps";
@@ -11,6 +12,7 @@ import { createObject } from "@/services/HttpRequests";
 import { onlyNumber, theme } from "@/utils";
 import { ThemeProvider } from "@mui/material/styles";
 import { showSuccessToastMessage } from "@/lib/Messages";
+import { AxiosError } from "axios";
 
 const initialValues: IEmployeeCreateOrUpdate = {
   firstName: "",
@@ -37,13 +39,20 @@ const EmployeeAddForm = ({ setFormikRef, data }: IEmployeeAddFormProps) => {
         validateOnChange={false}
         validationSchema={employeeSchema}
         onSubmit={async (newEmployee) => {
-          await createObject<IEmployeeGet, IEmployeeCreateOrUpdate>(
-            "api/employee",
-            newEmployee
-          );
-          mutate("api/employee");
+          try {
+            await createObject<IEmployeeGet, IEmployeeCreateOrUpdate>(
+              "api/employee",
+              newEmployee
+            );
+            mutate("api/employee");
 
-          showSuccessToastMessage("El empleado se ha registrado correctamente");
+            showSuccessToastMessage(
+              "El empleado se ha registrado correctamente"
+            );
+          } catch (err) {
+            const error = err as AxiosError;
+            Swal.showValidationMessage(error.response?.data as string);
+          }
         }}
       >
         {({
