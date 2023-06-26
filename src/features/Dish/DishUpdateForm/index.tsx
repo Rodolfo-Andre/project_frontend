@@ -1,6 +1,7 @@
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import ComboBox from "@/components/ComboBox";
+import Swal from "sweetalert2";
 import ImageDropzone from "@/components/ImageDropzone";
 import dishSchema from "@/schemas/Dish";
 import { IDishGet, IDishCreateOrUpdate } from "@/interfaces/IDish";
@@ -8,11 +9,12 @@ import { ICategoryDishGet } from "@/interfaces/ICategoryDish";
 import { IUpdateFormProps } from "@/interfaces/IFormProps";
 import { useSWRConfig } from "swr";
 import { useState } from "react";
-import { updateObject } from "@/services/HttpRequests";
+import { getObject, updateObject } from "@/services/HttpRequests";
 import { uploadToCloudinary, theme, onlyDecimal } from "@/utils";
 import { Formik } from "formik";
 import { ThemeProvider } from "@mui/material/styles";
 import { showSuccessToastMessage } from "@/lib/Messages";
+import { AxiosError } from "axios";
 
 interface IDishUpdateFormProps
   extends IUpdateFormProps<IDishCreateOrUpdate, IDishGet> {
@@ -40,17 +42,26 @@ const DishUpdateForm = ({
         validateOnChange={false}
         validationSchema={dishSchema}
         onSubmit={async (dishUpdate) => {
-          if (file) {
-            const imageUrl = await uploadToCloudinary(file);
-            dishUpdate.imgDish = imageUrl;
-          }
-          await updateObject<IDishGet, IDishCreateOrUpdate>(
-            `api/dish/${dish.id}`,
-            dishUpdate
-          );
-          mutate("api/dish");
+          try {
+            await getObject(
+              `api/Dish/verify-name/${dishUpdate.nameDish}/${dish.id}`
+            );
 
-          showSuccessToastMessage("El plato se ha modificado correctamente");
+            if (file) {
+              const imageUrl = await uploadToCloudinary(file);
+              dishUpdate.imgDish = imageUrl;
+            }
+            await updateObject<IDishGet, IDishCreateOrUpdate>(
+              `api/dish/${dish.id}`,
+              dishUpdate
+            );
+            mutate("api/dish");
+
+            showSuccessToastMessage("El plato se ha modificado correctamente");
+          } catch (err) {
+            const error = err as AxiosError;
+            Swal.showValidationMessage(error.response?.data as string);
+          }
         }}
       >
         {({

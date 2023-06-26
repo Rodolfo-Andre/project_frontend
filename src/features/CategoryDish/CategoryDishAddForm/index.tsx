@@ -1,6 +1,7 @@
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import categoryDishSchema from "@/schemas/CategoryDish";
+import Swal from "sweetalert2";
 import { useSWRConfig } from "swr";
 import { createObject } from "@/services/HttpRequests";
 import {
@@ -12,6 +13,7 @@ import { Formik } from "formik";
 import { theme } from "@/utils";
 import { ThemeProvider } from "@mui/material/styles";
 import { showSuccessToastMessage } from "@/lib/Messages";
+import { AxiosError } from "axios";
 
 const initialValues: ICategoryDishPrincipal = {
   nameCatDish: "",
@@ -30,15 +32,20 @@ const CategoryDishAddForm = ({
         validateOnChange={false}
         validationSchema={categoryDishSchema}
         onSubmit={async (newCategoryDish) => {
-          await createObject<ICategoryDishGet, ICategoryDishPrincipal>(
-            "api/categorydish",
-            newCategoryDish
-          );
-          mutate("api/categorydish");
+          try {
+            await createObject<ICategoryDishGet, ICategoryDishPrincipal>(
+              "api/categorydish",
+              newCategoryDish
+            );
+            mutate("api/categorydish");
 
-          showSuccessToastMessage(
-            "La categoría se ha registrado correctamente"
-          );
+            showSuccessToastMessage(
+              "La categoría se ha registrado correctamente"
+            );
+          } catch (err) {
+            const error = err as AxiosError;
+            Swal.showValidationMessage(error.response?.data as string);
+          }
         }}
       >
         {({ values, errors, handleChange, isSubmitting, handleSubmit }) => (

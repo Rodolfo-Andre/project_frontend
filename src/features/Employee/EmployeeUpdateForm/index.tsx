@@ -17,12 +17,14 @@ import { AxiosError } from "axios";
 interface IEmployeeUpdateFormProps
   extends IUpdateFormProps<IEmployeeCreateOrUpdate, IEmployeeGet> {
   data: IRoleGet[];
+  isUserInSession: boolean;
 }
 
 const EmployeeUpdateForm = ({
   values: employee,
   setFormikRef,
   data,
+  isUserInSession,
 }: IEmployeeUpdateFormProps) => {
   const { mutate } = useSWRConfig();
 
@@ -122,7 +124,7 @@ const EmployeeUpdateForm = ({
                     setFieldValue("user.email", e.target.value);
                   }}
                   helperText={errors.user?.email}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || isUserInSession}
                   fullWidth
                 />
               </Grid>
@@ -152,9 +154,9 @@ const EmployeeUpdateForm = ({
                     label: "Rol",
                     error: Boolean(errors.roleId),
                     helperText: errors.roleId,
-                    disabled: isSubmitting,
+                    disabled: isSubmitting || isUserInSession,
                   }}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || isUserInSession}
                   handleChange={(role: IRoleGet | null) => {
                     setFieldValue("roleId", role?.id);
                   }}

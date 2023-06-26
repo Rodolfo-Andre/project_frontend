@@ -31,7 +31,7 @@ const CategoryDishSection = () => {
         </Typography>
 
         <ButtonAdd
-          text="Añadir Categoria de Plato"
+          text="Añadir Categoría de Plato"
           openDialog={() => {
             showForm({
               title: "Añadir Categoria de Plato",

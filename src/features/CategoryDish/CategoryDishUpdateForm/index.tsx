@@ -1,6 +1,7 @@
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import categoryDishSchema from "@/schemas/CategoryDish";
+import Swal from "sweetalert2";
 import {
   ICategoryDishGet,
   ICategoryDishPrincipal,
@@ -12,6 +13,7 @@ import { Formik } from "formik";
 import { theme } from "@/utils";
 import { ThemeProvider } from "@mui/material/styles";
 import { showSuccessToastMessage } from "@/lib/Messages";
+import { AxiosError } from "axios";
 
 const CategoryDishUpdateForm = ({
   setFormikRef,
@@ -29,15 +31,20 @@ const CategoryDishUpdateForm = ({
         validateOnChange={false}
         validationSchema={categoryDishSchema}
         onSubmit={async (categoryDishUpdate) => {
-          await updateObject<ICategoryDishGet, ICategoryDishPrincipal>(
-            `api/categorydish/${values.id}`,
-            categoryDishUpdate
-          );
-          mutate("api/categorydish");
+          try {
+            await updateObject<ICategoryDishGet, ICategoryDishPrincipal>(
+              `api/categorydish/${values.id}`,
+              categoryDishUpdate
+            );
+            mutate("api/categorydish");
 
-          showSuccessToastMessage(
-            "La categoría se ha modificado correctamente"
-          );
+            showSuccessToastMessage(
+              "La categoría se ha modificado correctamente"
+            );
+          } catch (err) {
+            const error = err as AxiosError;
+            Swal.showValidationMessage(error.response?.data as string);
+          }
         }}
       >
         {({ values, errors, handleChange, isSubmitting, handleSubmit }) => (
