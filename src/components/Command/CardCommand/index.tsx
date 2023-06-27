@@ -20,8 +20,6 @@ interface IDishView extends IDishGet {
   quantity: number;
   observation: string;
   total: number;
-
-  
 }
 
 const CardCommandComponent: FC<ICardCommandComponent> = ({
@@ -36,9 +34,8 @@ const CardCommandComponent: FC<ICardCommandComponent> = ({
  
 
   return (
-     <> 
+    <>
       <Card
-     
      sx={{ mb: 1, borderRadius: 1, boxShadow: 1, width: '100%', height: 150,overflow: 'hidden' }}
      >
        <Box display="flex" alignItems="center">
@@ -96,8 +93,6 @@ const CardCommandComponent: FC<ICardCommandComponent> = ({
          </Box>
        </Box>
      </Card>
-
-
     
 
      </>

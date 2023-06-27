@@ -12,5 +12,5 @@ const VoucherReportPage = () => {
 
 export default ProtectedRouteForAuthenticated({
   Component: VoucherReportPage,
-  roles: ["Administrador"],
+  roles: ["Administrador", "Gerente", "Mesero", "Cajero"],
 });

@@ -6,9 +6,12 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Router from "next/router";
+import UserRoles from "@/interfaces/UserRoles";
 import ListItemButtonLink from "@/components/ListItemButtonLink";
 import IMenuItemsWithSubItemsProps from "@/interfaces/IMenuItemsWithSubItemsProps";
 import { useToggle } from "@/hooks";
+import { useContext } from "react";
+import { AuthContext } from "@/contexts/Auth";
 
 const ListItemButtonWithCollapse = ({
   text,
@@ -16,6 +19,7 @@ const ListItemButtonWithCollapse = ({
   section,
   items,
 }: IMenuItemsWithSubItemsProps) => {
+  const { user } = useContext(AuthContext);
   const [open, toogle] = useToggle(false);
 
   return (
@@ -44,9 +48,15 @@ const ListItemButtonWithCollapse = ({
       </ListItem>
 
       <Collapse in={open} timeout="auto" unmountOnExit>
-        {items.map((item) => (
-          <ListItemButtonLink key={item.text} {...item} />
-        ))}
+        {items
+          .filter(
+            (item) =>
+              !item.roles ||
+              item.roles?.includes(user?.role.roleName as UserRoles)
+          )
+          .map((item) => (
+            <ListItemButtonLink key={item.text} {...item} />
+          ))}
       </Collapse>
     </>
   );

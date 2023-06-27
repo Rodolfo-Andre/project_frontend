@@ -1,6 +1,7 @@
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import payMethodSchema from "@/schemas/PayMethod";
+import Swal from "sweetalert2";
 import { useSWRConfig } from "swr";
 import { createObject } from "@/services/HttpRequests";
 import { IPayMethodGet, IPayMethodPrincipal } from "@/interfaces/IPayMethod";
@@ -9,6 +10,7 @@ import { Formik } from "formik";
 import { theme } from "@/utils";
 import { ThemeProvider } from "@mui/material/styles";
 import { showSuccessToastMessage } from "@/lib/Messages";
+import { AxiosError } from "axios";
 
 const initialValues: IPayMethodPrincipal = {
   paymethod: "",
@@ -27,15 +29,20 @@ const PayMethodAddForm = ({
         validateOnChange={false}
         validationSchema={payMethodSchema}
         onSubmit={async (newPayMethod) => {
-          await createObject<IPayMethodGet, IPayMethodPrincipal>(
-            "api/paymethod",
-            newPayMethod
-          );
-          mutate("api/paymethod");
+          try {
+            await createObject<IPayMethodGet, IPayMethodPrincipal>(
+              "api/paymethod",
+              newPayMethod
+            );
+            mutate("api/paymethod");
 
-          showSuccessToastMessage(
-            "El método de pago se ha registrado correctamente"
-          );
+            showSuccessToastMessage(
+              "El método de pago se ha registrado correctamente"
+            );
+          } catch (err) {
+            const error = err as AxiosError;
+            Swal.showValidationMessage(error.response?.data as string);
+          }
         }}
       >
         {({ values, errors, handleChange, isSubmitting, handleSubmit }) => (

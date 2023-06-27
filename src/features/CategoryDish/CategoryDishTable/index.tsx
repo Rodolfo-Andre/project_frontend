@@ -51,7 +51,7 @@ const CategoryDishTable = ({ data }: ICategoryDishTableProps) => {
             color="warning"
             onClick={() => {
               showForm({
-                title: "Actualizar Plato",
+                title: "Actualizar Categoría de Plato",
                 cancelButtonText: "CANCELAR",
                 confirmButtonText: "ACTUALIZAR",
                 customClass: {

@@ -8,7 +8,7 @@ const handleResponse = async <T,>(
     const response = await promise;
     return response.data;
   } catch (error) {
-    throw new Error("Ocurrió un error: " + error);
+    return Promise.reject(error);
   }
 };
 
@@ -38,7 +38,7 @@ const deleteObject = async (url: string): Promise<void> => {
   try {
     await AxiosServices.delete(url);
   } catch (error) {
-    throw new Error("Ocurrió un error: " + error);
+    Promise.reject(error);
   }
 };
 

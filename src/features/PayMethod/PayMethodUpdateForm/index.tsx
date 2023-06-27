@@ -1,6 +1,7 @@
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import payMethodSchema from "@/schemas/PayMethod";
+import Swal from "sweetalert2";
 import { IPayMethodGet, IPayMethodPrincipal } from "@/interfaces/IPayMethod";
 import { IUpdateFormProps } from "@/interfaces/IFormProps";
 import { useSWRConfig } from "swr";
@@ -9,6 +10,7 @@ import { Formik } from "formik";
 import { theme } from "@/utils";
 import { ThemeProvider } from "@mui/material/styles";
 import { showSuccessToastMessage } from "@/lib/Messages";
+import { AxiosError } from "axios";
 
 const PayMethodUpdateForm = ({
   setFormikRef,
@@ -26,15 +28,20 @@ const PayMethodUpdateForm = ({
         validateOnChange={false}
         validationSchema={payMethodSchema}
         onSubmit={async (payMethodUpdate) => {
-          await updateObject<IPayMethodGet, IPayMethodPrincipal>(
-            `api/paymethod/${values.id}`,
-            payMethodUpdate
-          );
-          mutate("api/paymethod");
+          try {
+            await updateObject<IPayMethodGet, IPayMethodPrincipal>(
+              `api/paymethod/${values.id}`,
+              payMethodUpdate
+            );
+            mutate("api/paymethod");
 
-          showSuccessToastMessage(
-            "El método de pago se ha modificado correctamente"
-          );
+            showSuccessToastMessage(
+              "El método de pago se ha modificado correctamente"
+            );
+          } catch (err) {
+            const error = err as AxiosError;
+            Swal.showValidationMessage(error.response?.data as string);
+          }
         }}
       >
         {({ values, errors, handleChange, isSubmitting, handleSubmit }) => (

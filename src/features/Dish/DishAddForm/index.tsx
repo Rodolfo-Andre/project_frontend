@@ -4,9 +4,10 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import ImageDropzone from "@/components/ImageDropzone";
 import dishSchema from "@/schemas/Dish";
+import Swal from "sweetalert2";
 import { useTheme, ThemeProvider } from "@mui/material/styles";
 import { useSWRConfig } from "swr";
-import { createObject } from "@/services/HttpRequests";
+import { createObject, getObject } from "@/services/HttpRequests";
 import { ICategoryDishGet } from "@/interfaces/ICategoryDish";
 import { IDishCreateOrUpdate, IDishGet } from "@/interfaces/IDish";
 import { IFormProps } from "@/interfaces/IFormProps";
@@ -14,6 +15,7 @@ import { onlyDecimal, uploadToCloudinary } from "@/utils";
 import { Formik } from "formik";
 import { useState } from "react";
 import { showSuccessToastMessage } from "@/lib/Messages";
+import { AxiosError } from "axios";
 
 const initialValues: IDishCreateOrUpdate = {
   nameDish: "",
@@ -38,18 +40,25 @@ const DishAddForm = ({ setFormikRef, data }: IDishAddFormProps) => {
         validateOnChange={false}
         validationSchema={dishSchema}
         onSubmit={async (newDish) => {
-          if (file) {
-            const urlImage = await uploadToCloudinary(file);
-            newDish.imgDish = urlImage;
+          try {
+            await getObject(`api/Dish/verify-name/${newDish.nameDish}`);
+
+            if (file) {
+              const urlImage = await uploadToCloudinary(file);
+              newDish.imgDish = urlImage;
+            }
+
+            await createObject<IDishGet, IDishCreateOrUpdate>(
+              "api/dish",
+              newDish
+            );
+            mutate("api/dish");
+
+            showSuccessToastMessage("El plato se ha registrado correctamente");
+          } catch (err) {
+            const error = err as AxiosError;
+            Swal.showValidationMessage(error.response?.data as string);
           }
-
-          await createObject<IDishGet, IDishCreateOrUpdate>(
-            "api/dish",
-            newDish
-          );
-          mutate("api/dish");
-
-          showSuccessToastMessage("El plato se ha registrado correctamente");
         }}
       >
         {({

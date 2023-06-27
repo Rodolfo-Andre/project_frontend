@@ -77,6 +77,22 @@ const updateState = () => {
   );
 
 };
+
+  const getStateCommandName = (state: number) => {
+
+    switch (state) {
+
+      case 1:
+        return "Generado";
+      case 2:
+        return "Preparado";
+      case 3:
+        return "Pagado";
+      default:
+        return "Generado";
+    }
+  };
+
 const onlyAdministradorMesero = (
   ["Administrador", "Mesero"] as UserRoles[]
 ).includes(user?.role.roleName as UserRoles);
@@ -132,7 +148,7 @@ const onlyAdministradorMesero = (
           id="state-commmand"
           label="Estado de la comanda"
           disabled={true}
-          value={data.statesCommandName || ""}
+          value={getStateCommandName(data.statesCommandId) || ""}
           type="string"
           onChange={() => {}}
           isErrored={false}

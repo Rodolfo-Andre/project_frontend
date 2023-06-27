@@ -12,5 +12,5 @@ const SalesReportPage = () => {
 
 export default ProtectedRouteForAuthenticated({
   Component: SalesReportPage,
-  roles: ["Administrador"],
+  roles: ["Administrador", "Gerente"],
 });

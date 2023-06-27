@@ -42,7 +42,7 @@ const CardInfoOrder:React.FC<ICardInfoOrder> = ({title,total,deleteListPayment})
               color="text.secondary"
               component="div"
             >
-               Total : S./{total}
+               Total : S./{total.toFixed(2)}
             </Typography>
           </CardContent>
         </Box>

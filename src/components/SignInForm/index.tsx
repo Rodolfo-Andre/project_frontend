@@ -106,7 +106,7 @@ const SignInForm = () => {
                   <InputAdornment position="end">
                     <IconButton
                       onClick={toggleShowPassword}
-                      onMouseDown={toggleShowPassword}
+                      onMouseDown={(e) => e.preventDefault()}
                       edge="end"
                     >
                       {showPassword ? (

@@ -110,6 +110,7 @@ const EmployeeTable = ({ data, roles }: IEmpoyeeTableProps) => {
                     setFormikRef={(ref) => (formikRef = ref)}
                     values={employee.row}
                     data={roles}
+                    isUserInSession={user?.id === employee.row.id}
                   />
                 ),
                 preConfirm: async () => {

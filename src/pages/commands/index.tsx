@@ -1,16 +1,17 @@
 import { ContentBox, Layout, ProtectedRouteForAuthenticated } from "@/components";
 import TableRestaurantIcon from "@mui/icons-material/TableRestaurant";
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import PriceChangeIcon from "@mui/icons-material/PriceChange"; 
-import ChairAltIcon from '@mui/icons-material/ChairAlt';
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import PriceChangeIcon from "@mui/icons-material/PriceChange";
+import ChairAltIcon from "@mui/icons-material/ChairAlt";
 import AccessTimeFilledOutlinedIcon from "@mui/icons-material/AccessTimeFilledOutlined";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import useFectch from "@/hooks/useFetch";
-import { Box } from "@mui/material"; 
-import { ITableWithComand } from "@/interfaces";
+import { Box } from "@mui/material";
+import { ITableWithComand, UserRoles } from "@/interfaces";
+import { AuthContext } from "@/contexts/Auth";
 
 const styles = {
   titulo: {
@@ -67,13 +68,12 @@ const styles = {
   },
 };
 
-
-
 const CommandsPage = () => {
   const { data, error, loading } = useFectch<ITableWithComand[]>(
     "api/table/table-command",
     "get"
   );
+  const { user } = useContext(AuthContext);
 
   const ramdonKey = (name: string) => {
     return Math.random()
@@ -89,7 +89,7 @@ const CommandsPage = () => {
             Comandas
           </Typography>
           <Grid style={styles.borderContainer} container>
-            <Grid sx={styles.boderRight} item xs={12} >
+            <Grid item xs={12}>
               <Box style={styles.grid}>
                 {data && error == null && !loading ? (
                   <>
@@ -103,8 +103,6 @@ const CommandsPage = () => {
                               : styles.cardSuccess),
                           }}
                           key={ramdonKey("item")}
-                          
-
                           onClick={() => {
                             window.location.href = `commands/detail-comand/${d.numTable}`;
                           }}
@@ -151,45 +149,48 @@ const CommandsPage = () => {
                             <Typography variant="h6">{d.}</Typography>
                           </Box> */}
 
-                      {(d.stateTable == "Ocupado" && d.commandActive !=null) && (
-                            <Box
-                            sx={{
-                              color: "#fff",
-                              gap: 1,
-                              mb: 2,
-                              display: "flex",
-                              alignItems: "center",
-                            }}
-                          >
-                            <CalendarMonthIcon fontSize="large" />
-                            <Typography variant="h6">{d.commandActive.createdAt}</Typography>
-                          </Box>
-                          )}
+                          {d.stateTable == "Ocupado" &&
+                            d.commandActive != null && (
+                              <Box
+                                sx={{
+                                  color: "#fff",
+                                  gap: 1,
+                                  mb: 2,
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <CalendarMonthIcon fontSize="large" />
+                                <Typography variant="h6">
+                                  {d.commandActive.createdAt}
+                                </Typography>
+                              </Box>
+                            )}
 
-                          {(d.stateTable == "Ocupado" && d.commandActive !=null) && (
-                            <Box
-                              sx={{
-                                color: "#fff",
-                                gap: 1,
-                                mb: 2,
-                                display: "flex",
-                                alignItems: "center",
-                              }}
-                            >
-                              <PriceChangeIcon fontSize="large" />
-                              <Typography variant="h6">
-                                {d.commandActive.precTotOrder}
-                              </Typography>
-                            </Box>
-                          )}
+                          {d.stateTable == "Ocupado" &&
+                            d.commandActive != null && (
+                              <Box
+                                sx={{
+                                  color: "#fff",
+                                  gap: 1,
+                                  mb: 2,
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <PriceChangeIcon fontSize="large" />
+                                <Typography variant="h6">
+                                  {d.commandActive.precTotOrder}
+                                </Typography>
+                              </Box>
+                            )}
 
-
-                            <Box
+                          <Box
                             sx={{
                               color: "#fff",
                               gap: 1,
                               width: "100%",
-                              mt: 'auto', // 'auto
+                              mt: "auto", // 'auto
                               display: "flex",
                               justifyContent: "center",
                               alignItems: "center",
@@ -202,12 +203,16 @@ const CommandsPage = () => {
                             )}
                             <Typography variant="h6">{d.stateTable}</Typography>
                           </Box>
-
-
                         </Box>
                       ))
                     ) : (
-                      <Typography variant="body1">No hay comandas</Typography>
+                      <Typography variant="body1">
+                        {(["Administrador", "Mesero"] as UserRoles[]).includes(
+                          user?.role.roleName as UserRoles
+                        )
+                          ? "No hay Mesas"
+                          : "No hay comandas"}
+                      </Typography>
                     )}
                   </>
                 ) : (
