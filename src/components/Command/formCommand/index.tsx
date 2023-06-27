@@ -8,7 +8,7 @@ import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import SmartScreenIcon from "@mui/icons-material/SmartScreen";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import { InputForm } from "@/components/InputForm";
-import { ITableWithComand2 } from "@/interfaces";
+import { ITableWithComand2, UserRoles } from "@/interfaces";
 import { CommandContext } from "@/contexts/Command";
 import { AuthContext } from "@/contexts";
 import { redirect } from 'next/navigation';
@@ -77,7 +77,9 @@ const updateState = () => {
   );
 
 };
-
+const onlyAdministradorMesero = (
+  ["Administrador", "Mesero"] as UserRoles[]
+).includes(user?.role.roleName as UserRoles);
   return (
       <Grid
         item
@@ -162,24 +164,26 @@ const updateState = () => {
         />
 
         <Grid sx={{ marginTop: 2 }} width={"100%"} container gap={1}>
-         {
-              data.id !== 0 && data.statesCommandId === 2 && (
-                <Grid item xs={12} sm={12} md={3}>
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    dispatch({type : "SET_MODAL_VOCHER",payload : true})
-                  }}
-                  fullWidth
-                  sx={{ bgcolor: "#6f42c1" }}
-                >
-                  Facturar
-                </Button>
-              </Grid>
-              )
-            } 
+        {data.id !== 0 &&
+          data.statesCommandId === 2 &&
+          (["Administrador", "Mesero", "Cajero"] as UserRoles[]).includes(
+            user?.role.roleName as UserRoles
+          ) && (
+            <Grid item xs={12} sm={12} md={3}>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  dispatch({ type: "SET_MODAL_VOCHER", payload: true });
+                }}
+                fullWidth
+                sx={{ bgcolor: "#6f42c1" }}
+              >
+                Facturar
+              </Button>
+            </Grid>
+          )}
 
-{
+        {
               data.id !== 0 && data.statesCommandId === 1 && (
                 <Grid item xs={12} sm={12} md={3}>
                 <Button
@@ -196,26 +200,34 @@ const updateState = () => {
               )
             } 
                
-          <Grid item xs={12} sm={12} md={3}>
-            <Button
-              variant="contained"
-              color="success"
-              onClick={ () => {
-                saveCommand({
-                  cantPerson: state.values.cantPerson,
-                  userId: user?.id || 0,
-                  id: data.id,
-                  numTable: data.numTable,
-                });
-              }}
-              fullWidth
-               
-            >
-              {data.id ? "Actualizar" : "Guardar"}
-            </Button>
-          </Grid>
+            {
+              onlyAdministradorMesero  && (
+                <Grid item xs={12} sm={12} md={3}>
+                <Button
+                  variant="contained"
+                  color="success"
+                  onClick={ () => {
+                    saveCommand({
+                      cantPerson: state.values.cantPerson,
+                      userId: user?.id || 0,
+                      id: data.id,
+                      numTable: data.numTable,
+                    });
+                  }}
+                  fullWidth
+                   
+                >
+                  {data.id ? "Actualizar" : "Guardar"}
+                </Button>
+              </Grid>
+              )
+            }
 
-          {data.id !== 0  && (
+      {data.id !== 0 &&
+          data.statesCommandId === 1 &&
+          (["Administrador", "Cocinero"] as UserRoles[]).includes(
+            user?.role.roleName as UserRoles
+          ) && (
             <Grid item xs={12} sm={12} md={3}>
               <Button
                 variant="contained"

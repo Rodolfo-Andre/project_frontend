@@ -18,6 +18,7 @@ import FormVoucher from "@/components/Command/VoucherForm";
 import { Button } from "@mui/material";
 import axiosObject from "@/services/Axios";
 import { AlertMessage } from "@/utils";
+import { ProtectedRouteForAuthenticated } from "@/components";
 const style = {
   titulo: {
     m: 4,
@@ -226,5 +227,7 @@ const DetalleComanda = () => {
     </Layout>
   );
 };
-
-export default DetalleComanda;
+export default ProtectedRouteForAuthenticated({
+  Component: DetalleComanda,
+  roles: ["Administrador", "Cajero", "Mesero", "Cocinero"],
+});

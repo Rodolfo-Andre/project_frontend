@@ -1,10 +1,12 @@
-import { IDishGet } from "@/interfaces";
+import { IDishGet, UserRoles } from "@/interfaces";
 import { Box, Button, Card, CardMedia, Modal, Typography } from "@mui/material";
-import React, { FC, useState } from "react";
+import React, { FC, useContext } from "react";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import InfoIcon from '@mui/icons-material/Info';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import { AuthContext } from "@/contexts";
+ 
  
 
 interface ICardCommandComponent {
@@ -29,6 +31,7 @@ const CardCommandComponent: FC<ICardCommandComponent> = ({
   handleEdit
 }) => {
   
+  const {user} = useContext(AuthContext);
 
  
 
@@ -61,14 +64,18 @@ const CardCommandComponent: FC<ICardCommandComponent> = ({
          alignItems="center"
          ml="auto">
  
-           <IconButton 
-           onClick={() => handleRemove(data.id)}
-            color="error"
-            size="large"
-           aria-label="delete">
-             <DeleteIcon />
-             
-           </IconButton>
+     {(["Administrador", "Mesero"] as UserRoles[]).includes(
+              user?.role.roleName as UserRoles
+            ) && (
+              <IconButton
+                onClick={() => handleRemove(data.id)}
+                color="error"
+                size="large"
+                aria-label="delete"
+              >
+                <DeleteIcon />
+              </IconButton>
+            )}
            
            <IconButton
              onClick={() => handleEdit(data.id)}

@@ -1,4 +1,4 @@
-import { ContentBox, Layout } from "@/components";
+import { ContentBox, Layout, ProtectedRouteForAuthenticated } from "@/components";
 import TableRestaurantIcon from "@mui/icons-material/TableRestaurant";
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import PriceChangeIcon from "@mui/icons-material/PriceChange"; 
@@ -238,4 +238,7 @@ const CommandsPage = () => {
   );
 };
 
-export default CommandsPage;
+export default ProtectedRouteForAuthenticated({
+  Component: CommandsPage,
+  roles: ["Administrador", "Cajero", "Mesero", "Cocinero"],
+});
