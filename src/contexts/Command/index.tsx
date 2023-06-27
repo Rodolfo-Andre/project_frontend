@@ -26,10 +26,12 @@ const CommandContext = createContext({
   setListCategory: (listCategory: ICategoryDishGet[]) => {},
   dispatch: (d: IActionDish) => {},
   handleAddDish: () => {},
+  handleEditDish: (id: string) => {},
   handleDeleteDish: (id: string) => {},
   updateTotal: () => {},
   resetError: () => {},
   setError: (message: string) => {},
+  handleUpdateDish: (quantity: number, observation: string) => {},
   loading: false,
   stateLoading: false,
   saveCommand: (data: {
@@ -63,18 +65,16 @@ const CommandProvider = ({ children }: { children: ReactNode }) => {
   }, [idTable]);
 
   useEffect(() => {
-    console.log("state.data.selectedCategory", state.data.selectedCategory);
     if (state.data.selectedCategory !== "") {
       getDishesByCategory(state.data.selectedCategory);
     }
+
+    console.log("state.data.selectedCategory", state.data.selectedCategory);
+    
   }, [state.data.selectedCategory]);
 
   useEffect(() => {
-    if (state.data.listDishViewAndPost.length !== 0) {
-      console.log("state.data.listDishViewAndPost", state.data.listDishViewAndPost);
-      
-      updateTotal();
-    }
+    updateTotal();
   }, [state.data.listDishViewAndPost]);
 
   const setListDish = (listDish: IDishGet[]) => {
@@ -94,55 +94,109 @@ const CommandProvider = ({ children }: { children: ReactNode }) => {
   const handleAddDish = () => {
     if (state.data.valSelectCategory === "") return;
     if (state.data.valSelectDish === "") return;
-    if (state.valuesDish.quantity === 0) return;
-
     const dish = state.data.listDish.find(
       (item) => item.id === state.data.valSelectDish
     );
 
-    const exist = state.data.listDishViewAndPost.find(
-      (item) => item.id === state.data.valSelectDish
-    );
-
     if (dish) {
-      if (exist) {
-        const newListDishViewAndPost = state.data.listDishViewAndPost.map(
-          (item) => {
-            if (item.id === state.data.valSelectDish) {
-              return {
-                ...item,
-                quantity: item.quantity + state.valuesDish.quantity,
-                total: item.total + state.valuesDish.quantity * dish.priceDish,
-                observation: state.valuesDish.observation,
-              };
-            }
-            return item;
+     
+        const exitsDish = state.data.listDishViewAndPost.find( item => item.id === dish.id);
+
+        if (exitsDish) {
+          AlertMessage("Error", "El plato ya se encuentra agregado","error");
+          return;
+        }
+  
+        if (state.valuesDish.quantity === 0) {
+             AlertMessage("Error", "Ingrese una cantidad","error");
+             return;
           }
-        );
+          const newDishView: IDishView = {
+            ...dish,
+            quantity: state.valuesDish.quantity,
+            observation: state.valuesDish.observation,
+            total: state.valuesDish.quantity * dish.priceDish,
+          };
+          dispatch({
+            type: "SET_LIST_DISH_VIEW_AND_POST",
+            payload: [...state.data.listDishViewAndPost, newDishView],
+          });
 
-        dispatch({
-          type: "SET_LIST_DISH_VIEW_AND_POST",
-          payload: newListDishViewAndPost,
-        });
-      } else {
-        const newDishView: IDishView = {
-          ...dish,
-          quantity: state.valuesDish.quantity,
-          observation: state.valuesDish.observation,
-          total: state.valuesDish.quantity * dish.priceDish,
-        };
 
-        dispatch({
-          type: "SET_LIST_DISH_VIEW_AND_POST",
-          payload: [...state.data.listDishViewAndPost, newDishView],
-        });
-      }
     }
 
     dispatch({
       type: "RESET_VALUES_DISH",
     });
+    dispatch({
+      type : "SET_VAL_SELECT_DISH",
+      payload : "" 
+    })
+
   };
+
+
+
+
+  const handleEditDish = (id: string) => {
+    const dish = state.data.listDishViewAndPost.find((item) => item.id === id);
+
+    if (dish) {
+    dispatch({
+      type : "SET_MODAL",
+      payload : {
+        open : true,
+        selectDish : dish,
+      }
+    })
+
+      dispatch({
+        type: "SET_VALUES_DISH",
+        payload : {
+          ...state.valuesDish,
+          isEdit : true,
+        }
+      });
+    }
+
+  };
+
+  const handleUpdateDish = (
+    quantity: number, observation: string
+  ) => {
+
+    const exist = state.data.listDishViewAndPost.find( item => item.id === state.modal.selectDish?.id);
+
+    if (exist) {
+
+      const newListDishViewAndPost = state.data.listDishViewAndPost.map( item => {
+        if (item.id === state.modal.selectDish?.id) {
+          return {
+            ...item,
+            quantity : quantity,
+            observation : observation,
+            total : quantity * item.priceDish,
+          }
+        }
+        return item;
+      })
+
+      dispatch({
+        type: "SET_LIST_DISH_VIEW_AND_POST",
+        payload: newListDishViewAndPost,
+      });
+
+      dispatch({
+        type : "SET_MODAL",
+        payload : {
+          open : false,
+          selectDish : null,
+        }
+      })
+
+    }
+
+  }
 
   const handleDeleteDish = (id: string) => {
     const newListDishViewAndPost = state.data.listDishViewAndPost.filter(
@@ -185,7 +239,7 @@ const CommandProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const saveCommand = async (data: {
+  const saveCommand = async (res: {
     id: number;
     numTable: number;
     cantPerson: number;
@@ -193,6 +247,21 @@ const CommandProvider = ({ children }: { children: ReactNode }) => {
   }) => {
     const validCantPerson = state.values.cantPerson > 0;
     const validateListDish = state.data.listDishViewAndPost.length > 0;
+
+    if (!data) return
+
+
+    if (res.cantPerson > data.numSeats ) {
+
+      AlertMessage(
+        "Error!",
+        "La cantidad de mesas no puede ser menor a la cantidad de personas. mesa: " + data.numSeats + " personas: " + res.cantPerson,
+        "error"
+      ).then(() => {});
+      return;
+
+    }
+
 
     if (!validateListDish) {
       AlertMessage(
@@ -219,14 +288,13 @@ const CommandProvider = ({ children }: { children: ReactNode }) => {
       };
     });
     const objectPost = {
-      id: data.id,
-      numTable: data.numTable,
-      cantPerson: data.cantPerson,
-      employeeId: data.userId,
+      id: res.id,
+      numTable: res.numTable,
+      cantPerson: res.cantPerson,
+      employeeId: res.userId,
       total: state.values.total,
       listDish: listDishPost,
     };
-    console.log("objectPost", objectPost);
 
     setStateLoading(true);
     try {
@@ -293,6 +361,16 @@ const CommandProvider = ({ children }: { children: ReactNode }) => {
         type: "SET_LIST_DISH_VIEW_AND_POST",
         payload: listado,
       });
+
+
+      dispatch({
+        type : "SET_VALUES",
+        payload : {
+          ...state.values,
+          cantPerson : data.cantSeats,
+        }
+      })
+
 
       dispatch({
         type: "SET_LIST_CATEGORY",
@@ -384,7 +462,6 @@ const CommandProvider = ({ children }: { children: ReactNode }) => {
       },
     });
 
-    console.log(state.valuesVocher.values.ListPayment);
     
 
     calculateTotal();
@@ -393,11 +470,13 @@ const CommandProvider = ({ children }: { children: ReactNode }) => {
   return (
     <CommandContext.Provider
       value={{
+        handleUpdateDish,
         data,
         state,
         setListDish,
         setListCategory,
         dispatch,
+        handleEditDish,
         handleAddDish,
         handleDeleteDish,
         updateTotal,

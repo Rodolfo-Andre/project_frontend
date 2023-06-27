@@ -6,12 +6,14 @@ import TableRestaurantIcon from "@mui/icons-material/TableRestaurant";
 import ViewStreamIcon from "@mui/icons-material/ViewStream";
 import { InputForm } from "@/components/InputForm";
 import SelectCustom from "@/components/Select";
-import { useState, useEffect,useContext,useReducer } from "react";
-import { ICashGet, IPayMethodGet, IVoucherTypeGet } from "@/interfaces";
+import { useState, useEffect,useContext,useReducer,useMemo } from "react";
+import { ICashGet, ICustomerGet, IPayMethodGet, IVoucherTypeGet } from "@/interfaces";
 import axiosObject from "@/services/Axios";
 import CardInfoOrder from "../CardInfoOrder";
 import { AlertMessage, ramdonKey } from "@/utils";
 import { AuthContext } from "@/contexts";
+import Alert from '@mui/material/Alert';
+import { useRouter } from "next/router";
  
 
 const styleModalVocher = {
@@ -47,6 +49,7 @@ interface IStateClient {
   valueTypeVoucher: string;
   valuePaymentType: string;
   valueCash: string;
+  
 }
 
 interface IActionClient {
@@ -59,6 +62,71 @@ type IlistTypeCash ={
   typePayment: string;
   name: string;
 }
+
+
+type IStateErrors = {
+   errorCboFactura: boolean;
+   errorCboTipoPago: boolean;
+   errorCboCaja: boolean;
+   errorDescuento: boolean;
+   errorMonto :{
+      active: boolean;
+      message: string;
+   }
+   contaienerError: {
+      active: boolean;
+      message: string;
+   };
+   errorCliente :{
+      errorName: boolean;
+      errorLastName: boolean;
+      errorDni: boolean;
+   }
+
+}
+type IActionErrors = {
+    type: "SET_ERROR_CBO_FACTURA";
+    payload: boolean  
+} |
+  {
+    type: "SET_ERROR_DESCUENTO";
+    payload: boolean;
+  } |
+
+  {
+    type: "SET_ERROR_CBO_TIPO_PAGO";
+    payload: boolean;
+  } |
+
+  {
+    type: "SET_ERROR_CBO_CAJA";
+    payload: boolean;
+  }
+  |
+{
+    type: "SET_ERROR_MONTO" 
+    payload: {
+      active: boolean;
+      message: string;
+    };
+} |
+{
+    type: "SET_ERROR_CONTAINER";
+    payload: {
+      active: boolean;
+      message: string;
+    };
+  }
+| {
+    type: "SET_ERROR_CLIENTE";
+    payload: {
+      errorName: boolean;
+      errorLastName: boolean;
+      errorDni: boolean;
+    };
+  };
+
+
 
 
 
@@ -85,11 +153,32 @@ const reducerClient = (state:IStateClient, action:IActionClient) => {
   }
 }
 
+const reducerErrors = (state: IStateErrors, action: IActionErrors) => {
+  switch (action.type) {
+    case "SET_ERROR_CBO_FACTURA":
+      return { ...state, errorCboFactura: action.payload };
+    case "SET_ERROR_DESCUENTO":
+      return { ...state, errorDescuento: action.payload };
+    case "SET_ERROR_CBO_TIPO_PAGO":
+      return { ...state, errorCboTipoPago: action.payload };
+    case "SET_ERROR_CBO_CAJA":
+      return { ...state, errorCboCaja: action.payload };
+    case "SET_ERROR_MONTO":
+      return { ...state, errorMonto: action.payload };
+    case "SET_ERROR_CONTAINER":
+      return { ...state, contaienerError: action.payload };
+    case "SET_ERROR_CLIENTE":
+      return { ...state, errorCliente: action.payload };
+    default:
+      return state;
+  }
+};
+
 
 const FormVoucher = () => {
-
+   let saveDiscount = 0;
+   const router = useRouter();
   const{user} = useContext(AuthContext);
-
   const { state, data, dispatch } = useContext(CommandContext);
   const [subTotal, setSubTotal] = useState(0);
   const [discount, setDiscount] = useState(0);
@@ -97,7 +186,7 @@ const FormVoucher = () => {
   const [igv, setIgv] = useState(0);
   const [faltante, setFaltante] = useState(0);
   const [listPaymen, setListPaymen] = useState<IlistTypeCash[]>([])
-
+  const [loadingDni, setLoadingDni] = useState(false);
    ///reducer cliente
     const [stateClient, dispatchClient] = useReducer(reducerClient, {
       name: "",
@@ -107,14 +196,33 @@ const FormVoucher = () => {
       valuePaymentType: "",
       valueCash: "",
     });
-
+    const [stateError, dispatchError] = useReducer(reducerErrors, {
+      errorCboFactura: false,
+      errorCboTipoPago: false,
+      errorCboCaja: false,
+      errorDescuento: false,
+      errorMonto: {
+        active: false,
+        message: "",
+      },
+      contaienerError: {
+        active: false,
+        message: "",
+      },
+      errorCliente: {
+        errorName: false,
+        errorLastName: false,
+        errorDni: false,
+      },
+    });
 
   const [objsList, setObjsList] = useState<IObjsList>({
     listPaymentType: [],
     listTypeVoucher: [],
     listCash : [],
   });
-  const [habilitar, setHabilitar] = useState(false);
+  const [habilitar, setHabilitar] = useState(true);
+  const [habilitarDni, setHabilitarDni] = useState(false)
   const [loading, setLoading] = useState(false);
   const [dni, setDni] = useState("");
   const [valueAmount, setValueAmount] = useState(0);
@@ -166,26 +274,59 @@ const FormVoucher = () => {
     setFaltante(totalFinal);
   };
 
-
   const addListPaymen = () => {
     const valuePaymentTypea = stateClient.valuePaymentType;
     if(stateClient.valuePaymentType === "") {
+      dispatchError({ type: "SET_ERROR_CBO_TIPO_PAGO", payload: true });
+      return;
+    }
+    dispatchError({ type: "SET_ERROR_CBO_TIPO_PAGO", payload: false });
+
+    if(valueAmount === 0){
+      dispatchError({ type: "SET_ERROR_MONTO", payload: {active: true, message: "El monto no puede ser 0"} });
       return;
     }
 
-    if(valueAmount === 0){
-      return;
-    }
+    dispatchError({ type: "SET_ERROR_MONTO", payload: {active: false, message: ""} });
 
     const exist = listPaymen.find(item => item.typePayment === valuePaymentTypea);
     if(exist){
+    
+      const newList = listPaymen.map(item => {
+        if(item.typePayment === valuePaymentTypea){
+          return {...item, amount: item.amount + valueAmount}
+        }
+        return item;
+      });
+      const nuevoTotal = newList.reduce((acc, item) => acc + item.amount, 0);
+        const redondear = Math.round(nuevoTotal * 100) / 100;
+        const redondearTotal = Math.round(totalFinal * 100) / 100;
+
+      
+      if(redondear > redondearTotal){
+        dispatchError({ type: "SET_ERROR_MONTO", payload: {active: true, message: "El monto no puede ser mayor al total"} });
+        return;
+      }
+
+      dispatchError({ type: "SET_ERROR_MONTO", payload: {active: false, message: ""} });
+
+      const total = totalFinal - nuevoTotal;
+      setFaltante(Math.round(total * 100) / 100);
+      setValueAmount(0);
+      setListPaymen(newList);
+      dispatchClient({type: "SET_VALUE_PAYMENT_TYPE", payload: ""})
+      return;
+    
+    }
+    const amouthRedondeado = Math.round(valueAmount * 100) / 100;
+    const faltaRedondeado = Math.round(faltante * 100) / 100;
+
+    if(amouthRedondeado > faltaRedondeado ){
+      dispatchError({ type: "SET_ERROR_MONTO", payload: {active: true, message: "El monto no puede ser mayor al total"} });
       return;
     }
 
-    if(valueAmount > faltante ){
-      return;
-    }
-
+    dispatchError({ type: "SET_ERROR_MONTO", payload: {active: false, message: ""} });
 
     if(valueAmount > 0){
       const payment = objsList.listPaymentType.find(item => item.id === stateClient.valuePaymentType);
@@ -209,70 +350,66 @@ const FormVoucher = () => {
     } 
   };
 
+  const deleteListPaymen = (id : number) => {
 
-  const discountTotal = () => {
-    if(discount > 0){
-      const totalDiscount = totalFinal - discount;
-      if (discount > totalFinal) {
-         return;
-      }
-      if(totalDiscount < 0){
-        return;
-      }
+     const newList = listPaymen.filter(item => item.id !== id);
 
-      setTotalFinal(totalDiscount);
-      setDiscounState(discount);
-      setDiscount(0);
-      setFaltante(totalDiscount);
+      const nuevoTotal = newList.reduce((acc, item) => acc + item.amount, 0);
 
+      const redondear = Math.round(nuevoTotal * 100) / 100;
 
-    }
+      const redondearTotal = Math.round(totalFinal * 100) / 100;
 
+      setListPaymen(newList);
+      const total = redondearTotal - redondear;
+      setFaltante(Math.round(total * 100) / 100);
 
   };
 
 
+  const discountTotal = () => {
+    if(discount === 0){
+      dispatchError({ type: "SET_ERROR_DESCUENTO", payload: true });
+      return;
+    }
+    
+    if(discount > totalFinal){
+      dispatchError({ type: "SET_ERROR_DESCUENTO", payload: true });
+      return;
+    }
+
+    const totalDiscount = totalFinal - discount;
+    setTotalFinal(totalDiscount);
+    setFaltante(totalDiscount);
+    setDiscounState(discount);  
+    saveDiscount += discount;
+    dispatchError({ type: "SET_ERROR_DESCUENTO", payload: false });
+    setDiscount(0);
+
+
+  };
 
   const saveVoucher = async () => {
-    setLoading(true);
+    dispatchError({type : "SET_ERROR_CONTAINER", payload: {active: false, message: ""}});
+
     if(faltante  > 0){
-      console.log("hola");
+      dispatchError({type : "SET_ERROR_CONTAINER", payload: {active: true, message: "El monto no puede ser menor al total"}});
       return;
     }
-
-    if (stateClient.name === "") {
-      console.log("hola name");
-      return;
-    }
-    if (stateClient.lastName === "") {
-      console.log("hola lastName");
-      return;
-    }
-   
-    if (dni.length > 0 && dni.length < 8) {
-      console.log("hola dni");
-      return;
-    }
-
     if (stateClient.valueTypeVoucher === "") {
-      console.log("hola valueTypeVoucher");
+      dispatchError({ type: "SET_ERROR_CBO_FACTURA", payload: true });
       return;
     }
 
     if (stateClient.valueCash === "") {
-      console.log("hola valueCash");
+      dispatchError({ type: "SET_ERROR_CBO_CAJA", payload: true });
       return;
     }
 
     if (listPaymen.length === 0) {
-      console.log("hola listPaymen");
-      
+      dispatchError({type : "SET_ERROR_CONTAINER", payload: {active: true, message: "Debe agregar un monto"}});
       return;
     }
-console.log("hola");
-
-
-
 
     const listPayment = listPaymen.map(item => { 
       return {
@@ -280,7 +417,14 @@ console.log("hola");
         amount: item.amount,
       }
     })
+    dispatchError({type : "SET_ERROR_CONTAINER", payload: {active: false, message: ""}});
 
+    const igvFormat = Math.round(igv * 100) / 100;
+    const totalFinalFormat = Math.round(totalFinal * 100) / 100;
+    const discounStateFormat = Math.round(discounState * 100) / 100;
+
+
+    
 
       const objs = {
         idCommand : data?.id,
@@ -291,35 +435,178 @@ console.log("hola");
           dni: dni
         },
         listPayment: listPayment,
-        discount: discounState,
-        Igv: igv,
-        subTotal: subTotal,
-        total : totalFinal,
+        discount:  discounStateFormat,
+        Igv: igvFormat,
+        total :  totalFinalFormat,
         idCash: stateClient.valueCash,
         idEmployee  : user?.id,
       }
 
+      
+      setLoading(true);
       try {
-        console.log("hola");
         const data = await axiosObject.post("/api/voucher", objs);
-        console.log(data);
         if (data.status == 200) {
-          dispatch({ type: "SET_MODAL_VOCHER", payload: false });
-
-          AlertMessage("Agregado!" , "Se agrego correctamente", "success").then(() => {
-            window.location.href = "/commands";
+          dispatch({type : "SET_MODAL_VOCHER",payload : false})
+          AlertMessage("Guardado!", "Se guardo correctamente", "success").then(() => {
+             router.push("/commands");
           });
         }
-
-
       } catch (error) {
         console.log(error);
+        
+        dispatchError({type : "SET_ERROR_CONTAINER", payload: {active: true, message: "Error al guardar el voucher"}});
       }finally{
         setLoading(false);
       }
+   
+  };
+
+
+  const findDni = async () => {
+    const regexDni = /^[0-9]*$/;
+    console.log(regexDni.test(dni));
+     if(!regexDni.test(dni)){
+       dispatchError({type:"SET_ERROR_CLIENTE",payload: { 
+         ...stateError.errorCliente,
+         errorDni: false,
+       }});
+     }
+
+
+    if(dni.length === 8){
+      setLoadingDni(true);
+      try {
+        const { data } = await axiosObject.get<ICustomerGet>(`/api/customer/dni/${dni}`);
+        if (data) {
+          setHabilitarDni(true);
+          dispatchClient({type: "SET_NAME", payload: data.firstName});
+          dispatchClient({type: "SET_LAST_NAME", payload: data.lastName});
+        }
+      } catch (error) {
+        setHabilitar(false);
+      }finally{
+        setLoadingDni(false);
+      }
+    }
+  };
+
+
+  const onChangeDni = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setDni(value);
+
+    if (value.length > 8) {
+      dispatchError({type:"SET_ERROR_CLIENTE",payload: {
+        ...stateError.errorCliente,
+        errorDni: true,
+      }});
+    }
 
   };
 
+  const onChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // const regex = /^[a-zA-Z ]*$/;
+    // if(regex.test(value)){
+    //   dispatchError({type: "SET_ERROR_CLIENTE", payload: {
+    //     ...stateError.errorCliente,
+    //     errorName: true,
+    //   }})
+
+    //   return;
+    // }
+    if (value.length > 20) {
+      dispatchError({type: "SET_ERROR_CLIENTE", payload: {
+        ...stateError.errorCliente,
+        errorName: true,
+      }})
+      return;
+    }
+
+    dispatchClient({type: "SET_NAME", payload: value})
+    dispatchError({type: "SET_ERROR_CLIENTE", payload: { 
+      ...stateError.errorCliente,
+      errorName: false,
+    }})
+  };
+
+  const onChangeLastName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // const regex = /^[a-zA-Z ]*$/;
+    // if(regex.test(value)){
+    //   dispatchError({type: "SET_ERROR_CLIENTE", payload: {
+    //     ...stateError.errorCliente,
+    //     errorLastName: true,
+    //   }})
+
+    //   return;
+    // }
+
+    if (value.length > 20) {
+      dispatchError({type: "SET_ERROR_CLIENTE", payload: {
+        ...stateError.errorCliente,
+        errorLastName: true,
+      }})
+      return;
+    }
+
+
+
+    dispatchClient({type: "SET_LAST_NAME", payload: value})
+    dispatchError({type: "SET_ERROR_CLIENTE", payload: {
+      ...stateError.errorCliente,
+      errorLastName: false,
+    }})
+
+  };
+
+  const onChangeDiscount = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value);
+
+    if(value > totalFinal){
+      dispatchError({type: "SET_ERROR_DESCUENTO", payload: true})
+      return;
+    }
+
+    if(value < 0 || isNaN(value)){
+      dispatchError({type: "SET_ERROR_DESCUENTO", payload: true})
+      return;
+    }
+    setDiscount(value);
+    dispatchError({type: "SET_ERROR_DESCUENTO", payload: false})
+
+  };
+
+  const onChangeAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value);
+    if(value < 0 || isNaN(value)){
+      dispatchError({type: "SET_ERROR_MONTO", payload: {
+        active: true,
+        message: "Ingrese un monto valido",
+      }})
+      return;
+    }
+    setValueAmount(value);
+    dispatchError({type: "SET_ERROR_MONTO", payload: {
+      active: false,
+      message: "",
+    }})
+  };
+
+  const listaDePagos =  useMemo(() => {
+    return (
+      listPaymen.map((item, index) => (
+        <CardInfoOrder
+          total={item.amount}
+          title={item.name}
+          key={Date.now() + index}
+          deleteListPayment={() => deleteListPaymen(item.id)}
+        />
+      ))
+    )
+
+  }, [listPaymen]);
  
 
   return (
@@ -357,7 +644,18 @@ console.log("hola");
         </Box>
         <hr />
         <Grid container spacing={4}>
-          {/* FORMS */}
+           <Grid
+           item 
+           xs={12}
+           >
+            {
+              stateError.contaienerError.active && (
+                <Alert severity="error">
+                  {stateError.contaienerError.message}
+                </Alert>
+              )
+            }  
+           </Grid>
           <Grid item xs={12} lg={6}>
             <Grid container spacing={1}>
               <Grid item xs={12}>
@@ -376,6 +674,8 @@ console.log("hola");
                   id={"typeDocument"}
                   ListOptions={objsList.listTypeVoucher}
                   value={stateClient.valueTypeVoucher}
+                  isError={stateError.errorCboFactura}
+                  messageError="Seleccione un tipo de factura"
                   onChange={(e) => {
                     dispatchClient({
                       type: "SET_VALUE_TYPE_VOUCHER",
@@ -384,6 +684,7 @@ console.log("hola");
                   }}
                   idKey="id"
                   nameKey="name"
+                  
                 />
               </Grid>
               <Grid item xs={12} lg={6}>
@@ -393,14 +694,9 @@ console.log("hola");
                   type="number"
                   Icon={"S/."}
                   errorText="Ingrese un descuento valido"
-                  isErrored={false}
+                  isErrored={stateError.errorDescuento}
                   value={discount}
-                  onChange={(e) => {
-                    const numero = Number(e.target.value);
-                    if (numero > 0) {
-                      setDiscount(numero);
-                    }
-                  }}
+                  onChange={onChangeDiscount}
                 />
               </Grid>
 
@@ -418,10 +714,8 @@ console.log("hola");
                   color="primary"
                   onClick={() => {
                     discountTotal();
-
                     }
                   }
-
                 >
                   Agregar
                 </Button>
@@ -439,6 +733,8 @@ console.log("hola");
                       payload: e.target.value,
                     })
                   }}
+                  isError={stateError.errorCboCaja}
+                  messageError="Seleccione una caja"
                   idKey="id"
                   nameKey="id"
                 />
@@ -446,7 +742,7 @@ console.log("hola");
 
               <Grid item xs={12}>
                 <SelectCustom<IPayMethodGet>
-                  label={"Tipo de Factura"}
+                  label={"Metodo"}
                   id={"typeDocument"}
                   ListOptions={objsList.listPaymentType}
                   value={stateClient.valuePaymentType}
@@ -457,24 +753,21 @@ console.log("hola");
                     })
                   }}
                   idKey="id"
+                  isError={stateError.errorCboTipoPago}
+                  messageError="Seleccione un metodo"
                   nameKey="paymethod"
                 />
               </Grid>
-
-
-
               <Grid item xs={12}>
                 <InputForm
                   label={"Monto"}
                   id="amount"
                   type="number"
                   Icon={"S/."}
-                  errorText="Ingrese un monto valido"
-                  isErrored={false}
+                  errorText={stateError.errorMonto.message}
+                  isErrored={stateError.errorMonto.active}
                   value={valueAmount}
-                  onChange={(e) => {
-                    setValueAmount(Number(e.target.value));
-                  }}
+                  onChange={onChangeAmount}
                 />
               </Grid>
 
@@ -492,7 +785,9 @@ console.log("hola");
 
             <hr />
 
-            <Grid container spacing={1}>
+            <Grid container 
+            alignItems={"center"}
+            spacing={1}>
               <Grid item xs={12}>
                 <Typography
                   variant={"h6"}
@@ -504,30 +799,33 @@ console.log("hola");
                 </Typography>
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid item xs={6} lg={6}>
                 <InputForm
                   label={"DNI"}
                   id="dni"
                   type="text"
                   Icon={<BadgeIcon />}
                   errorText="Ingrese un DNI valido"
-                  isErrored={false}
+                  isErrored={stateError.errorCliente.errorDni}
                   value={dni}
-                  onChange={
-                    (e) => {
-                      const string = e.target.value;
-                      if (string.length > 8) {
-                        return;
-                      }
-
-                      if (string.length > 0) {
-                        setDni(string);
-                      }
-                    }
-                  }
+                  disabled={habilitarDni}
+                  onChange={onChangeDni}
                 />
               </Grid>
-
+              <Grid item xs={6} lg={6}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  disabled={loadingDni || habilitarDni}
+                  onClick={() => {
+                    findDni();
+                   }
+                  }
+                >
+                  Agregar
+                </Button>
+              </Grid>
               <Grid item xs={12} lg={6}>
                 <InputForm
                   label={"Nombre"}
@@ -535,46 +833,23 @@ console.log("hola");
                   type="text"
                   Icon={<BadgeIcon />}
                   errorText="Ingrese un nombre valido"
-                  isErrored={false}
-                  disabled={habilitar}
+                  isErrored={stateError.errorCliente.errorName}
                   value={stateClient.name}
-                  onChange={(e) => {
-                    const string = e.target.value;
-                    if (string.length > 50) {
-                      return;
-                    }
-
-                    if (string.length > 0) {
-                      dispatchClient({
-                        type: "SET_NAME",
-                        payload: string,
-                      });
-                    }
-                  }}
+                  disabled={habilitar}
+                  onChange={onChangeName}
                 />
               </Grid>
               <Grid item xs={12} lg={6}>
                 <InputForm
-                  label={"Apellido "}
+                  label={"Apellido"}
                   id="lastname"
                   type="text"
                   Icon={<BadgeIcon />}
-                  errorText=""
-                  isErrored={false}
-                  disabled={habilitar}
+                  errorText="Ingrese un apellido valido"
+                  isErrored={stateError.errorCliente.errorLastName}
                   value={stateClient.lastName}
-                  onChange={(e) => {
-                    const string = e.target.value;
-                    if (string.length > 50) {
-                      return;
-                    }
-                    if (string.length > 0 || string.length < 50) {
-                      dispatchClient({
-                        type: "SET_LAST_NAME",
-                        payload: string,
-                      });
-                    }
-                  }}
+                  disabled={habilitar}
+                  onChange={onChangeLastName}
                 />
               </Grid>
             </Grid>
@@ -830,18 +1105,11 @@ console.log("hola");
                 maxHeight: "12rem",
               }}
             >
-              {listPaymen.map((item, index) => (
-                <CardInfoOrder
-                  total={item.amount}
-                  title={item.name}
-                  key={Date.now() + index}
-                />
-              ))}
+             {listaDePagos}
             </Box>
           </Grid>
         </Grid>
         <hr />
-
         <Box
           sx={{
             display: "flex",
@@ -869,7 +1137,6 @@ console.log("hola");
             onClick={
               () => {
                  saveVoucher()
-
               }
             }
           >

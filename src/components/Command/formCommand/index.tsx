@@ -11,6 +11,10 @@ import { InputForm } from "@/components/InputForm";
 import { ITableWithComand2 } from "@/interfaces";
 import { CommandContext } from "@/contexts/Command";
 import { AuthContext } from "@/contexts";
+import { redirect } from 'next/navigation';
+import { useRouter } from "next/router";
+import axiosObject from "@/services/Axios";
+import { AlertMessage } from "@/utils";
 
 
 
@@ -18,9 +22,61 @@ interface IFormCommand {
   data: ITableWithComand2;
 }
 const FormCommand: React.FC<IFormCommand> = ({ data }) => {
+  const {push} = useRouter();
+
   const { state, dispatch, saveCommand, deleteCommand,stateLoading } =
     useContext(CommandContext);
   const { user } = useContext(AuthContext);
+
+
+
+const onChangeCantPerson = (ev: React.ChangeEvent<HTMLInputElement>) => {
+  const value = Number(ev.target.value);
+
+
+  if(value < 0 || isNaN(value) || value === null || value === undefined){
+    dispatch({
+      type: "SET_VALUES",
+      payload: {
+        ...state.values,
+        cantPerson : 0,
+      },
+    });
+
+    return;
+  }
+
+
+   dispatch({
+    type: "SET_VALUES",
+    payload: {
+      ...state.values,
+      cantPerson: value,
+    },
+  });
+
+};
+
+const updateState = () => {
+  if (data === null) {
+    return;
+  }
+
+  axiosObject.put(`/api/command/update-state/${data?.id}`).then((response) => {
+    if (response.status === 200) {
+      AlertMessage("Exito!", "Se actualizo el estado de la comanda", "success").then(() => {
+        push("/commands");
+      });
+    }
+  }
+  ).catch((error) => {
+    AlertMessage("Error!", "No se pudo actualizar el estado de la comanda", "error").then(() => {
+       push("/commands");
+    });
+  }
+  );
+
+};
 
   return (
       <Grid
@@ -63,16 +119,8 @@ const FormCommand: React.FC<IFormCommand> = ({ data }) => {
           id="cant-personas"
           label="Cantidad de personas"
           type="number"
-          value={data.cantSeats === 0 ? state.values.cantPerson : data.cantSeats}
-          onChange={(ev) => {
-            dispatch({
-              type: "SET_VALUES",
-              payload: {
-                ...state.values,
-                cantPerson: Number(ev.target.value),
-              },
-            });
-          }}
+          value={state.values.cantPerson}
+          onChange={onChangeCantPerson}
           isErrored={false}
           errorText=""
         />
@@ -93,7 +141,7 @@ const FormCommand: React.FC<IFormCommand> = ({ data }) => {
           Icon={<AssignmentIndIcon color="primary" />}
           id="employee-commmand"
           label="Empleado"
-          value={user?.firstName + " " + user?.lastName || ""}
+          value={data.employeeName .length > 0 ? data.employeeName : user?.firstName + " " + user?.lastName }
           disabled={true}
           type="string"
           onChange={() => {}}
@@ -114,7 +162,7 @@ const FormCommand: React.FC<IFormCommand> = ({ data }) => {
         />
 
         <Grid sx={{ marginTop: 2 }} width={"100%"} container gap={1}>
-            {
+         {
               data.id !== 0 && data.statesCommandId === 2 && (
                 <Grid item xs={12} sm={12} md={3}>
                 <Button
@@ -129,8 +177,25 @@ const FormCommand: React.FC<IFormCommand> = ({ data }) => {
                 </Button>
               </Grid>
               )
-            }
-             
+            } 
+
+{
+              data.id !== 0 && data.statesCommandId === 1 && (
+                <Grid item xs={12} sm={12} md={3}>
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    updateState();
+                  }}
+                  fullWidth
+                  sx={{ bgcolor: "#6f42c1" }}
+                >
+                 Actualizar estado
+                </Button>
+              </Grid>
+              )
+            } 
+               
           <Grid item xs={12} sm={12} md={3}>
             <Button
               variant="contained"
@@ -174,7 +239,7 @@ const FormCommand: React.FC<IFormCommand> = ({ data }) => {
               color="primary"
               fullWidth
               onClick={() => {
-                window.location.href = "/commands";
+                push("/commands");
               }}
             >
               Volver

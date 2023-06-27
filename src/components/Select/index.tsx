@@ -14,6 +14,8 @@ onChange:(e: SelectChangeEvent<string>) => void
 ListOptions: T[]
 idKey: keyof  T
 nameKey: keyof T
+isError?:boolean
+messageError?:string
 }
 
 
@@ -24,13 +26,17 @@ const SelectCustom = <T extends {}>({
     onChange,
     ListOptions,
     idKey,
-    nameKey
+    nameKey,
+    isError = false,
+    messageError = ''
 }:IProps<T>) => {
 
 
 
     return (
-        <FormControl sx={{ marginBottom: 2 }} fullWidth>
+        <FormControl 
+        error={isError}
+        sx={{ marginBottom: 2 }} fullWidth>
         <InputLabel  id={id}>{label}</InputLabel>
         <Select
             labelId={id}
@@ -52,6 +58,7 @@ const SelectCustom = <T extends {}>({
             ))}
 
         </Select>
+        {isError && <p style={{ color: 'red' }}>{messageError}</p>}
       </FormControl>
   )
 }

@@ -4,13 +4,14 @@ import React, { FC, useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import InfoIcon from '@mui/icons-material/Info';
-
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
  
 
 interface ICardCommandComponent {
   data: IDishView;
   handleRemove: (id: string) => void;
   showModal: () => void;
+  handleEdit: (id: string) => void;
 }
 
 interface IDishView extends IDishGet {
@@ -25,6 +26,7 @@ const CardCommandComponent: FC<ICardCommandComponent> = ({
   data,
   showModal,
   handleRemove,
+  handleEdit
 }) => {
   
 
@@ -34,12 +36,12 @@ const CardCommandComponent: FC<ICardCommandComponent> = ({
      <> 
       <Card
      
-     sx={{ mb: 1, borderRadius: 1, boxShadow: 1, width: '100%', height: 120 }}
+     sx={{ mb: 1, borderRadius: 1, boxShadow: 1, width: '100%', height: 150,overflow: 'hidden' }}
      >
        <Box display="flex" alignItems="center">
          <CardMedia
            component="img"
-           sx={{ width: "20%", height: 120, backgroundSize: "contain",backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }}
+           sx={{ width: "20%", height: 150 }}
            image={data.imgDish}
            alt="Imagen del producto"
          />
@@ -55,9 +57,8 @@ const CardCommandComponent: FC<ICardCommandComponent> = ({
          sx={{ ml: 'auto'}}
          display='flex'
          flexDirection="column"
-         justifyContent="space-between"
+          justifyContent="space-around"
          alignItems="center"
-         gap={1}
          ml="auto">
  
            <IconButton 
@@ -66,7 +67,18 @@ const CardCommandComponent: FC<ICardCommandComponent> = ({
             size="large"
            aria-label="delete">
              <DeleteIcon />
+             
            </IconButton>
+           
+           <IconButton
+             onClick={() => handleEdit(data.id)}
+              color="primary"
+             size="large"
+             aria-label="edit">
+              <ModeEditIcon />
+            </IconButton>
+
+           
            <IconButton 
            onClick={showModal}
            color="primary"

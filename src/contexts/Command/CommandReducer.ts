@@ -16,6 +16,7 @@ export const initialStateCommand: IStateDish = {
   valuesDish: {
     quantity: 0,
     observation: "",
+    isEdit: false,
   },
   error: {
     hasError: false,
@@ -123,9 +124,7 @@ export const stateReducer = (state: IStateDish, action: IActionDish) => {
       return {
         ...state,
         valuesDish: {
-          ...state.valuesDish,
-          quantity: action.payload.quantity,
-          observation: action.payload.observation,
+          ...action.payload,
         },
       };
 
@@ -135,6 +134,7 @@ export const stateReducer = (state: IStateDish, action: IActionDish) => {
         valuesDish: {
           quantity: 0,
           observation: "",
+          isEdit: false,
         },
       };
     case "RESET_VALUES":
@@ -192,24 +192,18 @@ export const stateReducer = (state: IStateDish, action: IActionDish) => {
         },
       };
 
-    case "SET_VALUES_VOCHER":
-      return {
-        ...state,
-        valuesVocher: {
-          ...state.valuesVocher,
-          values: {
-            ...state.valuesVocher.values,
-            ListPayment: action.payload.ListPayment,
-            valTypePayment: action.payload.valTypePayment,
-            valAmount: action.payload.valAmount,
-            valTypeVoucher: action.payload.valTypeVoucher,
-            descount: action.payload.descount,
-            igv: action.payload.igv,
-            total: action.payload.total,
+     case "SET_VALUES_VOCHER": {
+        return {
+          ...state,
+          valuesVocher: {
+            ...state.valuesVocher,
+            values: {
+              ...state.valuesVocher.values,
+              ...action.payload,
+            },
           },
-        },
-      };
-
+        };
+      }
 
     case "SET_ERRORS_VOCHER":
       return {

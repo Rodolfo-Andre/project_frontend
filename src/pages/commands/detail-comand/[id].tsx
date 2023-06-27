@@ -5,7 +5,7 @@ import Layout from "@/components/Layout";
 import LoaderCustom from "@/components/Loader";
 import { CommandContext } from "@/contexts/Command";
 import { useRouter } from "next/router";
-import {  useContext, useEffect } from "react";
+import {  useContext, useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
 import { InputForm } from "@/components/InputForm";
 import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
@@ -15,6 +15,9 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import FormVoucher from "@/components/Command/VoucherForm";
+import { Button } from "@mui/material";
+import axiosObject from "@/services/Axios";
+import { AlertMessage } from "@/utils";
 const style = {
   titulo: {
     m: 4,
@@ -44,14 +47,26 @@ const style = {
   },
 };
 const DetalleComanda = () => {
-  const { query, isReady } = useRouter();
-  const { setIdTable, loading, data,state,dispatch } = useContext(CommandContext);
+  const { query, isReady,push } = useRouter();
+  const { setIdTable, loading, data,state,dispatch,handleAddDish,handleUpdateDish } = useContext(CommandContext);
 
+  const [quantity, setQuantity] = useState(0);
+  const [observacion, setObservacion] = useState("");	
   useEffect(() => {
     const id = Number(query.id ?? 0);
     if (!isReady) return;
     setIdTable(Number(id));
   }, [isReady]);
+
+  useEffect(() => {
+    if (state.valuesDish.isEdit) {
+      if (state.modal.selectDish === null) {
+        return;
+      }
+      setQuantity(state.modal.selectDish.quantity);
+      setObservacion(state.modal.selectDish.observation);
+    }
+  }, [state.modal.selectDish]);
 
   if (loading) {
     return <LoaderCustom />;
@@ -66,13 +81,44 @@ const DetalleComanda = () => {
 
 
 
+  const onChangeObservacion = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    if (value.length < 50) {
+      setObservacion(value);
+    }
+  }
+
+
+  const onChangeQuantity = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(event.target.value);
+
+    if (isNaN(value) || value === null || value === undefined) {
+      setQuantity(0);
+    }
+
+    if (value >= 0) {
+      setQuantity(value);
+    }
+    if (value > 15) {
+      setQuantity(15);
+    }
+  }
+
+
+
+
+
+
   return (
     <Layout>
       <ContentBox>
+        <Typography variant="h4" sx={style.titulo}>
+          DETALLE DE COMANDA
+        </Typography>
+
         {data && (
           <Grid container>
             <FormCommand data={data} />
-
             <FormDishCommand />
           </Grid>
         )}
@@ -127,11 +173,11 @@ const DetalleComanda = () => {
                   Icon={<ProductionQuantityLimitsIcon color="primary" />}
                   id="desc-quantity-dish"
                   label="Cantidad"
-                  value={state.modal.selectDish.quantity}
+                  value={state.valuesDish.isEdit ? quantity : state.modal.selectDish.quantity}
                   type="number"
-                  onChange={(event) => {}}
+                  onChange={onChangeQuantity}
                   isErrored={false}
-                  disabled={true}
+                  disabled={state.valuesDish.isEdit ? false : true}
                   />
 
 
@@ -140,12 +186,30 @@ const DetalleComanda = () => {
                   Icon={<ChromeReaderModeIcon color="primary" />}
                   id="desc-observation-dish"
                   label="Observacion"
-                  value={state.modal.selectDish.observation}
+                  value={state.valuesDish.isEdit ? observacion : state.modal.selectDish.observation}
                   type="string"
-                  onChange={(event) => {}}
+                  onChange={onChangeObservacion}
                   isErrored={false}
-                  disabled={true}
+                  disabled={state.valuesDish.isEdit ? false : true}
                   />
+
+                  
+                  {
+                    state.valuesDish.isEdit && (
+                      <Button
+                      variant="contained"
+                      color="primary"
+                      sx={{ marginTop: 2 }}
+                      onClick={() => {
+                        handleUpdateDish(quantity,observacion)
+                        setQuantity(0);
+                        setObservacion("");
+                      }}
+                    >
+                      Actualizar
+                    </Button>
+                    )
+                  }
 
               </Box>
             </Box>

@@ -7,15 +7,82 @@ import MenuItem from "@mui/material/MenuItem";
 import ProductionQuantityLimitsIcon from "@mui/icons-material/ProductionQuantityLimits";
 import ChromeReaderModeIcon from "@mui/icons-material/ChromeReaderMode";
 import { InputForm } from "@/components/InputForm";
-import {useContext,useEffect} from 'react';
+import React, {useContext,useState} from 'react';
 import { CommandContext } from "@/contexts/Command";
 import { ramdonKey } from "@/utils";
 import Box from '@mui/material/Box';
 import CardCommandComponent from "../CardCommand";
+import { ICategoryDishGet } from "@/interfaces";
+
+// interface IDishForm {
+//    category: ICategoryDishGet;
+// }
+
 
 const FormDishCommand = () => {
 
-const {state,handleAddDish,dispatch,handleDeleteDish,stateLoading} = useContext(CommandContext)
+const {state,handleAddDish,dispatch,handleDeleteDish,stateLoading,handleEditDish} = useContext(CommandContext)
+
+
+const onchangeQuantity = (event: React.ChangeEvent<HTMLInputElement>) => {
+  event.preventDefault();
+
+  let value = Number(event.target.value);
+
+  if(isNaN(value) || value === null || value === undefined){
+ state.valuesDish.quantity = 0;
+
+  }
+
+  if(value < 0)
+  {
+  state.valuesDish.quantity = 0;
+  }
+
+  if (value >= 1 && value <= 15){
+ 
+      dispatch({type:'SET_VALUES_DISH',payload: {  ...state.valuesDish,  quantity: Math.round(value)}})
+  }
+
+}
+
+
+const ListDish = React.useMemo(() => {
+  return (
+    <Box
+    sx={{
+      marginTop: 5,
+      padding: 1,
+      background: "#F5F5F5",
+      borderRadius: 5,
+      overflowY: "auto",
+      height: "300px",
+    }}
+  >
+    {state.data.listDishViewAndPost.map((item, index) => {
+      return (
+        <CardCommandComponent
+        key={ramdonKey("card-dish")}
+        data={item}
+        handleRemove={handleDeleteDish}
+        showModal={() => {
+           dispatch({type:'SET_MODAL',payload: {
+                open: true,
+                selectDish: item,
+            }})
+        }}
+
+        handleEdit={handleEditDish}
+
+      />
+        )
+    })}
+ 
+  </Box>
+  )
+}, [state.data.listDishViewAndPost]);
+
+
 
 
   return (
@@ -71,12 +138,7 @@ const {state,handleAddDish,dispatch,handleDeleteDish,stateLoading} = useContext(
         label="Cantidad"
         value={state.valuesDish.quantity}
         type="number"
-        onChange={(event) => {
-          dispatch({type:'SET_VALUES_DISH',payload: {
-            ...state.valuesDish,
-            quantity: Number(event.target.value),
-          }})
-        }}
+        onChange={onchangeQuantity}
         isErrored={false}
         errorText={""}
       />
@@ -104,35 +166,15 @@ const {state,handleAddDish,dispatch,handleDeleteDish,stateLoading} = useContext(
         variant="contained"
         color="primary"
         onClick={handleAddDish}
+
       >
         Agregar
       </Button>
 
-      <Box
-        sx={{
-          marginTop: 2,
-          padding: 1,
-          background: "#F5F5F5",
-          borderRadius: 5,
-          overflowY: "auto",
-          height: "300px",
-        }}
-      >
-        {state.data.listDishViewAndPost.map((item, index) => (
-          <CardCommandComponent
-            key={ramdonKey("card-dish")}
-            data={item}
-            handleRemove={handleDeleteDish}
-            showModal={() => {
-               dispatch({type:'SET_MODAL',payload: {
-                    open: true,
-                    selectDish: item,
-                }})
-            }}
-          />
-        ))}
+
+      {ListDish}
+
      
-      </Box>
     </Grid> 
   )
 }

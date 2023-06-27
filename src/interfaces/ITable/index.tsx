@@ -46,7 +46,7 @@ type ITableWithComand = {
     hasCommands:   boolean;
 };
 type commandActive = {
-  id: number,  
+    id: number,  
     cantSeats: number,  
     precTotOrder: number,  
     createdAt: string,  

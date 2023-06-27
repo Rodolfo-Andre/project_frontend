@@ -25,6 +25,7 @@ export interface IStateDish {
   valuesDish: {
     quantity: number;
     observation: string;
+    isEdit: boolean;
   };
   error: {
     hasError: boolean;
@@ -105,6 +106,7 @@ export type IActionDish =
       payload: {
         quantity: number;
         observation: string;
+        isEdit: boolean;
       };
     }
   | {

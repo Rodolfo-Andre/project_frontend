@@ -6,19 +6,22 @@ import {
   Typography,
   CardContent,
   CardMedia,
+  Button
 } from "@mui/material";
 import { Interface } from "readline";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 interface ICardInfoOrder {
     title : string;
     total : number;
+    deleteListPayment : () => void;
 }
 
-const CardInfoOrder:React.FC<ICardInfoOrder> = ({title,total}) => {
+const CardInfoOrder:React.FC<ICardInfoOrder> = ({title,total,deleteListPayment}) => {
   return (
-    <Card sx={{ height: 90, display: "flex", flexDirection: "column",flexShrink:0 }}>
-      <CardActionArea sx={{ display: "flex", justifyContent: "space-between" }}>
+    <Card sx={{ height: 140, display: "flex", flexDirection: "column",flexShrink:0 }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box sx={{ display: "flex", flexDirection: "column",width : "70%" }}>
           <CardContent sx={{ py: 0 }}>
             <Typography
@@ -54,7 +57,21 @@ const CardInfoOrder:React.FC<ICardInfoOrder> = ({title,total}) => {
           image="https://res.cloudinary.com/dpfhjk0sw/image/upload/v1686789240/dish/xrfuvtjcie3imbfunvi2.jpg"
           alt="img"
         />
-      </CardActionArea>
+      </Box>
+      <Box
+       sx={{mt: 1}}
+      >
+        <Button
+          variant="contained"
+          color="error"
+          fullWidth
+          onClick={deleteListPayment}
+        >
+          <DeleteIcon />
+        </Button>
+
+      </Box>
+
     </Card>
   );
 };
