@@ -27,6 +27,7 @@ const useSignIn = (
         if (status === 200) {
           setError(null);
           const { accessToken } = result as ISignInResponse;
+          console.log(login);
           login(accessToken);
         }
       } catch (error) {

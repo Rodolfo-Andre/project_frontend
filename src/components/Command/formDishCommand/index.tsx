@@ -29,6 +29,9 @@ const FormDishCommand = () => {
     handleEditDish,
   } = useContext(CommandContext);
   const { user } = useContext(AuthContext);
+  const OnlyAdministradorOrMesero = (
+    ["Administrador", "Mesero"] as UserRoles[]
+  ).includes(user?.role.roleName as UserRoles);
 
   const onchangeQuantity = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
@@ -55,7 +58,7 @@ const FormDishCommand = () => {
     return (
       <Box
         sx={{
-          marginTop: 5,
+          marginTop: OnlyAdministradorOrMesero ? 5 : 0,
           padding: 1,
           background: "#F5F5F5",
           borderRadius: 5,
@@ -91,11 +94,9 @@ const FormDishCommand = () => {
       item
       xs={12}
       md={6}
-      sx={{ height: "100%", padding: 2, borderLeft: "1px solid #E0E0E0" }}
+      sx={{ height: "inherit", padding: 2, borderLeft: "1px solid #E0E0E0" }}
     >
-      {(["Administrador", "Mesero"] as UserRoles[]).includes(
-        user?.role.roleName as UserRoles
-      ) && (
+      {OnlyAdministradorOrMesero && (
         <>
           <FormControl sx={{ marginBottom: 2 }} fullWidth>
             <InputLabel id="lbl-category">Categoria</InputLabel>
@@ -187,10 +188,10 @@ const FormDishCommand = () => {
           >
             Agregar
           </Button>
-
-          {ListDish}
         </>
       )}
+
+      {ListDish}
     </Grid>
   );
 };
