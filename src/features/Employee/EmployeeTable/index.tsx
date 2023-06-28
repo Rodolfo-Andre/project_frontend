@@ -65,13 +65,13 @@ const EmployeeTable = ({ data, roles }: IEmpoyeeTableProps) => {
         params.row.user.email,
     },
     {
-      field: "createdAt",
+      field: "issueDate",
       headerName: "Creado en",
       type: "dateTime",
       minWidth: 160,
       flex: 2,
       valueGetter: (params: GridValueGetterParams<IEmployeeGet>) =>
-        dayjs(params.row.createdAt).toDate(),
+        dayjs(params.row.issueDate).toDate(),
     },
     {
       field: "actions",

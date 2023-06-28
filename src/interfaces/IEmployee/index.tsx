@@ -12,7 +12,7 @@ interface IEmployeeGet extends IEmployeePrincipal {
   id: number;
   role: IRoleGet;
   user: IUserPrincipal;
-  createdAt: string;
+  issueDate: string;
 }
 
 interface IEmployeeCreateOrUpdate extends IEmployeePrincipal {

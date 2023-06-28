@@ -84,7 +84,7 @@ const reportsItems: IMenuItemsWithSubItemsProps[] = [
         href: "/reports/voucher",
         text: "Comprobantes de Pago",
         Icon: Newspaper,
-        roles: ["Administrador", "Gerente", "Mesero", "Cajero"],
+        roles: ["Administrador", "Gerente", "Cajero"],
       },
     ],
   },
@@ -126,7 +126,9 @@ const DrawerItem = () => {
         </List>
       )}
 
-      {user?.role.roleName !== ("Cocinero" as UserRoles) && (
+      {!(["Cocinero", "Mesero"] as UserRoles[]).includes(
+        user?.role.roleName as UserRoles
+      ) && (
         <List>
           {reportsItems.map((item) => (
             <ListItemButtonWithCollapse key={item.text} {...item} />

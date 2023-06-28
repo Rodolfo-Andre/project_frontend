@@ -6,23 +6,33 @@ import {
   Typography,
   CardContent,
   CardMedia,
-  Button
+  Button,
 } from "@mui/material";
 import { Interface } from "readline";
-import DeleteIcon from '@mui/icons-material/Delete';
-
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface ICardInfoOrder {
-    title : string;
-    total : number;
-    deleteListPayment : () => void;
+  title: string;
+  total: number;
+  deleteListPayment: () => void;
 }
 
-const CardInfoOrder:React.FC<ICardInfoOrder> = ({title,total,deleteListPayment}) => {
+const CardInfoOrder: React.FC<ICardInfoOrder> = ({
+  title,
+  total,
+  deleteListPayment,
+}) => {
   return (
-    <Card sx={{ height: 140, display: "flex", flexDirection: "column",flexShrink:0 }}>
+    <Card
+      sx={{
+        height: 140,
+        display: "flex",
+        flexDirection: "column",
+        flexShrink: 0,
+      }}
+    >
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Box sx={{ display: "flex", flexDirection: "column",width : "70%" }}>
+        <Box sx={{ display: "flex", flexDirection: "column", width: "70%" }}>
           <CardContent sx={{ py: 0 }}>
             <Typography
               fontWeight="bold"
@@ -42,7 +52,7 @@ const CardInfoOrder:React.FC<ICardInfoOrder> = ({title,total,deleteListPayment})
               color="text.secondary"
               component="div"
             >
-               Total : S./{total.toFixed(2)}
+              Total : S./{total.toFixed(2)}
             </Typography>
           </CardContent>
         </Box>
@@ -52,15 +62,13 @@ const CardInfoOrder:React.FC<ICardInfoOrder> = ({title,total,deleteListPayment})
             width: "30%",
             height: "100%",
             objectFit: "cover",
-            backgroundRepeat: "no-repeat",  
+            backgroundRepeat: "no-repeat",
           }}
-          image="https://res.cloudinary.com/dpfhjk0sw/image/upload/v1686789240/dish/xrfuvtjcie3imbfunvi2.jpg"
+          image="https://res.cloudinary.com/dpfhjk0sw/image/upload/v1687921996/dish/metodo_pago.jpg"
           alt="img"
         />
       </Box>
-      <Box
-       sx={{mt: 1}}
-      >
+      <Box sx={{ mt: 1 }}>
         <Button
           variant="contained"
           color="error"
@@ -69,9 +77,7 @@ const CardInfoOrder:React.FC<ICardInfoOrder> = ({title,total,deleteListPayment})
         >
           <DeleteIcon />
         </Button>
-
       </Box>
-
     </Card>
   );
 };

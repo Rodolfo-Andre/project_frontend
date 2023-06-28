@@ -41,7 +41,7 @@ const SalesDataTable = ({ data }: ISalesDataTableProps) => {
     },
     {
       field: "numberOfGeneratedReceipts",
-      headerName: "Número de Comprobantes Generados",
+      headerName: "Comprobantes Generados",
       type: "number",
       headerAlign: "left",
       align: "left",

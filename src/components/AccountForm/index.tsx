@@ -10,7 +10,7 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 const AccountForm = () => {
   const { user } = useContext(AuthContext);
-  const date_created_at = dayjs(user!.createdAt);
+  const date_created_at = dayjs(user!.issueDate);
 
   return (
     <ContentBox
