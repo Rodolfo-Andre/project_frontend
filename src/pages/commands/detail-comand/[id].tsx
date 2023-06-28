@@ -128,6 +128,7 @@ const DetalleComanda = () => {
           <Modal
             open={state.modal.open}
             onClose={() =>
+            {
               dispatch({
                 type: "SET_MODAL",
                 payload: {
@@ -136,6 +137,16 @@ const DetalleComanda = () => {
                   selectDish: null,
                 },
               })
+
+              dispatch({
+                type: "SET_VALUES_DISH",
+                payload: {
+                  ...state.valuesDish,
+                  isEdit: false,
+                },
+              });
+            }
+
             }
             aria-labelledby="modal"
             aria-describedby="modal-description"

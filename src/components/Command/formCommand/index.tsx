@@ -47,11 +47,23 @@ const onChangeCantPerson = (ev: React.ChangeEvent<HTMLInputElement>) => {
   }
 
 
+  if(value > 15){
+    dispatch({
+      type: "SET_VALUES",
+      payload: {
+        ...state.values,
+        cantPerson : 15,
+      },
+    });
+    return;
+  }
+
+
    dispatch({
     type: "SET_VALUES",
     payload: {
       ...state.values,
-      cantPerson: value,
+      cantPerson: Math.round(value),
     },
   });
 
