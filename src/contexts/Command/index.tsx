@@ -164,6 +164,8 @@ const CommandProvider = ({ children }: { children: ReactNode }) => {
           isEdit : true,
         }
       });
+
+      
     }
 
   };
@@ -200,6 +202,14 @@ const CommandProvider = ({ children }: { children: ReactNode }) => {
           selectDish : null,
         }
       })
+
+      dispatch({
+        type: "SET_VALUES_DISH",
+        payload: {
+          ...state.valuesDish,
+          isEdit: false,
+        },
+      });
 
     }
 
