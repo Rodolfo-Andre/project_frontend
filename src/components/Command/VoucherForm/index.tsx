@@ -176,12 +176,12 @@ const reducerErrors = (state: IStateErrors, action: IActionErrors) => {
 
 
 const FormVoucher = () => {
-   let saveDiscount = 0;
    const router = useRouter();
   const{user} = useContext(AuthContext);
   const { state, data, dispatch } = useContext(CommandContext);
   const [subTotal, setSubTotal] = useState(0);
   const [discount, setDiscount] = useState(0);
+  const [saveDiscount, setSaveDiscount] = useState(0);
   const [totalFinal, setTotalFinal] = useState(0);
   const [igv, setIgv] = useState(0);
   const [faltante, setFaltante] = useState(0);
@@ -298,10 +298,12 @@ const FormVoucher = () => {
         }
         return item;
       });
-      const nuevoTotal = newList.reduce((acc, item) => acc + item.amount, 0);
+        const nuevoTotal = newList.reduce((acc, item) => acc + item.amount, 0);
         const redondear = Math.round(nuevoTotal * 100) / 100;
         const redondearTotal = Math.round(totalFinal * 100) / 100;
 
+      console.log("redondear", redondear);
+      console.log("redondearTotal", redondearTotal);
       
       if(redondear > redondearTotal){
         dispatchError({ type: "SET_ERROR_MONTO", payload: {active: true, message: "El monto no puede ser mayor al total"} });
@@ -374,7 +376,12 @@ const FormVoucher = () => {
     }
 
     if(discount > faltante){
-      dispatchError({ type: "SET_ERROR_DESCUENTO", payload: true });
+      
+      dispatchError({
+        type : "SET_ERROR_CONTAINER",
+        payload: {active: true, message: "El monto no puede ser mayor al total"}
+      })
+
       return;
     }
 
@@ -383,14 +390,24 @@ const FormVoucher = () => {
       dispatchError({ type: "SET_ERROR_DESCUENTO", payload: true });
       return;
     }
+    
 
-    const totalDiscount = totalFinal - discount;
-    setTotalFinal(totalDiscount);
-    setFaltante(totalDiscount);
-    setDiscounState(discount);  
-    saveDiscount += discount;
+
+    if(discount == saveDiscount && discount != 0){
+      return;
+    }
+
+
+
+    const total = faltante - discount + saveDiscount;
+
+    setFaltante(Math.round(total * 100) / 100);
+    setTotalFinal(Math.round(total * 100) / 100);
+    setSaveDiscount(discount);
+    setDiscounState(discount);     
     dispatchError({ type: "SET_ERROR_DESCUENTO", payload: false });
-    setDiscount(0);
+    dispatchError({ type: "SET_ERROR_CONTAINER", payload: {active: false, message: ""} });
+
 
 
   };
@@ -420,20 +437,22 @@ const FormVoucher = () => {
       return;
     }
 
-    if (stateClient.name === "" || !regexSoloLetras.test(stateClient.name)) {
-      dispatchError({ type: "SET_ERROR_CLIENTE", payload: {
-          ...stateError.errorCliente,
-           errorName: true,
-      } });
-      return;
-    }
-
-    if (stateClient.lastName === ""  || !regexSoloLetras.test(stateClient.lastName)) {
-      dispatchError({ type: "SET_ERROR_CLIENTE", payload: {
-          ...stateError.errorCliente,
-           errorLastName: true,
-      } });
-      return;
+    if (habilitar == false) {
+      if (stateClient.name === "" || !regexSoloLetras.test(stateClient.name)) {
+        dispatchError({ type: "SET_ERROR_CLIENTE", payload: {
+            ...stateError.errorCliente,
+             errorName: true,
+        } });
+        return;
+      }
+  
+      if (stateClient.lastName === ""  || !regexSoloLetras.test(stateClient.lastName) ) {
+        dispatchError({ type: "SET_ERROR_CLIENTE", payload: {
+            ...stateError.errorCliente,
+             errorLastName: true,
+        } });
+        return;
+      }
     }
 
 
@@ -855,7 +874,7 @@ const FormVoucher = () => {
                    }
                   }
                 >
-                  Agregar
+                  Buscar
                 </Button>
               </Grid>
               <Grid item xs={12} lg={6}>
