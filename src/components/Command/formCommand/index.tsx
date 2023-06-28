@@ -252,7 +252,6 @@ const onlyAdministradorMesero = (
             }
 
       {data.id !== 0 &&
-          data.statesCommandId === 1 &&
           (["Administrador", "Cocinero"] as UserRoles[]).includes(
             user?.role.roleName as UserRoles
           ) && (

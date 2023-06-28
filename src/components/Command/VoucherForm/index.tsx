@@ -372,6 +372,12 @@ const FormVoucher = () => {
       dispatchError({ type: "SET_ERROR_DESCUENTO", payload: true });
       return;
     }
+
+    if(discount > faltante){
+      dispatchError({ type: "SET_ERROR_DESCUENTO", payload: true });
+      return;
+    }
+
     
     if(discount > totalFinal){
       dispatchError({ type: "SET_ERROR_DESCUENTO", payload: true });
@@ -390,6 +396,9 @@ const FormVoucher = () => {
   };
 
   const saveVoucher = async () => {
+
+    const regexSoloLetras = /^[a-zA-Z ]*$/;
+
     dispatchError({type : "SET_ERROR_CONTAINER", payload: {active: false, message: ""}});
 
     if(faltante  > 0){
@@ -410,6 +419,25 @@ const FormVoucher = () => {
       dispatchError({type : "SET_ERROR_CONTAINER", payload: {active: true, message: "Debe agregar un monto"}});
       return;
     }
+
+    if (stateClient.name === "" || !regexSoloLetras.test(stateClient.name)) {
+      dispatchError({ type: "SET_ERROR_CLIENTE", payload: {
+          ...stateError.errorCliente,
+           errorName: true,
+      } });
+      return;
+    }
+
+    if (stateClient.lastName === ""  || !regexSoloLetras.test(stateClient.lastName)) {
+      dispatchError({ type: "SET_ERROR_CLIENTE", payload: {
+          ...stateError.errorCliente,
+           errorLastName: true,
+      } });
+      return;
+    }
+
+
+
 
     const listPayment = listPaymen.map(item => { 
       return {
@@ -482,7 +510,11 @@ const FormVoucher = () => {
           setHabilitarDni(true);
           dispatchClient({type: "SET_NAME", payload: data.firstName});
           dispatchClient({type: "SET_LAST_NAME", payload: data.lastName});
+        }else{
+          setHabilitar(false);
         }
+        
+        
       } catch (error) {
         setHabilitar(false);
       }finally{

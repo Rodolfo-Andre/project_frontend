@@ -93,8 +93,14 @@ const CommandProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const handleAddDish = () => {
-    if (state.data.valSelectCategory === "") return;
-    if (state.data.valSelectDish === "") return;
+    if (state.data.valSelectCategory === "") {
+      AlertMessage("Error", "Seleccione una categoria", "error");
+      return;
+    };
+    if (state.data.valSelectDish === "") {
+      AlertMessage("Error", "Seleccione un plato", "error");
+      return;
+    };
     const dish = state.data.listDish.find(
       (item) => item.id === state.data.valSelectDish
     );
@@ -450,7 +456,7 @@ const CommandProvider = ({ children }: { children: ReactNode }) => {
 
   const addPayment = (numero: number) => {
     if (state.valuesVocher.values.valTypePayment === "") {
-      AlertMessage("Error!", "Debe seleccionar un tipo de pago", "error");
+      AlertMessage("Error!", "Debe sellercionar un tipo de categoria", "error");
       return;
     }
 
