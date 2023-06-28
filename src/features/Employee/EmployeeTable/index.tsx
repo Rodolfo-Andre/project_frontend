@@ -31,7 +31,7 @@ interface IEmpoyeeTableProps {
 
 const EmployeeTable = ({ data, roles }: IEmpoyeeTableProps) => {
   let formikRef: FormikProps<IEmployeeCreateOrUpdate>;
-  const { user } = useContext(AuthContext);
+  const { user, refreshUser } = useContext(AuthContext);
 
   const { mutate } = useSWRConfig();
 
@@ -111,6 +111,7 @@ const EmployeeTable = ({ data, roles }: IEmpoyeeTableProps) => {
                     values={employee.row}
                     data={roles}
                     isUserInSession={user?.id === employee.row.id}
+                    refreshUser={refreshUser}
                   />
                 ),
                 preConfirm: async () => {

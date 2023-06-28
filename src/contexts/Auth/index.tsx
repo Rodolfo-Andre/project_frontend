@@ -16,20 +16,21 @@ import { ICurrentUser } from "@/interfaces/IUser";
 const AuthContext = createContext<IAuthContext>({
   login: async () => {},
   logout: () => {},
+  refreshUser: async () => {},
 });
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<ICurrentUser | undefined>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const checkUser = useCallback(async () => {
-    await authenticateUser();
-    setIsLoading(false);
-  }, []);
-
   useEffect(() => {
     checkUser();
-  }, [checkUser]);
+  }, []);
+
+  const checkUser = async () => {
+    await authenticateUser();
+    setIsLoading(false);
+  };
 
   const authenticateUser = async () => {
     const currenUser = (await getUser()) as ICurrentUser;
@@ -41,6 +42,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     setUser(currenUser);
   };
+
+  const refreshUser = useCallback(async () => {
+    await authenticateUser();
+  }, []);
 
   const login = useCallback(async (accessToken: string) => {
     localStorage.setItem("access_token", accessToken);
@@ -58,8 +63,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       user,
       login,
       logout,
+      refreshUser,
     };
-  }, [user, login, logout]);
+  }, [user, login, logout, refreshUser]);
 
   if (isLoading) return <LoadingBackdrop />;
 

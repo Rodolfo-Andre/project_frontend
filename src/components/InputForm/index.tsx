@@ -18,7 +18,6 @@ interface IInputForm {
   errorText: string;
   type: string;
   disabled?: boolean;
-   
 }
 
 export const InputForm = ({
@@ -31,16 +30,10 @@ export const InputForm = ({
   errorText,
   type = "text",
   disabled = false,
-
 }: IInputForm) => {
   return (
-    <FormControl
-      
-    
-    fullWidth sx={{ mb: 1 }}>
-      <InputLabel htmlFor={id}>
-        {label}
-      </InputLabel>
+    <FormControl fullWidth sx={{ mb: 1 }}>
+      <InputLabel htmlFor={id}>{label}</InputLabel>
       <OutlinedInput
         id={id}
         startAdornment={

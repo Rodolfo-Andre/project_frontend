@@ -18,6 +18,7 @@ interface IEmployeeUpdateFormProps
   extends IUpdateFormProps<IEmployeeCreateOrUpdate, IEmployeeGet> {
   data: IRoleGet[];
   isUserInSession: boolean;
+  refreshUser: () => Promise<void>;
 }
 
 const EmployeeUpdateForm = ({
@@ -25,6 +26,7 @@ const EmployeeUpdateForm = ({
   setFormikRef,
   data,
   isUserInSession,
+  refreshUser,
 }: IEmployeeUpdateFormProps) => {
   const { mutate } = useSWRConfig();
 
@@ -50,6 +52,10 @@ const EmployeeUpdateForm = ({
             );
 
             mutate("api/employee");
+
+            if (isUserInSession) {
+              await refreshUser();
+            }
 
             showSuccessToastMessage(
               "El empleado se ha modificado correctamente"

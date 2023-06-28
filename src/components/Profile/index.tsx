@@ -4,7 +4,7 @@ import { AuthContext } from "@/contexts/Auth";
 import { useState, useContext, MouseEvent } from "react";
 
 const Profile = () => {
-  const { user, logout } = useContext(AuthContext);
+  const { logout } = useContext(AuthContext);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   const handleOpen = (event: MouseEvent<HTMLButtonElement>) => {
@@ -17,7 +17,7 @@ const Profile = () => {
 
   return (
     <>
-      <ProfileButton user={user!} handleOpen={handleOpen} anchorEl={anchorEl} />
+      <ProfileButton handleOpen={handleOpen} anchorEl={anchorEl} />
 
       <ProfileMenu
         anchorEl={anchorEl}
